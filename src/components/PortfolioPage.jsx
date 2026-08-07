@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Sparkles, Send, Calendar, RefreshCw, ChevronLeft, ChevronRight, Image as ImageIcon } from 'lucide-react';
+import { Sparkles, Send, Calendar, ChevronLeft, ChevronRight, Image as ImageIcon } from 'lucide-react';
 
 function WorkCard({ work, onAddToCart }) {
   const allImages = work.images && work.images.length > 0 ? work.images : [work.image];
@@ -212,7 +212,7 @@ export default function PortfolioPage({ onAddToCart }) {
     <div style={{ minHeight: '80vh', padding: '36px 0 80px', background: 'var(--bg-main)' }}>
       <div className="container">
         {/* Header Mint Banner */}
-        <div className="hero-banner" style={{ borderRadius: 'var(--radius-md)', padding: '32px 36px', marginBottom: '32px' }}>
+        <div className="hero-banner" style={{ borderRadius: 'var(--radius-md)', padding: '24px 36px', marginBottom: '32px' }}>
           <div className="hero-banner-content">
             <div>
               <span style={{ fontSize: '12px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--accent-gold)' }}>
@@ -221,34 +221,23 @@ export default function PortfolioPage({ onAddToCart }) {
               <h1 className="hero-banner-title" style={{ fontSize: '36px', marginTop: '4px' }}>
                 Мої Роботи & Авторські Десерти
               </h1>
-              <p style={{ fontSize: '14px', color: 'var(--text-muted)', marginTop: '8px', maxWidth: '650px', lineHeight: 1.5 }}>
-                Усі роботи в цій галереї автоматично спарсені з нашого офіційного Telegram-каналу <strong>@BELLA_CREME_ua</strong> з підтримкою мульти-фото альбомів.
-              </p>
             </div>
-
-            <button
-              onClick={fetchPortfolio}
-              className="btn-primary"
-              style={{ padding: '10px 18px', fontSize: '13px', background: '#0b172a' }}
-            >
-              <RefreshCw size={14} className={loading ? 'spin' : ''} /> Оновити галерею
-            </button>
           </div>
         </div>
 
         {/* Portfolio Grid */}
         {loading ? (
           <div style={{ textAlign: 'center', padding: '60px 0', color: 'var(--text-muted)' }}>
-            <p style={{ fontSize: '16px', fontWeight: 600 }}>Завантаження робіт з бази Telegram-бота...</p>
+            <p style={{ fontSize: '16px', fontWeight: 600 }}>Завантаження галереї робіт...</p>
           </div>
         ) : works.length === 0 ? (
           <div style={{ background: '#ffffff', border: '1px dashed var(--border-light)', borderRadius: 'var(--radius-md)', padding: '48px 24px', textAlign: 'center' }}>
             <Sparkles size={48} style={{ color: 'var(--accent-gold)', margin: '0 auto 12px' }} />
             <h3 style={{ fontSize: '20px', fontWeight: 700, color: 'var(--bg-navy)', marginBottom: '8px' }}>
-              Галерея робіт наразі формується!
+              Галерея робіт наразі порожня
             </h3>
             <p style={{ fontSize: '14px', color: 'var(--text-muted)', maxWidth: '520px', margin: '0 auto 16px' }}>
-              Пересилайте альбоми з фотографіями в наш Telegram-бот <code>@BELLA_CREME_ua</code>, і вони миттєво з'являться тут з фото-каруселлю!
+              Надішліть ваші пости з фото у Telegram-бот, і вони миттєво з'являться тут у вигляді красивих карт робіт.
             </p>
           </div>
         ) : (
