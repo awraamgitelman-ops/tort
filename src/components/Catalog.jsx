@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ChevronRight, ArrowRight, Send, Sparkles } from 'lucide-react';
+import { ChevronRight, ArrowRight, Send, BookOpen, Sparkles, CheckCircle2 } from 'lucide-react';
 
 const CATEGORIES = [
   { id: 'all', name: 'Увесь Прейскурант', count: 18 },
@@ -9,7 +9,6 @@ const CATEGORIES = [
   { id: 'fillings', name: 'Опис Начинок та Розрізів', count: 6 }
 ];
 
-// Exact products and price lists extracted from official menu images
 const MENU_ITEMS = [
   /* BENTO CAKES */
   {
@@ -22,7 +21,8 @@ const MENU_ITEMS = [
     unit: 'грн',
     img: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=800&q=80',
     badge: 'Популярний подарунок',
-    desc: 'У вартість входить: напис до 5 слів на білому фоні, свічка, ложка, листівка та святкове пакування.',
+    articleText: 'Милі міні-тортики у традиційній екологічній бенто-коробці. Ідеальне рішення для персонального привітання, романтичного вечора або затишного сімейного чаювання.',
+    desc: 'У вартість входить: авторський напис до 5 слів на білому фоні, святкова свічка, дерев\'яна ложечка, фірмова листівка та пакування стрічкою.',
     flavors: ['Ваніль-полуниця', 'Ваніль-персик', 'Манго-полуниця', 'Малина-карамель', 'Снікерс', 'Вишня-шоколад', 'Шоколад-банан', 'Червоний оксамит']
   },
   {
@@ -35,6 +35,7 @@ const MENU_ITEMS = [
     unit: 'грн',
     img: 'https://images.unsplash.com/photo-1535141192574-5d4897c13136?auto=format&fit=crop&w=800&q=80',
     badge: 'Оптимальний розмір',
+    articleText: 'Збільшена версія класичного бенто-торта для невеликої компанії друзів. Вишуканий зовнішній вигляд та насичені вершкові начинки.',
     desc: 'У вартість входить: напис до 5 слів на білому фоні, свічка, ложка, листівка та святкове пакування.',
     flavors: ['Ваніль-полуниця', 'Снікерс', 'Малина-карамель', 'Червоний оксамит', 'Вишня-шоколад']
   },
@@ -48,6 +49,7 @@ const MENU_ITEMS = [
     unit: 'грн',
     img: 'https://images.unsplash.com/photo-1588195538326-c5b1e9f80a1b?auto=format&fit=crop&w=800&q=80',
     badge: 'Для компанії',
+    articleText: 'Повноцінний авторський торт збільшеного розміру. Дозволяє реалізувати складний художній декор, малюнки та написи.',
     desc: 'У вартість входить: напис до 5 слів на білому фоні, свічка, ложка, листівка та святкове пакування.',
     flavors: ['Манго-полуниця', 'Фісташка-малина', 'Вишня-шоколад', 'Шоколад-банан']
   },
@@ -61,63 +63,42 @@ const MENU_ITEMS = [
     unit: 'грн',
     img: 'https://images.unsplash.com/photo-1569864358642-9d1684040f43?auto=format&fit=crop&w=800&q=80',
     badge: 'Хіт Сет',
-    desc: 'Ідеальний святковий набір для подарунка. Включає тортик і 5 ніжних капкейків з декор-оформленням.'
-  },
-  {
-    id: 'bento-set-medium',
-    name: 'Сет: Середній Бенто + 5 Капкейків',
-    category: 'bento',
-    categoryName: 'Солодкі Сети',
-    weights: 'Бенто 1кг + 5 капкейків',
-    price: 1800,
-    unit: 'грн',
-    img: 'https://images.unsplash.com/photo-1565958011703-44f9829ba187?auto=format&fit=crop&w=800&q=80',
-    badge: 'Максі Сет',
-    desc: 'Повноцінний солодкий стіл для свята.'
+    articleText: 'Найпопулярніший святковий комплект! Поєднує свіжоспечений бенто-тортик для винуватця свята та 5 ніжних капкейків для гостей.',
+    desc: 'Ідеальний вибір для фотосесій, днів народження та корпоративних вітань.'
   },
 
   /* CUPCAKES */
   {
     id: 'cupcakes-6',
-    name: 'Набір Капкейків (6 шт)',
+    name: 'Авторські Капкейки (Сет 6 шт)',
     category: 'cupcakes',
     categoryName: 'Капкейки',
-    weights: '6 шт',
+    weights: '6 шт у коробці',
     price: 850,
     unit: 'грн',
     img: 'https://images.unsplash.com/photo-1569864358642-9d1684040f43?auto=format&fit=crop&w=800&q=80',
     badge: 'Капкейки',
+    articleText: 'Ніжні порційні десерти на основі натурального вершкового масла та бісквіту. Прикрашаються шапочкою з крему та святковою посипкою.',
     desc: 'Кекси: ванільні, шоколадні, цитрусові, кокосові, червоний оксамит. Начинка: ягідна, апельсин, карамель+арахіс, шоколад.'
   },
   {
-    id: 'cupcakes-9',
-    name: 'Набір Капкейків (9 шт)',
-    category: 'cupcakes',
-    categoryName: 'Капкейки',
-    weights: '9 шт',
-    price: 1250,
-    unit: 'грн',
-    img: 'https://images.unsplash.com/photo-1588195538326-c5b1e9f80a1b?auto=format&fit=crop&w=800&q=80',
-    badge: 'Капкейки',
-    desc: 'У вартість входить: оформлення посипками/намистинками/субліматами, свічка, листівка, святкове пакування.'
-  },
-  {
     id: 'cupcakes-12',
-    name: 'Набір Капкейків (12 шт)',
+    name: 'Авторські Капкейки (Сет 12 шт)',
     category: 'cupcakes',
     categoryName: 'Капкейки',
-    weights: '12 шт',
+    weights: '12 шт у коробці',
     price: 1700,
     unit: 'грн',
     img: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=800&q=80',
     badge: 'Велика коробка',
-    desc: 'Свіжа випічка з крем-чизом та авторською начинкою на вибір.'
+    articleText: 'Великий асорті-набір капкейків для кенді-бару або офісного святкування. Кожен капкейк має багату ягідну або шоколадну серединку.',
+    desc: 'У вартість входить: оформлення намистинками/субліматами, свічка, листівка, святкове пакування.'
   },
 
   /* BIG CAKES */
   {
     id: 'big-cake-custom',
-    name: 'Великий Авторський Торт (від 2-х кг)',
+    name: 'Великі Авторські Торти на замовлення (від 2-х кг)',
     category: 'big_cakes',
     categoryName: 'Авторські Торти',
     weights: 'від 2 кг (розрахунок 150-200г / людина)',
@@ -125,7 +106,8 @@ const MENU_ITEMS = [
     unit: 'грн / кг',
     img: 'https://images.unsplash.com/photo-1606890737304-57a1ca8a5b62?auto=format&fit=crop&w=800&q=80',
     badge: '1100 грн / кг',
-    desc: 'Покриття на вибір: крем-сир на маслі або ганаш. Можливі будь-які авторські начинки з нашого каталогу.',
+    articleText: 'Головна окраса будь-якого урочистого заходу — весілля, ювілею чи корпоративу. Створюємо ярусні та класичні торти з урахуванням усіх ваших побажань.',
+    desc: 'Покриття на вибір: ніжний крем-сир на вершковому маслі або насичений шоколадний ганаш.',
     flavors: [
       'Ваніль-полуниця', 'Ваніль-персик', 'Манго-полуниця', 'Малина-карамель',
       'Манго-маракуйя', 'Червоний оксамит', 'Снікерс', 'Вишня-шоколад',
@@ -133,78 +115,58 @@ const MENU_ITEMS = [
     ]
   },
 
-  /* FLAVORS & CUT DETAILS */
+  /* FLAVORS & ARTICLES */
   {
     id: 'filling-vanilla-strawberry',
     name: 'Начинка: Ваніль - Полуниця',
     category: 'fillings',
-    categoryName: 'Склад Начинок',
+    categoryName: 'Опис Начинок',
     weights: 'Ванільний бісквіт',
     price: 1100,
     unit: 'грн/кг',
     img: 'https://images.unsplash.com/photo-1533134242443-d4fd215305ad?auto=format&fit=crop&w=800&q=80',
     badge: 'Класика',
+    articleText: 'Легкий та ніжний смак, який полюбляють дорослі та діти. Поєднання ароматної ванілі з натуральним полуничним конфи.',
     ingredients: ['Ванільний бісквіт', 'Молочне просочення', 'Полуничне конфи', 'Крем сир на вершках']
   },
   {
     id: 'filling-snikers',
     name: 'Начинка: Снікерс',
     category: 'fillings',
-    categoryName: 'Склад Начинок',
+    categoryName: 'Опис Начинок',
     weights: 'Шоколадний бісквіт',
     price: 1100,
     unit: 'грн/кг',
     img: 'https://images.unsplash.com/photo-1606890737304-57a1ca8a5b62?auto=format&fit=crop&w=800&q=80',
     badge: 'Бестселер',
+    articleText: 'Насичений шоколадний бісквіт, просочений молочним сиропом, домашня солона карамель з хрустким арахісом та ганаш на бельгійському шоколаді.',
     ingredients: ['Шоколадний бісквіт', 'Молочне просочення', 'Солона карамель з арахісом', 'Ганаш на молочному шоколаді', 'Крем сир на вершках']
   },
   {
     id: 'filling-vanilla-peach',
     name: 'Начинка: Ваніль - Персик',
     category: 'fillings',
-    categoryName: 'Склад Начинок',
+    categoryName: 'Опис Начинок',
     weights: 'Ванільний бісквіт',
     price: 1100,
     unit: 'грн/кг',
     img: 'https://images.unsplash.com/photo-1565958011703-44f9829ba187?auto=format&fit=crop&w=800&q=80',
     badge: 'Ніжний смак',
+    articleText: 'Соковиті шматочки персикового конфи у прошарках із повітряного крем-сиру та пухкого ванільного коржа.',
     ingredients: ['Ванільний бісквіт', 'Молочне просочення', 'Персикове конфи', 'Крем сир на вершках']
-  },
-  {
-    id: 'filling-mango-strawberry',
-    name: 'Начинка: Манго - Полуниця',
-    category: 'fillings',
-    categoryName: 'Склад Начинок',
-    weights: 'Ванільний бісквіт',
-    price: 1100,
-    unit: 'грн/кг',
-    img: 'https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?auto=format&fit=crop&w=800&q=80',
-    badge: 'Тропік',
-    ingredients: ['Ванільний бісквіт', 'Молочне просочення', 'Полуничне желе', 'Манговий крем', 'Крем сир на вершках']
   },
   {
     id: 'filling-cherry-chocolate',
     name: 'Начинка: Вишня - Шоколад',
     category: 'fillings',
-    categoryName: 'Склад Начинок',
+    categoryName: 'Опис Начинок',
     weights: 'Шоколадний бісквіт',
     price: 1100,
     unit: 'грн/кг',
     img: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=800&q=80',
     badge: 'Шоколадний шик',
+    articleText: 'Класичний дует злегка кислуватої терпкої вишні та вишуканого темного ганашу.',
     ingredients: ['Шоколадний бісквіт', 'Молочне просочення', 'Вишневе конфи', 'Ганаш на темному шоколаді', 'Крем сир на вершках']
-  },
-  {
-    id: 'filling-raspberry-caramel',
-    name: 'Начинка: Малина - Карамель',
-    category: 'fillings',
-    categoryName: 'Склад Начинок',
-    weights: 'Ванільний бісквіт',
-    price: 1100,
-    unit: 'грн/кг',
-    img: 'https://images.unsplash.com/photo-1588195538326-c5b1e9f80a1b?auto=format&fit=crop&w=800&q=80',
-    badge: 'Ягідний мікс',
-    ingredients: ['Ванільний бісквіт', 'Молочне просочення', 'Малинове конфи', 'Солона карамель з кульками кріспі', 'Крем сир на вершках']
   }
 ];
 
@@ -223,8 +185,8 @@ export default function Catalog({ onAddToCart, searchQuery }) {
       <section className="hero-banner">
         <div className="container hero-banner-content">
           <div>
-            <h1 className="hero-banner-title">Офіційний Прейскурант & Начинки</h1>
-            <div className="hero-breadcrumb">Головна &gt; Авторські Торти BELLA CRÈME</div>
+            <h1 className="hero-banner-title">Авторські Торти & Каталог Статей</h1>
+            <div className="hero-breadcrumb">Головна &gt; Прейскурант та опис десертів BELLA CRÈME</div>
             
             {/* Telegram Direct Order Banner */}
             <div style={{ marginTop: '16px' }}>
@@ -250,7 +212,7 @@ export default function Catalog({ onAddToCart, searchQuery }) {
       <div className="container page-layout">
         {/* Left Sidebar Categories */}
         <aside className="sidebar-box">
-          <h3 className="sidebar-title">Прейскурант</h3>
+          <h3 className="sidebar-title">Розділи Меню</h3>
           <div className="category-list">
             {CATEGORIES.map(cat => (
               <div
@@ -266,7 +228,7 @@ export default function Catalog({ onAddToCart, searchQuery }) {
 
           {/* Quick Info & Telegram Order Box */}
           <div style={{ marginTop: '24px', padding: '16px', background: '#fdf8f6', borderRadius: 'var(--radius-sm)', border: '1px solid #fce7f3' }}>
-            <h5 style={{ fontSize: '13px', fontWeight: 700, color: 'var(--bg-navy)', marginBottom: '6px' }}>💬 Заказ у Telegram:</h5>
+            <h5 style={{ fontSize: '13px', fontWeight: 700, color: 'var(--bg-navy)', marginBottom: '6px' }}>Замовлення в Telegram:</h5>
             <p style={{ fontSize: '11.5px', color: 'var(--text-muted)', marginBottom: '10px', lineHeight: 1.4 }}>
               Приймаємо індивідуальні ескізи та декор у нашому Telegram-каналі:
             </p>
@@ -289,84 +251,118 @@ export default function Catalog({ onAddToCart, searchQuery }) {
           </div>
         </aside>
 
-        {/* Right Product Grid */}
-        <main>
-          <div className="products-grid">
-            {filteredProducts.map(product => (
-              <div key={product.id} className="product-card">
-                <div className="product-img-box">
-                  <img src={product.img} alt={product.name} className="product-img" />
-                  <span style={{
-                    position: 'absolute',
-                    top: '12px',
-                    left: '12px',
-                    background: 'rgba(11, 23, 42, 0.85)',
-                    color: '#fff',
-                    padding: '4px 10px',
-                    borderRadius: '12px',
-                    fontSize: '11px',
-                    fontWeight: 700
-                  }}>
+        {/* Right Content Column: Editorial Mini-Articles Style (Класичні Міні-Статті) */}
+        <main style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
+          {filteredProducts.map(product => (
+            <article
+              key={product.id}
+              style={{
+                background: '#ffffff',
+                border: '1px solid var(--border-light)',
+                borderRadius: 'var(--radius-md)',
+                padding: '28px',
+                boxShadow: 'var(--shadow-sm)',
+                transition: 'all 0.3s',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '16px'
+              }}
+            >
+              {/* Article Header */}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '12px', borderBottom: '1px solid #f1f5f9', paddingBottom: '14px' }}>
+                <div>
+                  <span style={{ fontSize: '12px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--accent-gold)' }}>
+                    {product.categoryName}
+                  </span>
+                  <h3 style={{ fontFamily: "'Georgia', serif", fontSize: '22px', color: 'var(--bg-navy)', fontWeight: 700, marginTop: '4px' }}>
+                    {product.name}
+                  </h3>
+                </div>
+
+                <div style={{ textAlign: 'right' }}>
+                  <div style={{ fontSize: '22px', fontWeight: 800, color: 'var(--accent-gold)' }}>
+                    {product.price} {product.unit || 'грн'}
+                  </div>
+                  <span className="weight-pill" style={{ margin: 0 }}>{product.weights}</span>
+                </div>
+              </div>
+
+              {/* Article Main Body (Image + Story Description) */}
+              <div style={{ display: 'grid', gridTemplateColumns: '220px 1fr', gap: '24px' }}>
+                <div style={{ borderRadius: '12px', overflow: 'hidden', height: '170px', position: 'relative' }}>
+                  <img src={product.img} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  <span style={{ position: 'absolute', top: '8px', left: '8px', background: 'rgba(11,23,42,0.85)', color: '#fff', fontSize: '10px', fontWeight: 700, padding: '3px 8px', borderRadius: '10px' }}>
                     {product.badge}
                   </span>
                 </div>
 
-                <div className="product-body">
-                  <div style={{ marginBottom: '8px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <span className="weight-pill">{product.weights}</span>
-                    <span className="product-price">{product.price} {product.unit || 'грн'}</span>
-                  </div>
-
-                  <h4 className="product-title">{product.name}</h4>
-                  <p style={{ fontSize: '12.5px', color: 'var(--text-muted)', marginBottom: '12px', lineHeight: 1.4 }}>
-                    {product.desc}
+                <div>
+                  <p style={{ fontFamily: "'Georgia', serif", fontSize: '14.5px', color: '#334155', lineHeight: 1.6, marginBottom: '12px' }}>
+                    {product.articleText || product.desc}
                   </p>
+                  
+                  {product.desc && product.articleText && (
+                    <p style={{ fontSize: '13px', color: 'var(--text-muted)', lineHeight: 1.5, marginBottom: '12px' }}>
+                      {product.desc}
+                    </p>
+                  )}
 
-                  {/* Flavors list tags if available */}
+                  {/* Flavors list tags */}
                   {product.flavors && (
-                    <div style={{ marginBottom: '14px' }}>
-                      <div style={{ fontSize: '11px', fontWeight: 700, color: 'var(--accent-gold)', marginBottom: '4px' }}>Смаки на вибір:</div>
-                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
-                        {product.flavors.slice(0, 5).map((flv, idx) => (
-                          <span key={idx} style={{ fontSize: '10px', background: '#f1f5f9', padding: '2px 6px', borderRadius: '4px', color: 'var(--text-dark)' }}>
+                    <div style={{ marginTop: '8px' }}>
+                      <div style={{ fontSize: '12px', fontWeight: 700, color: 'var(--bg-navy)', marginBottom: '6px' }}>Доступні смаки:</div>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                        {product.flavors.map((flv, idx) => (
+                          <span key={idx} style={{ fontSize: '11px', background: '#f8fafc', border: '1px solid #e2e8f0', padding: '3px 8px', borderRadius: '6px', color: '#475569' }}>
                             {flv}
                           </span>
                         ))}
-                        {product.flavors.length > 5 && (
-                          <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>+{product.flavors.length - 5} ще</span>
-                        )}
                       </div>
                     </div>
                   )}
 
                   {/* Ingredients list if available */}
                   {product.ingredients && (
-                    <div style={{ marginBottom: '14px', background: '#f8fafc', padding: '8px 10px', borderRadius: '6px', border: '1px solid #e2e8f0' }}>
-                      <div style={{ fontSize: '11px', fontWeight: 700, color: 'var(--bg-navy)', marginBottom: '4px' }}>Склад шарів:</div>
-                      <ul style={{ fontSize: '11px', color: 'var(--text-muted)', paddingLeft: '14px', margin: 0 }}>
+                    <div style={{ marginTop: '8px', background: '#fdfbf7', padding: '10px 14px', borderRadius: '8px', border: '1px dashed #d4af37' }}>
+                      <div style={{ fontSize: '12px', fontWeight: 700, color: '#8b6b1b', marginBottom: '4px' }}>Склад шарів та інгредієнти:</div>
+                      <div style={{ fontSize: '12px', color: '#475569', display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
                         {product.ingredients.map((ing, idx) => (
-                          <li key={idx}>{ing}</li>
+                          <span key={idx} style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                            <CheckCircle2 size={12} style={{ color: '#c59b27' }} /> {ing}
+                          </span>
                         ))}
-                      </ul>
+                      </div>
                     </div>
                   )}
-
-                  <button
-                    className="select-btn"
-                    onClick={() => onAddToCart({
-                      id: product.id,
-                      name: product.name,
-                      price: product.price,
-                      weight: product.weights
-                    })}
-                  >
-                    <span>ЗАМОВИТИ _ »</span>
-                    <ArrowRight size={14} />
-                  </button>
                 </div>
               </div>
-            ))}
-          </div>
+
+              {/* Article Footer Action Bar */}
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px dashed #f1f5f9', paddingTop: '14px', marginTop: '4px' }}>
+                <a
+                  href="https://t.me/BELLA_CREME_ua"
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{ fontSize: '13px', fontWeight: 700, color: 'var(--accent-cyan)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+                >
+                  <Send size={14} /> Консультація в Telegram (@BELLA_CREME_ua)
+                </a>
+
+                <button
+                  className="btn-primary"
+                  onClick={() => onAddToCart({
+                    id: product.id,
+                    name: product.name,
+                    price: product.price,
+                    weight: product.weights
+                  })}
+                  style={{ padding: '8px 20px', fontSize: '13px' }}
+                >
+                  <span>Додати в кошик та Замовити &raquo;</span>
+                </button>
+              </div>
+            </article>
+          ))}
         </main>
       </div>
     </div>
