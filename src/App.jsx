@@ -8,14 +8,7 @@ import Footer from './components/Footer';
 export default function App() {
   const [activeTab, setActiveTab] = useState('catalog');
   const [searchQuery, setSearchQuery] = useState('');
-  const [cartItems, setCartItems] = useState([
-    {
-      id: 1,
-      name: 'Бенто-Торт Маленький (500 г)',
-      price: 800,
-      weight: '500 г'
-    }
-  ]);
+  const [cartItems, setCartItems] = useState([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
 
   const cartTotal = cartItems.reduce((acc, item) => acc + item.price, 0);
