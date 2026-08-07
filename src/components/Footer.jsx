@@ -43,9 +43,16 @@ export default function Footer({ onOpenStorageGuide }) {
         {/* Four Footer Columns */}
         <div className="footer-cols">
           <div>
-            <h4 className="footer-col-title">Замовлення & Контакти</h4>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
+              <img
+                src="/logo.png"
+                alt="BELLA CRÈME Logo"
+                style={{ width: '40px', height: '40px', borderRadius: '50%', border: '1px solid var(--accent-gold)' }}
+              />
+              <span style={{ fontWeight: 800, fontSize: '16px', color: 'var(--bg-navy)' }}>BELLA CRÈME</span>
+            </div>
             <p style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: '8px' }}>
-              Кондитерська BELLA CRÈME
+              Торти • Кондитерські вироби власного виробництва
             </p>
             <p style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: '8px' }}>
               Прийом замовлень у Direct & Telegram 7 днів на тиждень

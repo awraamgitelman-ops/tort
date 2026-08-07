@@ -16,12 +16,23 @@ export default function Header({
       {/* Top White Bar */}
       <div className="top-header">
         <div className="container top-header-content">
-          {/* Logo Block */}
+          {/* Logo Block with Official Uploaded Emblem */}
           <div className="logo-block" onClick={() => setActiveTab('catalog')}>
-            <div className="logo-circle">ele</div>
+            <img
+              src="/logo.png"
+              alt="BELLA CRÈME Logo"
+              style={{
+                width: '60px',
+                height: '60px',
+                borderRadius: '50%',
+                objectFit: 'cover',
+                border: '2px solid var(--accent-gold)',
+                boxShadow: '0 4px 12px rgba(197, 155, 39, 0.3)'
+              }}
+            />
             <div>
               <div className="logo-text-title">BELLA CRÈME</div>
-              <div className="logo-text-subtitle">Вишуканий смак ручної роботи</div>
+              <div className="logo-text-subtitle">Торти • Кондитерські вироби власного виробництва</div>
             </div>
           </div>
 
