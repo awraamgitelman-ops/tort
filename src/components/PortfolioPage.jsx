@@ -1,19 +1,26 @@
 import React, { useEffect, useState } from 'react';
-import { Sparkles, Send, Calendar, ChevronLeft, ChevronRight, Image as ImageIcon } from 'lucide-react';
+import { Sparkles, Send, Calendar, ChevronLeft, ChevronRight, Image as ImageIcon, PlayCircle, Video as VideoIcon } from 'lucide-react';
 
 function WorkCard({ work, onAddToCart }) {
-  const allImages = work.images && work.images.length > 0 ? work.images : [work.image];
-  const [activeImgIndex, setActiveImgIndex] = useState(0);
+  // Support both mediaList (with types) and images array
+  const mediaItems = work.mediaList && work.mediaList.length > 0 
+    ? work.mediaList 
+    : (work.images && work.images.length > 0 ? work.images.map(url => ({ type: 'image', url })) : [{ type: 'image', url: work.image }]);
 
-  const nextImage = (e) => {
+  const [activeMediaIndex, setActiveMediaIndex] = useState(0);
+
+  const nextMedia = (e) => {
     e.stopPropagation();
-    setActiveImgIndex((prev) => (prev + 1) % allImages.length);
+    setActiveMediaIndex((prev) => (prev + 1) % mediaItems.length);
   };
 
-  const prevImage = (e) => {
+  const prevMedia = (e) => {
     e.stopPropagation();
-    setActiveImgIndex((prev) => (prev - 1 + allImages.length) % allImages.length);
+    setActiveMediaIndex((prev) => (prev - 1 + mediaItems.length) % mediaItems.length);
   };
+
+  const currentMedia = mediaItems[activeMediaIndex] || mediaItems[0];
+  const isCurrentVideo = currentMedia?.type === 'video' || (typeof currentMedia?.url === 'string' && (currentMedia.url.endsWith('.mp4') || currentMedia.url.includes('video')));
 
   return (
     <article
@@ -28,16 +35,26 @@ function WorkCard({ work, onAddToCart }) {
         transition: 'all 0.3s'
       }}
     >
-      {/* Photo Gallery Box with Carousel navigation */}
-      <div style={{ width: '100%', height: '260px', overflow: 'hidden', position: 'relative', background: '#0b172a' }}>
-        <img
-          src={allImages[activeImgIndex]}
-          alt={work.title}
-          style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'all 0.3s' }}
-        />
+      {/* Media Box with Video Player & Carousel Navigation */}
+      <div style={{ width: '100%', height: '270px', overflow: 'hidden', position: 'relative', background: '#0b172a' }}>
+        {isCurrentVideo ? (
+          <video
+            src={currentMedia.url}
+            controls
+            playsInline
+            preload="metadata"
+            style={{ width: '100%', height: '100%', objectFit: 'contain', background: '#000' }}
+          />
+        ) : (
+          <img
+            src={currentMedia.url}
+            alt={work.title}
+            style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'all 0.3s' }}
+          />
+        )}
 
-        {/* Multi-photo badge */}
-        {allImages.length > 1 && (
+        {/* Multi-media counter badge */}
+        {mediaItems.length > 1 && (
           <span style={{
             position: 'absolute',
             top: '12px',
@@ -50,13 +67,15 @@ function WorkCard({ work, onAddToCart }) {
             fontWeight: 700,
             display: 'flex',
             alignItems: 'center',
-            gap: '4px'
+            gap: '4px',
+            zIndex: 2
           }}>
-            <ImageIcon size={12} /> {activeImgIndex + 1} / {allImages.length} фото
+            {isCurrentVideo ? <VideoIcon size={12} /> : <ImageIcon size={12} />}
+            {activeMediaIndex + 1} / {mediaItems.length} {isCurrentVideo ? 'відео' : 'медіа'}
           </span>
         )}
 
-        {/* Real Channel Date badge if present */}
+        {/* Real Channel Date badge */}
         {work.date && (
           <span style={{
             position: 'absolute',
@@ -70,17 +89,18 @@ function WorkCard({ work, onAddToCart }) {
             fontWeight: 700,
             display: 'flex',
             alignItems: 'center',
-            gap: '4px'
+            gap: '4px',
+            zIndex: 2
           }}>
             <Calendar size={12} /> {work.date}
           </span>
         )}
 
-        {/* Carousel Prev/Next Navigation Controls if > 1 image */}
-        {allImages.length > 1 && (
+        {/* Carousel Prev/Next Navigation Controls if > 1 media item */}
+        {mediaItems.length > 1 && (
           <>
             <button
-              onClick={prevImage}
+              onClick={prevMedia}
               style={{
                 position: 'absolute',
                 left: '8px',
@@ -95,14 +115,15 @@ function WorkCard({ work, onAddToCart }) {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                cursor: 'pointer'
+                cursor: 'pointer',
+                zIndex: 3
               }}
             >
               <ChevronLeft size={18} />
             </button>
 
             <button
-              onClick={nextImage}
+              onClick={nextMedia}
               style={{
                 position: 'absolute',
                 right: '8px',
@@ -117,7 +138,8 @@ function WorkCard({ work, onAddToCart }) {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                cursor: 'pointer'
+                cursor: 'pointer',
+                zIndex: 3
               }}
             >
               <ChevronRight size={18} />
@@ -127,24 +149,37 @@ function WorkCard({ work, onAddToCart }) {
       </div>
 
       {/* Mini Thumbnails Strip if Album */}
-      {allImages.length > 1 && (
+      {mediaItems.length > 1 && (
         <div style={{ display: 'flex', gap: '6px', padding: '8px 12px', background: '#f8fafc', overflowX: 'auto', borderBottom: '1px solid #e2e8f0' }}>
-          {allImages.map((thumbUrl, idx) => (
-            <img
+          {mediaItems.map((item, idx) => (
+            <div
               key={idx}
-              src={thumbUrl}
-              alt="thumbnail"
-              onClick={() => setActiveImgIndex(idx)}
+              onClick={() => setActiveMediaIndex(idx)}
               style={{
-                width: '44px',
-                height: '44px',
-                objectFit: 'cover',
+                width: '46px',
+                height: '46px',
                 borderRadius: '4px',
+                overflow: 'hidden',
                 cursor: 'pointer',
-                border: activeImgIndex === idx ? '2px solid var(--accent-gold)' : '1px solid #cbd5e1',
-                opacity: activeImgIndex === idx ? 1 : 0.65
+                position: 'relative',
+                border: activeMediaIndex === idx ? '2px solid var(--accent-gold)' : '1px solid #cbd5e1',
+                opacity: activeMediaIndex === idx ? 1 : 0.65,
+                background: '#0b172a',
+                flexShrink: 0
               }}
-            />
+            >
+              {item.type === 'video' ? (
+                <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff' }}>
+                  <PlayCircle size={20} />
+                </div>
+              ) : (
+                <img
+                  src={item.url}
+                  alt="thumbnail"
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                />
+              )}
+            </div>
           ))}
         </div>
       )}
@@ -230,7 +265,7 @@ export default function PortfolioPage({ onAddToCart }) {
         {/* Portfolio Grid */}
         {loading ? (
           <div style={{ textAlign: 'center', padding: '60px 0', color: 'var(--text-muted)' }}>
-            <p style={{ fontSize: '16px', fontWeight: 600 }}>Завантаження галереї робіт...</p>
+            <p style={{ fontSize: '16px', fontWeight: 600 }}>Завантаження робіт та відео-оглядів...</p>
           </div>
         ) : works.length === 0 ? (
           <div style={{ background: '#ffffff', border: '1px dashed var(--border-light)', borderRadius: 'var(--radius-md)', padding: '48px 24px', textAlign: 'center' }}>
@@ -239,7 +274,7 @@ export default function PortfolioPage({ onAddToCart }) {
               Галерея робіт наразі порожня
             </h3>
             <p style={{ fontSize: '14px', color: 'var(--text-muted)', maxWidth: '520px', margin: '0 auto 16px' }}>
-              Пересилайте пости або фотоальбоми в наш Telegram-бот <code>@BELLA_CREME_ua</code>, і вони миттєво з'являться тут з реальними датами публікацій з каналу!
+              Пересилайте фотографії або відео-огляди десертів у Telegram-бот <code>@BELLA_CREME_ua</code>, і вони миттєво з'являться тут з вбудованим відеоплеєром!
             </p>
           </div>
         ) : (

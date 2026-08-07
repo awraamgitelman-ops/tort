@@ -13,8 +13,6 @@ const portfolioJsonPath = path.join(dataDir, 'portfolio.json');
 
 if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
 
-const BASE_WORKS = [];
-
 if (!fs.existsSync(portfolioJsonPath)) {
   fs.writeFileSync(portfolioJsonPath, '[]', 'utf8');
 }
@@ -35,14 +33,14 @@ function savePortfolioData(data) {
 }
 
 export function initBot() {
-  console.log('🤖 Starting BELLA CRÈME Post Manager Bot (Extracting Exact Channel Post Dates)...');
+  console.log('🤖 Starting BELLA CRÈME Post Manager Bot (Photo & Video Support)...');
 
   const bot = new TelegramBot(BOT_TOKEN, { polling: true });
 
   const sendManageList = (chatId) => {
     const data = getPortfolioData();
     if (data.length === 0) {
-      return bot.sendMessage(chatId, '📭 Список спарсених полів наразі порожній. Перешліть фото або альбом для додавання.');
+      return bot.sendMessage(chatId, '📭 Список спарсених робіт наразі порожній. Перешліть фото або відео для додавання.');
     }
 
     let text = `📋 *СПИСОК ОПУБЛІКОВАНИХ РОБІТ НА САЙТІ (${data.length} шт):*\n\nНатисніть кнопку ❌ під відповідним постом, щоб видалити його з сайту:\n\n`;
@@ -88,7 +86,7 @@ export function initBot() {
     if (text === '/start') {
       return bot.sendMessage(
         msg.chat.id,
-        `🍰 *Вітаємо у Боті-Парсері BELLA CRÈME!*\n\n• Пересилайте сюди пости/альбоми з вашого каналу (@BELLA_CREME_ua).\n• Бот автоматично визначить точну дату публікації поста на каналі та опублікує на сайті!\n• Введіть /list для видалення будь-якого поста кнопкою ❌.`,
+        `🍰 *Вітаємо у Боті-Парсері BELLA CRÈME!*\n\n• Підтримуються *фотографії, альбоми та відео-огляди* тортів!\n• Бот автоматично визначить точну дату публікації та додасть відео або фото у розділ *"Мої роботи"* на сайті.\n• Введіть /list для перегляду списку та видалення.`,
         { parse_mode: 'Markdown' }
       );
     }
@@ -101,29 +99,29 @@ export function initBot() {
       savePortfolioData([]);
       return bot.sendMessage(
         msg.chat.id,
-        `🧹 *ВСІ СПАРСЕНІ ПОСТИ УСПІШНО ВИДАЛЕНО!*`,
+        `🧹 *ВСІ СПАРСЕНІ РОБОТИ УСПІШНО ВИДАЛЕНО!*`,
         { parse_mode: 'Markdown' }
       );
     }
 
-    // Photo & album parsing
+    // Extract exact original channel post date
+    const rawTimestamp = msg.forward_date || msg.date || Math.floor(Date.now() / 1000);
+    const realDateObj = new Date(rawTimestamp * 1000);
+    const actualPostDate = `${String(realDateObj.getDate()).padStart(2, '0')}.${String(realDateObj.getMonth() + 1).padStart(2, '0')}.${realDateObj.getFullYear()}`;
+
+    // 1. Handle Photo Messages & Photo Albums
     if (msg.photo && msg.photo.length > 0) {
       try {
         const photo = msg.photo[msg.photo.length - 1];
         const directFileUrl = await bot.getFileLink(photo.file_id);
         const caption = msg.caption || '';
 
-        // Extract REAL original channel post date from forward_date if forwarded, else msg.date
-        const rawTimestamp = msg.forward_date || msg.date || Math.floor(Date.now() / 1000);
-        const realDateObj = new Date(rawTimestamp * 1000);
-        const actualPostDate = `${String(realDateObj.getDate()).padStart(2, '0')}.${String(realDateObj.getMonth() + 1).padStart(2, '0')}.${realDateObj.getFullYear()}`;
-
         if (msg.media_group_id) {
           const groupId = msg.media_group_id;
 
           if (!mediaGroups.has(groupId)) {
             mediaGroups.set(groupId, {
-              images: [],
+              mediaList: [],
               caption: '',
               chatId: msg.chat.id,
               date: actualPostDate,
@@ -132,43 +130,91 @@ export function initBot() {
           }
 
           const group = mediaGroups.get(groupId);
-          group.images.push(directFileUrl);
+          group.mediaList.push({ type: 'image', url: directFileUrl });
           if (caption && !group.caption) {
             group.caption = caption;
           }
 
           if (group.timer) clearTimeout(group.timer);
           group.timer = setTimeout(() => {
-            savePortfolioEntry(group.images, group.caption, group.chatId, group.date);
+            savePortfolioEntry(group.mediaList, group.caption, group.chatId, group.date);
             mediaGroups.delete(groupId);
           }, 1200);
 
         } else {
-          savePortfolioEntry([directFileUrl], caption, msg.chat.id, actualPostDate);
+          savePortfolioEntry([{ type: 'image', url: directFileUrl }], caption, msg.chat.id, actualPostDate);
         }
       } catch (err) {
         console.error('Photo processing error:', err);
-        bot.sendMessage(msg.chat.id, `❌ Помилка: ${err.message}`);
+        bot.sendMessage(msg.chat.id, `❌ Помилка фото: ${err.message}`);
+      }
+    }
+
+    // 2. Handle Video Messages (Відео-огляди десертів)
+    if (msg.video || msg.animation) {
+      try {
+        const videoObj = msg.video || msg.animation;
+        const directVideoUrl = await bot.getFileLink(videoObj.file_id);
+        const caption = msg.caption || '';
+
+        if (msg.media_group_id) {
+          const groupId = msg.media_group_id;
+
+          if (!mediaGroups.has(groupId)) {
+            mediaGroups.set(groupId, {
+              mediaList: [],
+              caption: '',
+              chatId: msg.chat.id,
+              date: actualPostDate,
+              timer: null
+            });
+          }
+
+          const group = mediaGroups.get(groupId);
+          group.mediaList.push({ type: 'video', url: directVideoUrl });
+          if (caption && !group.caption) {
+            group.caption = caption;
+          }
+
+          if (group.timer) clearTimeout(group.timer);
+          group.timer = setTimeout(() => {
+            savePortfolioEntry(group.mediaList, group.caption, group.chatId, group.date);
+            mediaGroups.delete(groupId);
+          }, 1200);
+
+        } else {
+          savePortfolioEntry([{ type: 'video', url: directVideoUrl }], caption, msg.chat.id, actualPostDate);
+        }
+      } catch (err) {
+        console.error('Video processing error:', err);
+        bot.sendMessage(msg.chat.id, `❌ Помилка відео: ${err.message}`);
       }
     }
   });
 
-  const savePortfolioEntry = (images, caption, chatId, actualDate) => {
+  const savePortfolioEntry = (mediaList, caption, chatId, actualDate) => {
     try {
       const timestamp = Date.now();
       let portfolioData = getPortfolioData();
 
       const cleanCaption = caption || 'Авторський десерт BELLA CRÈME';
       const lines = cleanCaption.trim().split('\n');
-      const title = lines[0].substring(0, 80) || 'Авторський торт';
+      const title = lines[0].substring(0, 80) || 'Авторський десерт';
+
+      const hasVideo = mediaList.some(m => m.type === 'video');
+
+      // Extract all image/video URLs for backward compatibility
+      const mediaUrls = mediaList.map(m => m.url);
 
       const newWork = {
         id: timestamp,
         title: title,
         description: cleanCaption,
-        image: images[0],
-        images: images,
-        date: actualDate, // Exact date from the original Telegram channel post
+        image: mediaUrls[0],
+        images: mediaUrls,
+        mediaList: mediaList, // Typed media list (image or video)
+        hasVideo: hasVideo,
+        date: actualDate,
         likes: Math.floor(Math.random() * 20) + 15
       };
 
@@ -177,12 +223,12 @@ export function initBot() {
 
       bot.sendMessage(
         chatId,
-        `✅ *АЛЬБОМ ЗБЕРЕЖЕНО З ТОЧНОЮ ДАТОЮ КАНАЛУ!*\n\n📸 *Фото:* ${images.length}\n📝 *Заголовок:* ${title}\n📅 *Дата публікації в каналі:* ${actualDate}\n\nЩоб переглянути або видалити пости, відправте /list`,
+        `✅ *${hasVideo ? 'ВІДЕО/АЛЬБОМ' : 'ПОСТ'} УСПІШНО ЗБЕРЕЖЕНО НА САЙТ!*\n\n🎬 *Медіафайлів:* ${mediaList.length} (відео: ${hasVideo ? 'так' : 'ні'})\n📝 *Заголовок:* ${title}\n📅 *Дата публікації в каналі:* ${actualDate}\n\n🌐 *Розділ "Мої роботи" миттєво оновлено на сайті!*`,
         { parse_mode: 'Markdown' }
       );
     } catch (err) {
       console.error('Portfolio save error:', err);
-      bot.sendMessage(chatId, `❌ Помилка обробки альбому: ${err.message}`);
+      bot.sendMessage(chatId, `❌ Помилка збереження: ${err.message}`);
     }
   };
 
