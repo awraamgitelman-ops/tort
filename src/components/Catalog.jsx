@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ChevronRight, ArrowRight, Send, BookOpen, Sparkles, CheckCircle2 } from 'lucide-react';
+import { ChevronRight, ArrowRight, BookOpen, Sparkles, CheckCircle2 } from 'lucide-react';
 
 const CATEGORIES = [
   { id: 'all', name: 'Увесь Прейскурант', count: 18 },
@@ -185,21 +185,8 @@ export default function Catalog({ onAddToCart, searchQuery }) {
       <section className="hero-banner">
         <div className="container hero-banner-content">
           <div>
-            <h1 className="hero-banner-title">Авторські Торти & Каталог Статей</h1>
+            <h1 className="hero-banner-title">Авторські Торти & Прейскурант</h1>
             <div className="hero-breadcrumb">Головна &gt; Прейскурант та опис десертів BELLA CRÈME</div>
-            
-            {/* Telegram Direct Order Banner */}
-            <div style={{ marginTop: '16px' }}>
-              <a
-                href="https://t.me/BELLA_CREME_ua"
-                target="_blank"
-                rel="noreferrer"
-                className="btn-primary"
-                style={{ background: '#0284c7', padding: '10px 20px', fontSize: '13.5px', textDecoration: 'none' }}
-              >
-                <Send size={16} /> Швидке замовлення в Telegram (@BELLA_CREME_ua)
-              </a>
-            </div>
           </div>
 
           <div style={{ width: '130px', height: '130px', borderRadius: '50%', overflow: 'hidden', border: '4px solid #fff', boxShadow: '0 10px 20px rgba(0,0,0,0.1)' }}>
@@ -225,33 +212,9 @@ export default function Catalog({ onAddToCart, searchQuery }) {
               </div>
             ))}
           </div>
-
-          {/* Quick Info & Telegram Order Box */}
-          <div style={{ marginTop: '24px', padding: '16px', background: '#fdf8f6', borderRadius: 'var(--radius-sm)', border: '1px solid #fce7f3' }}>
-            <h5 style={{ fontSize: '13px', fontWeight: 700, color: 'var(--bg-navy)', marginBottom: '6px' }}>Замовлення в Telegram:</h5>
-            <p style={{ fontSize: '11.5px', color: 'var(--text-muted)', marginBottom: '10px', lineHeight: 1.4 }}>
-              Приймаємо індивідуальні ескізи та декор у нашому Telegram-каналі:
-            </p>
-            <a
-              href="https://t.me/BELLA_CREME_ua"
-              target="_blank"
-              rel="noreferrer"
-              style={{
-                fontSize: '12px',
-                fontWeight: 700,
-                color: 'var(--accent-cyan)',
-                textDecoration: 'none',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '4px'
-              }}
-            >
-              <Send size={13} /> t.me/BELLA_CREME_ua
-            </a>
-          </div>
         </aside>
 
-        {/* Right Content Column: Editorial Mini-Articles Style (Класичні Міні-Статті) */}
+        {/* Right Content Column: Editorial Mini-Articles Style */}
         <main style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
           {filteredProducts.map(product => (
             <article
@@ -287,7 +250,7 @@ export default function Catalog({ onAddToCart, searchQuery }) {
                 </div>
               </div>
 
-              {/* Article Main Body (Image + Story Description) */}
+              {/* Article Main Body */}
               <div style={{ display: 'grid', gridTemplateColumns: '220px 1fr', gap: '24px' }}>
                 <div style={{ borderRadius: '12px', overflow: 'hidden', height: '170px', position: 'relative' }}>
                   <img src={product.img} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
@@ -338,16 +301,7 @@ export default function Catalog({ onAddToCart, searchQuery }) {
               </div>
 
               {/* Article Footer Action Bar */}
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px dashed #f1f5f9', paddingTop: '14px', marginTop: '4px' }}>
-                <a
-                  href="https://t.me/BELLA_CREME_ua"
-                  target="_blank"
-                  rel="noreferrer"
-                  style={{ fontSize: '13px', fontWeight: 700, color: 'var(--accent-cyan)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
-                >
-                  <Send size={14} /> Консультація в Telegram (@BELLA_CREME_ua)
-                </a>
-
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', borderTop: '1px dashed #f1f5f9', paddingTop: '14px', marginTop: '4px' }}>
                 <button
                   className="btn-primary"
                   onClick={() => onAddToCart({
@@ -356,7 +310,7 @@ export default function Catalog({ onAddToCart, searchQuery }) {
                     price: product.price,
                     weight: product.weights
                   })}
-                  style={{ padding: '8px 20px', fontSize: '13px' }}
+                  style={{ padding: '10px 24px', fontSize: '13.5px' }}
                 >
                   <span>Додати в кошик та Замовити &raquo;</span>
                 </button>
