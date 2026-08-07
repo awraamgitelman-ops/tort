@@ -1,8 +1,10 @@
 import express from 'express';
 import cors from 'cors';
 import path from 'path';
+import fs from 'fs';
 import { fileURLToPath } from 'url';
 import { exec } from 'child_process';
+import { initBot } from './bot.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -13,6 +15,27 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
+// Path to data file
+const dataDir = path.join(__dirname, 'data');
+const portfolioJsonPath = path.join(dataDir, 'portfolio.json');
+
+// Serve uploaded portfolio images from public/portfolio
+app.use('/portfolio', express.static(path.join(__dirname, 'public', 'portfolio')));
+
+// API Endpoint to get all parsed portfolio works for the website
+app.get('/api/portfolio', (req, res) => {
+  try {
+    if (!fs.existsSync(portfolioJsonPath)) {
+      return res.json([]);
+    }
+    const raw = fs.readFileSync(portfolioJsonPath, 'utf8');
+    const data = JSON.parse(raw);
+    res.json(data);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to read portfolio data' });
+  }
+});
+
 // API Endpoint to extract design tokens from a target website URL using dembrandt
 app.post('/api/extract-brand', async (req, res) => {
   const { url } = req.body;
@@ -20,7 +43,6 @@ app.post('/api/extract-brand', async (req, res) => {
     return res.status(400).json({ error: 'URL is required' });
   }
 
-  // Sanitize input URL
   let cleanUrl = url.trim();
   if (!cleanUrl.startsWith('http://') && !cleanUrl.startsWith('https://')) {
     cleanUrl = 'https://' + cleanUrl;
@@ -30,12 +52,8 @@ app.post('/api/extract-brand', async (req, res) => {
     const cmd = `npx dembrandt "${cleanUrl}" --json-only`;
     exec(cmd, { timeout: 25000 }, (error, stdout, stderr) => {
       if (error || !stdout) {
-        console.warn('Dembrandt extraction fallback used:', error?.message || stderr);
-        // Fallback demo tokens extracted gracefully if headless browser fails or times out
         const urlObj = new URL(cleanUrl);
         const domain = urlObj.hostname.replace('www.', '');
-        
-        // Generate elegant palette based on domain hash
         let hash = 0;
         for (let i = 0; i < domain.length; i++) hash = domain.charCodeAt(i) + ((hash << 5) - hash);
         const hue = Math.abs(hash) % 360;
@@ -81,9 +99,9 @@ app.use((req, res) => {
       res.status(200).send(`
         <!DOCTYPE html>
         <html>
-          <head><title>Tortiks - Production Build Pending</title></head>
+          <head><title>BELLA CRÈME App</title></head>
           <body style="font-family: sans-serif; text-align: center; padding: 40px; background: #0f172a; color: #fff;">
-            <h1>🍰 Tortiks Application is Building</h1>
+            <h1>🍰 BELLA CRÈME Application is Building</h1>
             <p>Please run <code>npm run build</code> first to generate the production dist bundle.</p>
           </body>
         </html>
@@ -92,6 +110,12 @@ app.use((req, res) => {
   });
 });
 
+// Start Express server and Telegram Bot
 app.listen(PORT, () => {
-  console.log(`🍰 Tortiks server running on port ${PORT}`);
+  console.log(`🍰 BELLA CRÈME server running on port ${PORT}`);
+  try {
+    initBot();
+  } catch (err) {
+    console.error('Failed to initialize Telegram Bot:', err);
+  }
 });

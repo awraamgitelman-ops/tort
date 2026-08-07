@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Search, ShoppingBag, Menu, ShieldCheck, Send } from 'lucide-react';
+import React from 'react';
+import { Search, ShoppingBag, Menu, ShieldCheck, Send, Sparkles } from 'lucide-react';
 
 export default function Header({
   activeTab,
@@ -80,6 +80,13 @@ export default function Header({
               onClick={() => setActiveTab('catalog')}
             >
               <Menu size={16} /> Каталог
+            </button>
+
+            <button
+              className={`nav-item ${activeTab === 'portfolio' ? 'active' : ''}`}
+              onClick={() => setActiveTab('portfolio')}
+            >
+              <Sparkles size={16} /> Мої роботи
             </button>
 
             <button

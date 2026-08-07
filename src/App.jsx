@@ -4,6 +4,7 @@ import Catalog from './components/Catalog';
 import StorageGuidePage from './components/StorageGuidePage';
 import CartPage from './components/CartPage';
 import SearchResultsPage from './components/SearchResultsPage';
+import PortfolioPage from './components/PortfolioPage';
 import Footer from './components/Footer';
 
 const MENU_ITEMS = [
@@ -208,6 +209,12 @@ export default function App() {
       <main style={{ flex: 1 }}>
         {activeTab === 'catalog' && (
           <Catalog
+            onAddToCart={handleAddToCart}
+          />
+        )}
+
+        {activeTab === 'portfolio' && (
+          <PortfolioPage
             onAddToCart={handleAddToCart}
           />
         )}
