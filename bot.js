@@ -13,44 +13,10 @@ const portfolioJsonPath = path.join(dataDir, 'portfolio.json');
 
 if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
 
-// Base sample portfolio entries
-const BASE_WORKS = [
-  {
-    id: 101,
-    title: 'Бенто-торт "Ніжне серце" з вишневим конфеті',
-    description: 'Ніжний бенто-тортик з оксамитовим бісквітом та вишневим начинням. Виконаний на замовлення з кремовою підписом та святковою свічкою.',
-    image: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=800&q=80',
-    date: '2026-08-07',
-    likes: 42
-  },
-  {
-    id: 102,
-    title: 'Сет авторських капкейків з полуничним крем-чизом',
-    description: '6 капкейків із ніжними шапочками з натурального вершкового сиру, прикрашені свіжою лохиною та полуницею.',
-    image: 'https://images.unsplash.com/photo-1569864358642-9d1684040f43?auto=format&fit=crop&w=800&q=80',
-    date: '2026-08-06',
-    likes: 38
-  },
-  {
-    id: 103,
-    title: 'Весільний 3-ярусний торт "Королівська лілія"',
-    description: 'Торт 4.5 кг із покриттям з вершкового ганашу, декорований харчовим золотом та живими білими квітами.',
-    image: 'https://images.unsplash.com/photo-1535141192574-5d4897c13136?auto=format&fit=crop&w=800&q=80',
-    date: '2026-08-05',
-    likes: 65
-  },
-  {
-    id: 104,
-    title: 'Торт "Снікерс" із домашньою солоною карамеллю',
-    description: 'Насичені шоколадні коржі, молочне просочення, солона карамель з обсмаженим арахісом та ганаш на темному шоколаді.',
-    image: 'https://images.unsplash.com/photo-1606890737304-57a1ca8a5b62?auto=format&fit=crop&w=800&q=80',
-    date: '2026-08-04',
-    likes: 51
-  }
-];
+const BASE_WORKS = [];
 
 if (!fs.existsSync(portfolioJsonPath)) {
-  fs.writeFileSync(portfolioJsonPath, JSON.stringify(BASE_WORKS, null, 2), 'utf8');
+  fs.writeFileSync(portfolioJsonPath, '[]', 'utf8');
 }
 
 const mediaGroups = new Map();
@@ -60,7 +26,7 @@ function getPortfolioData() {
     const raw = fs.readFileSync(portfolioJsonPath, 'utf8');
     return JSON.parse(raw);
   } catch (e) {
-    return BASE_WORKS;
+    return [];
   }
 }
 
@@ -69,14 +35,14 @@ function savePortfolioData(data) {
 }
 
 export function initBot() {
-  console.log('🤖 Starting BELLA CRÈME Post Manager Bot with Delete Buttons...');
+  console.log('🤖 Starting BELLA CRÈME Post Manager Bot (Clean Dynamic Portfolio)...');
 
   const bot = new TelegramBot(BOT_TOKEN, { polling: true });
 
   const sendManageList = (chatId) => {
     const data = getPortfolioData();
     if (data.length === 0) {
-      return bot.sendMessage(chatId, '📭 Список полів порожній.');
+      return bot.sendMessage(chatId, '📭 Список спарсених полів наразі порожній. Перешліть фото або альбом для додавання.');
     }
 
     let text = `📋 *СПИСОК ОПУБЛІКОВАНИХ РОБІТ НА САЙТІ (${data.length} шт):*\n\nНатисніть кнопку ❌ під відповідним постом, щоб видалити його з сайту:\n\n`;
@@ -96,7 +62,6 @@ export function initBot() {
     });
   };
 
-  // Callback query listener for inline delete buttons (❌ Видалити)
   bot.on('callback_query', async (query) => {
     const data = query.data;
     if (data.startsWith('delete_')) {
@@ -110,7 +75,6 @@ export function initBot() {
         savePortfolioData(portfolio);
         bot.answerCallbackQuery(query.id, { text: '✅ Пост успішно видалено з сайту!' });
         bot.sendMessage(query.message.chat.id, `✅ *ПОСТ УСПІШНО ВИДАЛЕНО З САЙТУ!*\nЗалишилось робіт: ${portfolio.length}`, { parse_mode: 'Markdown' });
-        // Refresh manage list
         sendManageList(query.message.chat.id);
       } else {
         bot.answerCallbackQuery(query.id, { text: '⚠️ Пост не знайдено або вже видалено.' });
@@ -124,7 +88,7 @@ export function initBot() {
     if (text === '/start') {
       return bot.sendMessage(
         msg.chat.id,
-        `🍰 *Вітаємо у Боті-Парсері BELLA CRÈME!*\n\n• Пересилайте сюди пости/альбоми з фото для публікації на сайті.\n• Введіть команда /list або /manage для перегляду списку та видалення постів кнопкою ❌.\n• Введіть /clear для видалення останніх спарсених постів.`,
+        `🍰 *Вітаємо у Боті-Парсері BELLA CRÈME!*\n\n• Пересилайте сюди пости/альбоми з фото для публікації на сайті.\n• Введіть команда /list або /manage для перегляду списку та видалення постів кнопкою ❌.\n• Введіть /clear для повного очищення списку.`,
         { parse_mode: 'Markdown' }
       );
     }
@@ -134,10 +98,10 @@ export function initBot() {
     }
 
     if (text === '/clear') {
-      savePortfolioData(BASE_WORKS);
+      savePortfolioData([]);
       return bot.sendMessage(
         msg.chat.id,
-        `🧹 *ОСТАННІ СПАРСЕНІ ПОСТИ УСПІШНО ВИДАЛЕНО!*\nГалерею скинуто до базового стану.`,
+        `🧹 *ВСІ СПАРСЕНІ ПОСТИ УСПІШНО ВИДАЛЕНО!*`,
         { parse_mode: 'Markdown' }
       );
     }
