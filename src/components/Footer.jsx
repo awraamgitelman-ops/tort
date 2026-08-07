@@ -17,7 +17,7 @@ export default function Footer({ onGoToGuide }) {
                 +38(096)162-95-92
               </div>
               <div style={{ fontSize: '13px', color: 'var(--accent-cyan)' }}>
-                Direct Telegram: @BELLA_CREME_ua
+                Telegram: @BELLA_CREME_ua
               </div>
             </div>
           </div>
@@ -55,7 +55,7 @@ export default function Footer({ onGoToGuide }) {
               Торти • Кондитерські вироби власного виробництва
             </p>
             <p style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: '8px' }}>
-              Прийом замовлень у Direct & Telegram 7 днів на тиждень
+              Прийом замовлень у Telegram 7 днів на тиждень
             </p>
             <p style={{ fontSize: '13px', fontWeight: 700, color: 'var(--bg-navy)' }}>
               09:00 — 20:00
@@ -84,7 +84,7 @@ export default function Footer({ onGoToGuide }) {
                   Правила зберігання тортика 🍰
                 </button>
               </li>
-              <li><a href="https://t.me/BELLA_CREME_ua" target="_blank" rel="noreferrer">Замовлення в Direct</a></li>
+              <li><a href="https://t.me/BELLA_CREME_ua" target="_blank" rel="noreferrer">Замовлення в Telegram</a></li>
               <li><a href="#delivery">Доставка та оплата</a></li>
             </ul>
           </div>
