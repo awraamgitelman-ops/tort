@@ -56,23 +56,25 @@ function WorkCard({ work, onAddToCart }) {
           </span>
         )}
 
-        {/* Date badge */}
-        <span style={{
-          position: 'absolute',
-          top: '12px',
-          right: '12px',
-          background: 'rgba(11,23,42,0.85)',
-          color: '#fff',
-          padding: '4px 10px',
-          borderRadius: '12px',
-          fontSize: '11px',
-          fontWeight: 700,
-          display: 'flex',
-          alignItems: 'center',
-          gap: '4px'
-        }}>
-          <Calendar size={12} /> {work.date || 'Нова робота'}
-        </span>
+        {/* Real Channel Date badge if present */}
+        {work.date && (
+          <span style={{
+            position: 'absolute',
+            top: '12px',
+            right: '12px',
+            background: 'rgba(11,23,42,0.85)',
+            color: '#fff',
+            padding: '4px 10px',
+            borderRadius: '12px',
+            fontSize: '11px',
+            fontWeight: 700,
+            display: 'flex',
+            alignItems: 'center',
+            gap: '4px'
+          }}>
+            <Calendar size={12} /> {work.date}
+          </span>
+        )}
 
         {/* Carousel Prev/Next Navigation Controls if > 1 image */}
         {allImages.length > 1 && (
@@ -237,7 +239,7 @@ export default function PortfolioPage({ onAddToCart }) {
               Галерея робіт наразі порожня
             </h3>
             <p style={{ fontSize: '14px', color: 'var(--text-muted)', maxWidth: '520px', margin: '0 auto 16px' }}>
-              Надішліть ваші пости з фото у Telegram-бот, і вони миттєво з'являться тут у вигляді красивих карт робіт.
+              Пересилайте пости або фотоальбоми в наш Telegram-бот <code>@BELLA_CREME_ua</code>, і вони миттєво з'являться тут з реальними датами публікацій з каналу!
             </p>
           </div>
         ) : (

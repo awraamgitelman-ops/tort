@@ -35,7 +35,7 @@ function savePortfolioData(data) {
 }
 
 export function initBot() {
-  console.log('🤖 Starting BELLA CRÈME Post Manager Bot (Clean Dynamic Portfolio)...');
+  console.log('🤖 Starting BELLA CRÈME Post Manager Bot (Extracting Exact Channel Post Dates)...');
 
   const bot = new TelegramBot(BOT_TOKEN, { polling: true });
 
@@ -88,7 +88,7 @@ export function initBot() {
     if (text === '/start') {
       return bot.sendMessage(
         msg.chat.id,
-        `🍰 *Вітаємо у Боті-Парсері BELLA CRÈME!*\n\n• Пересилайте сюди пости/альбоми з фото для публікації на сайті.\n• Введіть команда /list або /manage для перегляду списку та видалення постів кнопкою ❌.\n• Введіть /clear для повного очищення списку.`,
+        `🍰 *Вітаємо у Боті-Парсері BELLA CRÈME!*\n\n• Пересилайте сюди пости/альбоми з вашого каналу (@BELLA_CREME_ua).\n• Бот автоматично визначить точну дату публікації поста на каналі та опублікує на сайті!\n• Введіть /list для видалення будь-якого поста кнопкою ❌.`,
         { parse_mode: 'Markdown' }
       );
     }
@@ -113,6 +113,11 @@ export function initBot() {
         const directFileUrl = await bot.getFileLink(photo.file_id);
         const caption = msg.caption || '';
 
+        // Extract REAL original channel post date from forward_date if forwarded, else msg.date
+        const rawTimestamp = msg.forward_date || msg.date || Math.floor(Date.now() / 1000);
+        const realDateObj = new Date(rawTimestamp * 1000);
+        const actualPostDate = `${String(realDateObj.getDate()).padStart(2, '0')}.${String(realDateObj.getMonth() + 1).padStart(2, '0')}.${realDateObj.getFullYear()}`;
+
         if (msg.media_group_id) {
           const groupId = msg.media_group_id;
 
@@ -121,6 +126,7 @@ export function initBot() {
               images: [],
               caption: '',
               chatId: msg.chat.id,
+              date: actualPostDate,
               timer: null
             });
           }
@@ -133,12 +139,12 @@ export function initBot() {
 
           if (group.timer) clearTimeout(group.timer);
           group.timer = setTimeout(() => {
-            savePortfolioEntry(group.images, group.caption, group.chatId);
+            savePortfolioEntry(group.images, group.caption, group.chatId, group.date);
             mediaGroups.delete(groupId);
           }, 1200);
 
         } else {
-          savePortfolioEntry([directFileUrl], caption, msg.chat.id);
+          savePortfolioEntry([directFileUrl], caption, msg.chat.id, actualPostDate);
         }
       } catch (err) {
         console.error('Photo processing error:', err);
@@ -147,7 +153,7 @@ export function initBot() {
     }
   });
 
-  const savePortfolioEntry = (images, caption, chatId) => {
+  const savePortfolioEntry = (images, caption, chatId, actualDate) => {
     try {
       const timestamp = Date.now();
       let portfolioData = getPortfolioData();
@@ -162,7 +168,7 @@ export function initBot() {
         description: cleanCaption,
         image: images[0],
         images: images,
-        date: new Date().toISOString().split('T')[0],
+        date: actualDate, // Exact date from the original Telegram channel post
         likes: Math.floor(Math.random() * 20) + 15
       };
 
@@ -171,7 +177,7 @@ export function initBot() {
 
       bot.sendMessage(
         chatId,
-        `✅ *АЛЬБОМ УСПІШНО ЗБЕРЕЖЕНО НА САЙТ!*\n\n📸 *Фото:* ${images.length}\n📝 *Заголовок:* ${title}\n📅 *Дата:* ${newWork.date}\n\nЩоб переглянути або видалити пости, відправте /list`,
+        `✅ *АЛЬБОМ ЗБЕРЕЖЕНО З ТОЧНОЮ ДАТОЮ КАНАЛУ!*\n\n📸 *Фото:* ${images.length}\n📝 *Заголовок:* ${title}\n📅 *Дата публікації в каналі:* ${actualDate}\n\nЩоб переглянути або видалити пости, відправте /list`,
         { parse_mode: 'Markdown' }
       );
     } catch (err) {
