@@ -4,6 +4,7 @@ import Catalog from './components/Catalog';
 import CakeCustomizer from './components/CakeCustomizer';
 import BrandCakeStudio from './components/BrandCakeStudio';
 import CartModal from './components/CartModal';
+import StorageGuideModal from './components/StorageGuideModal';
 import Footer from './components/Footer';
 
 export default function App() {
@@ -11,12 +12,13 @@ export default function App() {
   const [cartItems, setCartItems] = useState([
     {
       id: 1,
-      name: 'Бенто-торт "Нежный Мусс"',
-      price: 1990,
+      name: 'Бенто-торт "Ніжне сонце"',
+      price: 650,
       weight: '500 г'
     }
   ]);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isStorageGuideOpen, setIsStorageGuideOpen] = useState(false);
 
   const handleAddToCart = (item) => {
     setCartItems(prev => [...prev, item]);
@@ -38,6 +40,7 @@ export default function App() {
         setActiveTab={setActiveTab}
         cartCount={cartItems.length}
         onOpenCart={() => setIsCartOpen(true)}
+        onOpenStorageGuide={() => setIsStorageGuideOpen(true)}
       />
 
       <main style={{ flex: 1 }}>
@@ -46,6 +49,7 @@ export default function App() {
             onAddToCart={handleAddToCart}
             onGoToBuilder={() => setActiveTab('builder')}
             onGoToBrand={() => setActiveTab('brand')}
+            onOpenStorageGuide={() => setIsStorageGuideOpen(true)}
           />
         )}
 
@@ -66,7 +70,12 @@ export default function App() {
         onClearCart={handleClearCart}
       />
 
-      <Footer />
+      <StorageGuideModal
+        isOpen={isStorageGuideOpen}
+        onClose={() => setIsStorageGuideOpen(false)}
+      />
+
+      <Footer onOpenStorageGuide={() => setIsStorageGuideOpen(true)} />
     </div>
   );
 }

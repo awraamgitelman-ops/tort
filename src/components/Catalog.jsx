@@ -1,82 +1,82 @@
 import React, { useState } from 'react';
-import { ShoppingBag, Star, Sparkles, Filter } from 'lucide-react';
+import { ShoppingBag, Star, Sparkles, Filter, Send, ShieldCheck } from 'lucide-react';
 
 const PRODUCTS = [
   {
     id: 1,
-    name: 'Бенто-торт "Нежный Мусс"',
+    name: 'Бенто-торт "Ніжне сонце"',
     category: 'bento',
-    categoryName: 'Бенто',
-    price: 1990,
+    categoryName: 'Бенто-торти',
+    price: 650,
     weight: '500 г',
-    desc: 'Мини-торт на 1-2 персоны с клубничным конфетти и ванильным бисквитом.',
+    desc: 'Ніжний полуничний крем-чіз, ванільний бісквіт та авторський декор на замовлення.',
     img: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=800&q=80',
-    rating: 4.9,
-    badge: 'Хит продаж'
+    rating: 5.0,
+    badge: 'Хіт продажів'
   },
   {
     id: 2,
-    name: 'Свадебный Ярусный "Королевский бархат"',
-    category: 'wedding',
-    categoryName: 'Свадебные',
-    price: 14500,
-    weight: '4.5 кг',
-    desc: 'Трёхъярусное шедевральное исполнение с пищевым золотом и живыми орхидеями.',
-    img: 'https://images.unsplash.com/photo-1535141192574-5d4897c13136?auto=format&fit=crop&w=800&q=80',
-    rating: 5.0,
-    badge: 'Премиум'
+    name: 'Сет авторських Капкейків (6 шт.)',
+    category: 'cupcakes',
+    categoryName: 'Капкейки',
+    price: 480,
+    weight: '6 шт.',
+    desc: 'Фісташкові та шоколадні капкейки з ніжними шапочками із крем-чізу.',
+    img: 'https://images.unsplash.com/photo-1569864358642-9d1684040f43?auto=format&fit=crop&w=800&q=80',
+    rating: 4.9,
+    badge: 'Популярно'
   },
   {
     id: 3,
-    name: 'Шоколадный "Трюфельный Нуар"',
-    category: 'chocolate',
-    categoryName: 'Шоколадные',
-    price: 3490,
-    weight: '1.2 кг',
-    desc: 'Насыщенный бельгийский dark-шоколад, ганаш с вишней и ромом.',
+    name: 'Шоколадний "Трюфельний Оксамит"',
+    category: 'cakes',
+    categoryName: 'Авторські торти',
+    price: 1200,
+    weight: '1.5 кг',
+    desc: 'Насичений бельгійський dark-шоколад, ганаш з вишневим конфеті.',
     img: 'https://images.unsplash.com/photo-1606890737304-57a1ca8a5b62?auto=format&fit=crop&w=800&q=80',
-    rating: 4.8,
-    badge: 'Авторский рецепт'
+    rating: 5.0,
+    badge: 'Авторський рецепт'
   },
   {
     id: 4,
-    name: 'Фисташково-малиновый фреш',
-    category: 'mousse',
-    categoryName: 'Муссовые',
-    price: 3890,
-    weight: '1.5 кг',
-    desc: 'Воздушный мусс на фисташковой пасте с прослойкой свежесваренного малинового кули.',
+    name: 'Торт "Фісташка - Малина"',
+    category: 'cakes',
+    categoryName: 'Авторські торти',
+    price: 1350,
+    weight: '1.8 кг',
+    desc: 'Повітряний мус на натуральній фісташковій пасті з малиновим кулі.',
     img: 'https://images.unsplash.com/photo-1565958011703-44f9829ba187?auto=format&fit=crop&w=800&q=80',
     rating: 4.9,
     badge: 'Новинка'
   },
   {
     id: 5,
-    name: 'Фисташка с золотой поталью',
-    category: 'exclusive',
-    categoryName: 'Эксклюзив',
-    price: 4900,
-    weight: '1.8 кг',
-    desc: 'Премиальный бисквит с хрустящим пралине и карамелизированным пеканом.',
-    img: 'https://images.unsplash.com/photo-1588195538326-c5b1e9f80a1b?auto=format&fit=crop&w=800&q=80',
-    rating: 4.9,
-    badge: 'Шедевр'
+    name: 'Свадебный ярусный "Королівська лілія"',
+    category: 'wedding',
+    categoryName: 'Весільні',
+    price: 3800,
+    weight: '4.5 кг',
+    desc: 'Шедевральний 3-ярусний торт із харчовим золотом та ніжним декором.',
+    img: 'https://images.unsplash.com/photo-1535141192574-5d4897c13136?auto=format&fit=crop&w=800&q=80',
+    rating: 5.0,
+    badge: 'Преміум'
   },
   {
     id: 6,
-    name: 'Набор брендированных Макарон',
-    category: 'corporate',
-    categoryName: 'Корпоративные',
-    price: 2800,
+    name: 'Набір французької випічки & Макарон',
+    category: 'pastry',
+    categoryName: 'Випічка',
+    price: 520,
     weight: '12 шт.',
-    desc: 'Набор французских пирожных макарон с логотипом компании.',
-    img: 'https://images.unsplash.com/photo-1569864358642-9d1684040f43?auto=format&fit=crop&w=800&q=80',
-    rating: 5.0,
-    badge: 'Для бизнеса'
+    desc: 'Свіжа французька випічка та ніжні мигдалеві макарони в асортименті.',
+    img: 'https://images.unsplash.com/photo-1588195538326-c5b1e9f80a1b?auto=format&fit=crop&w=800&q=80',
+    rating: 4.8,
+    badge: 'Свіжа випічка'
   }
 ];
 
-export default function Catalog({ onAddToCart, onGoToBuilder, onGoToBrand }) {
+export default function Catalog({ onAddToCart, onGoToBuilder, onGoToBrand, onOpenStorageGuide }) {
   const [filter, setFilter] = useState('all');
 
   const filteredProducts = filter === 'all' 
@@ -88,26 +88,37 @@ export default function Catalog({ onAddToCart, onGoToBuilder, onGoToBrand }) {
       {/* Hero Header */}
       <div className="hero-section">
         <div className="hero-pill">
-          <Sparkles size={14} /> Кондитерское Ателье Tortiks
+          <Sparkles size={14} /> BELLA CRÈME • Смачні десерти на замовлення
         </div>
         <h1 className="hero-title">
-          Искусство Создавать <span className="hero-highlight">Сладкие Моменты</span>
+          Солодкі Моменти <span className="hero-highlight">На Замовлення</span>
         </h1>
         <p className="hero-subtitle">
-          Заказывайте уникальные авторские торты, собственный 3D десерт или создайте брендированные сладости в палитре вашей компании через наш ИИ-модуль.
+          🎂 Авторські торти та десерти • 🧁 Капкейки • 🥐 Випічка. Створюємо індивідуальні кондитерські вироби із найсвіжіших інгредієнтів.
         </p>
 
-        <div style={{ display: 'flex', gap: '16px', justifyContent: 'center' }}>
+        <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap' }}>
           <button className="btn-primary" onClick={onGoToBuilder}>
-            <Sparkles size={18} /> Открыть 3D Конструктор
+            <Sparkles size={18} /> 3D Конструктор Тортика
           </button>
-          <button 
+          
+          <button
             className="btn-primary" 
             style={{ background: 'var(--bg-surface-elevated)', border: '1px solid var(--border-color)', boxShadow: 'none' }}
-            onClick={onGoToBrand}
+            onClick={onOpenStorageGuide}
           >
-            Брендинг через Dembrandt
+            <ShieldCheck size={18} /> Правила зберігання
           </button>
+
+          <a
+            href="https://t.me/BELLA_CREME_ua"
+            target="_blank"
+            rel="noreferrer"
+            className="btn-primary"
+            style={{ background: 'rgba(6, 182, 212, 0.15)', border: '1px solid rgba(6, 182, 212, 0.4)', color: 'var(--accent-cyan)', boxShadow: 'none', textDecoration: 'none' }}
+          >
+            <Send size={18} /> Замовлення в Telegram (@BELLA_CREME_ua)
+          </a>
         </div>
       </div>
 
@@ -115,17 +126,17 @@ export default function Catalog({ onAddToCart, onGoToBuilder, onGoToBrand }) {
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px', flexWrap: 'wrap', gap: '16px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <Filter size={18} style={{ color: 'var(--accent-rose)' }} />
-          <span style={{ fontWeight: 600, fontSize: '15px' }}>Категории:</span>
+          <span style={{ fontWeight: 600, fontSize: '15px' }}>Категорії:</span>
         </div>
 
         <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '4px' }}>
           {[
-            { id: 'all', label: 'Все торты' },
-            { id: 'bento', label: 'Бенто' },
-            { id: 'wedding', label: 'Свадебные' },
-            { id: 'chocolate', label: 'Шоколадные' },
-            { id: 'mousse', label: 'Муссовые' },
-            { id: 'corporate', label: 'Корпоративные' }
+            { id: 'all', label: 'Усі десерти' },
+            { id: 'bento', label: 'Бенто-торти' },
+            { id: 'cakes', label: 'Авторські торти' },
+            { id: 'cupcakes', label: 'Капкейки' },
+            { id: 'wedding', label: 'Весільні' },
+            { id: 'pastry', label: 'Випічка' }
           ].map(tab => (
             <button
               key={tab.id}
@@ -171,18 +182,18 @@ export default function Catalog({ onAddToCart, onGoToBuilder, onGoToBrand }) {
               <p className="cake-card-desc">{product.desc}</p>
               
               <div style={{ fontSize: '13px', color: 'var(--text-subtle)', marginBottom: '16px' }}>
-                Вес: <strong style={{ color: 'var(--text-main)' }}>{product.weight}</strong>
+                Вага / Кількість: <strong style={{ color: 'var(--text-main)' }}>{product.weight}</strong>
               </div>
 
               <div className="cake-card-footer">
-                <span className="price-tag">{product.price.toLocaleString()} ₽</span>
+                <span className="price-tag">{product.price.toLocaleString()} ₴</span>
                 <button
                   id={`add-to-cart-${product.id}`}
                   className="btn-primary"
                   style={{ padding: '10px 18px', fontSize: '13px' }}
                   onClick={() => onAddToCart(product)}
                 >
-                  <ShoppingBag size={15} /> Заказать
+                  <ShoppingBag size={15} /> Замовити
                 </button>
               </div>
             </div>
