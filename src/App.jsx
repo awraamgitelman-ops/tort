@@ -7,7 +7,6 @@ import Footer from './components/Footer';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('catalog');
-  const [searchQuery, setSearchQuery] = useState('');
   const [cartItems, setCartItems] = useState([]);
 
   const cartTotal = cartItems.reduce((acc, item) => acc + item.price, 0);
@@ -33,15 +32,12 @@ export default function App() {
         cartCount={cartItems.length}
         cartTotal={cartTotal}
         onOpenCart={() => setActiveTab('cart')}
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
       />
 
       <main style={{ flex: 1 }}>
         {activeTab === 'catalog' && (
           <Catalog
             onAddToCart={handleAddToCart}
-            searchQuery={searchQuery}
           />
         )}
 

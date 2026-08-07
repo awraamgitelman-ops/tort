@@ -1,5 +1,5 @@
 import React from 'react';
-import { Search, ShoppingBag, Menu, ShieldCheck, Send } from 'lucide-react';
+import { ShoppingBag, Menu, ShieldCheck, Send } from 'lucide-react';
 
 export default function Header({
   activeTab,
@@ -7,8 +7,6 @@ export default function Header({
   cartCount,
   cartTotal,
   onOpenCart,
-  searchQuery,
-  setSearchQuery
 }) {
   return (
     <header>
@@ -33,18 +31,6 @@ export default function Header({
               <div className="logo-text-title">BELLA CRÈME</div>
               <div className="logo-text-subtitle">Торти • Кондитерські вироби власного виробництва</div>
             </div>
-          </div>
-
-          {/* Search Box */}
-          <div className="header-search">
-            <Search className="search-icon" size={18} />
-            <input
-              type="text"
-              className="search-input"
-              placeholder="Пошук десерта..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
           </div>
 
           {/* Cart Widget */}

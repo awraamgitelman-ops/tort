@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ChevronRight, ArrowRight, BookOpen, Sparkles, CheckCircle2 } from 'lucide-react';
+import { ChevronRight, ArrowRight, CheckCircle2 } from 'lucide-react';
 
 const CATEGORIES = [
   { id: 'all', name: 'Увесь Прейскурант', count: 18 },
@@ -170,14 +170,12 @@ const MENU_ITEMS = [
   }
 ];
 
-export default function Catalog({ onAddToCart, searchQuery }) {
+export default function Catalog({ onAddToCart }) {
   const [selectedCat, setSelectedCat] = useState('all');
 
-  const filteredProducts = MENU_ITEMS.filter(p => {
-    const matchesCat = selectedCat === 'all' || p.category === selectedCat;
-    const matchesSearch = !searchQuery || p.name.toLowerCase().includes(searchQuery.toLowerCase()) || p.desc.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesCat && matchesSearch;
-  });
+  const filteredProducts = selectedCat === 'all'
+    ? MENU_ITEMS
+    : MENU_ITEMS.filter(p => p.category === selectedCat);
 
   return (
     <div>
