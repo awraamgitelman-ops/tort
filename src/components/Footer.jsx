@@ -40,8 +40,8 @@ export default function Footer({ onGoToGuide }) {
           </div>
         </div>
 
-        {/* Four Footer Columns */}
-        <div className="footer-cols">
+        {/* Footer Columns */}
+        <div className="footer-cols" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))' }}>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
               <img
@@ -65,11 +65,10 @@ export default function Footer({ onGoToGuide }) {
           <div>
             <h4 className="footer-col-title">Продукція</h4>
             <ul className="footer-links">
-              <li><a href="#cakes">Авторські Торти</a></li>
-              <li><a href="#cheesecake">Ванильні & Фруктові Чизкейки</a></li>
-              <li><a href="#jars">Десерти в баночках</a></li>
-              <li><a href="#exclusive">Вишукані Сладості</a></li>
-              <li><a href="#cupcakes">Капкейки & Випічка</a></li>
+              <li><a href="#bento">Бенто-Торти</a></li>
+              <li><a href="#big_cakes">Великі Авторські Торти</a></li>
+              <li><a href="#cupcakes">Капкейки</a></li>
+              <li><a href="#fillings">Опис та склад начинок</a></li>
             </ul>
           </div>
 
@@ -85,17 +84,8 @@ export default function Footer({ onGoToGuide }) {
                 </button>
               </li>
               <li><a href="https://t.me/BELLA_CREME_ua" target="_blank" rel="noreferrer">Замовлення в Telegram</a></li>
-              <li><a href="#delivery">Доставка та оплата</a></li>
+              <li><a href="#delivery">Доставка та умови</a></li>
             </ul>
-          </div>
-
-          <div>
-            <h4 className="footer-col-title">Ми приймаємо до оплати</h4>
-            <div style={{ display: 'flex', gap: '12px', alignItems: 'center', marginTop: '12px' }}>
-              <span style={{ fontWeight: 800, fontSize: '16px', color: '#16a34a' }}>LiqPay &raquo;</span>
-              <span style={{ fontWeight: 800, fontSize: '16px', color: '#1d4ed8' }}>VISA</span>
-              <span style={{ fontWeight: 800, fontSize: '16px', color: '#ea580c' }}>MasterCard</span>
-            </div>
           </div>
         </div>
 

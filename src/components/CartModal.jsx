@@ -3,11 +3,20 @@ import { X, Trash2, CheckCircle2, ShoppingBag, Send } from 'lucide-react';
 
 export default function CartModal({ isOpen, onClose, cartItems, onRemoveItem, onClearCart }) {
   const [submitted, setSubmitted] = useState(false);
-  const [form, setForm] = useState({ name: '', phone: '', address: '', date: '' });
+  const [form, setForm] = useState({ name: '', phone: '+380 ', address: '', date: '' });
 
   if (!isOpen) return null;
 
   const totalPrice = cartItems.reduce((acc, item) => acc + item.price, 0);
+
+  const handlePhoneChange = (e) => {
+    let val = e.target.value;
+    // Keep +380 prefix
+    if (!val.startsWith('+380')) {
+      val = '+380 ' + val.replace(/^\+?3?8?0?\s?/, '');
+    }
+    setForm({ ...form, phone: val });
+  };
 
   const handleSubmitOrder = (e) => {
     e.preventDefault();
@@ -29,25 +38,27 @@ export default function CartModal({ isOpen, onClose, cartItems, onRemoveItem, on
 
         {submitted ? (
           <div style={{ textAlign: 'center', padding: '20px 0' }}>
-            <CheckCircle2 size={64} style={{ color: 'var(--accent-rose)', margin: '0 auto 16px' }} />
-            <h3 style={{ fontSize: '26px', fontWeight: 800, marginBottom: '8px' }}>Заказ успешно оформлен!</h3>
-            <p style={{ color: 'var(--text-muted)', marginBottom: '24px', fontSize: '14px' }}>
-              Менеджер кондитерской Tortiks свяжется с вами в течение 10 минут по номеру {form.phone || 'указанному телефону'} для уточнения деталей.
+            <CheckCircle2 size={64} style={{ color: 'var(--accent-gold)', margin: '0 auto 16px' }} />
+            <h3 style={{ fontSize: '26px', fontWeight: 800, marginBottom: '8px', color: 'var(--bg-navy)' }}>
+              Замовлення успішно оформлено!
+            </h3>
+            <p style={{ color: 'var(--text-muted)', marginBottom: '24px', fontSize: '14px', lineHeight: 1.6 }}>
+              Менеджер кондитерської <strong>BELLA CRÈME</strong> зв'яжеться з вами протягом 10 хвилин за номером <strong>{form.phone || 'вказуваним телефоном'}</strong> у Telegram для уточнення всіх деталей та декору.
             </p>
             <button className="btn-primary" onClick={handleCloseAll} style={{ width: '100%' }}>
-              Отлично!
+              Чудово!
             </button>
           </div>
         ) : (
           <>
-            <h3 style={{ fontSize: '24px', fontWeight: 800, marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <ShoppingBag size={22} style={{ color: 'var(--accent-rose)' }} /> Ваш Заказ ({cartItems.length})
+            <h3 style={{ fontSize: '24px', fontWeight: 800, marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '10px', color: 'var(--bg-navy)' }}>
+              <ShoppingBag size={22} style={{ color: 'var(--accent-gold)' }} /> Ваше Замовлення ({cartItems.length})
             </h3>
 
             {cartItems.length === 0 ? (
               <div style={{ textAlign: 'center', padding: '40px 0', color: 'var(--text-muted)' }}>
-                <p style={{ fontSize: '16px' }}>Ваша корзина пока пуста 🍰</p>
-                <p style={{ fontSize: '13px', marginTop: '6px' }}>Выберите торт в каталоге или воспользуйтесь 3D конструктором!</p>
+                <p style={{ fontSize: '16px', fontWeight: 600 }}>Ваш кошик поки порожній 🍰</p>
+                <p style={{ fontSize: '13px', marginTop: '6px' }}>Оберіть авторський десерт або бенто-торт у нашому каталозі!</p>
               </div>
             ) : (
               <>
@@ -60,18 +71,18 @@ export default function CartModal({ isOpen, onClose, cartItems, onRemoveItem, on
                         alignItems: 'center',
                         justifyContent: 'space-between',
                         padding: '12px 0',
-                        borderBottom: '1px solid var(--border-color)'
+                        borderBottom: '1px solid var(--border-light)'
                       }}
                     >
                       <div>
-                        <div style={{ fontWeight: 700, fontSize: '14px' }}>{item.name}</div>
+                        <div style={{ fontWeight: 700, fontSize: '14px', color: 'var(--bg-navy)' }}>{item.name}</div>
                         <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{item.weight}</div>
                       </div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                        <span style={{ fontWeight: 700, color: 'var(--accent-gold)' }}>{item.price.toLocaleString()} ₽</span>
+                        <span style={{ fontWeight: 800, color: 'var(--accent-gold)' }}>{item.price.toLocaleString()} ₴</span>
                         <button
                           onClick={() => onRemoveItem(idx)}
-                          style={{ background: 'transparent', border: 'none', color: 'var(--text-subtle)', cursor: 'pointer' }}
+                          style={{ background: 'transparent', border: 'none', color: '#ef4444', cursor: 'pointer' }}
                         >
                           <Trash2 size={16} />
                         </button>
@@ -80,47 +91,70 @@ export default function CartModal({ isOpen, onClose, cartItems, onRemoveItem, on
                   ))}
                 </div>
 
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '18px', fontWeight: 800, marginBottom: '24px' }}>
-                  <span>Итого к оплате:</span>
-                  <span style={{ color: 'var(--accent-gold)' }}>{totalPrice.toLocaleString()} ₽</span>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '18px', fontWeight: 800, marginBottom: '24px', color: 'var(--bg-navy)' }}>
+                  <span>Разом до сплати:</span>
+                  <span style={{ color: 'var(--accent-gold)' }}>{totalPrice.toLocaleString()} ₴</span>
                 </div>
 
-                {/* Form Inputs */}
+                {/* Ukrainian Order Form Inputs */}
                 <form onSubmit={handleSubmitOrder} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                  <input
-                    type="text"
-                    required
-                    placeholder="Ваше Имя"
-                    className="input-field"
-                    value={form.name}
-                    onChange={e => setForm({ ...form, name: e.target.value })}
-                  />
-                  <input
-                    type="tel"
-                    required
-                    placeholder="Телефон (+7 999 000-00-00)"
-                    className="input-field"
-                    value={form.phone}
-                    onChange={e => setForm({ ...form, phone: e.target.value })}
-                  />
-                  <input
-                    type="text"
-                    required
-                    placeholder="Адрес доставки"
-                    className="input-field"
-                    value={form.address}
-                    onChange={e => setForm({ ...form, address: e.target.value })}
-                  />
-                  <input
-                    type="date"
-                    required
-                    className="input-field"
-                    value={form.date}
-                    onChange={e => setForm({ ...form, date: e.target.value })}
-                  />
+                  <div>
+                    <label style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-muted)', marginBottom: '4px', display: 'block' }}>
+                      Ваше Ім'я *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="Олена Ковальчук"
+                      className="input-field"
+                      value={form.name}
+                      onChange={e => setForm({ ...form, name: e.target.value })}
+                    />
+                  </div>
+
+                  <div>
+                    <label style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-muted)', marginBottom: '4px', display: 'block' }}>
+                      Номер телефону (Україна) *
+                    </label>
+                    <input
+                      type="tel"
+                      required
+                      placeholder="+380 (XX) XXX-XX-XX"
+                      className="input-field"
+                      value={form.phone}
+                      onChange={handlePhoneChange}
+                    />
+                  </div>
+
+                  <div>
+                    <label style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-muted)', marginBottom: '4px', display: 'block' }}>
+                      Адреса доставки / Місто *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="м. Київ, вул. Хрещатик, 15"
+                      className="input-field"
+                      value={form.address}
+                      onChange={e => setForm({ ...form, address: e.target.value })}
+                    />
+                  </div>
+
+                  <div>
+                    <label style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-muted)', marginBottom: '4px', display: 'block' }}>
+                      Бажана дата отримання *
+                    </label>
+                    <input
+                      type="date"
+                      required
+                      className="input-field"
+                      value={form.date}
+                      onChange={e => setForm({ ...form, date: e.target.value })}
+                    />
+                  </div>
 
                   <button id="submit-order-btn" type="submit" className="btn-primary" style={{ marginTop: '12px', width: '100%', height: '46px' }}>
-                    <Send size={18} /> Подтвердить и Заказать
+                    <Send size={18} /> Підтвердити та Замовити
                   </button>
                 </form>
               </>
