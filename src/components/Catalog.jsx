@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ChevronRight, ArrowRight, Check, Sparkles, Star } from 'lucide-react';
+import { ChevronRight, ArrowRight, Send, Sparkles } from 'lucide-react';
 
 const CATEGORIES = [
   { id: 'all', name: 'Увесь Прейскурант', count: 18 },
@@ -224,8 +224,22 @@ export default function Catalog({ onAddToCart, searchQuery }) {
         <div className="container hero-banner-content">
           <div>
             <h1 className="hero-banner-title">Офіційний Прейскурант & Начинки</h1>
-            <div className="hero-breadcrumb">Головна &gt; Авторські Торти & Прейскурант BELLA CRÈME</div>
+            <div className="hero-breadcrumb">Головна &gt; Авторські Торти BELLA CRÈME</div>
+            
+            {/* Telegram Direct Order Banner */}
+            <div style={{ marginTop: '16px' }}>
+              <a
+                href="https://t.me/BELLA_CREME_ua"
+                target="_blank"
+                rel="noreferrer"
+                className="btn-primary"
+                style={{ background: '#0284c7', padding: '10px 20px', fontSize: '13.5px', textDecoration: 'none' }}
+              >
+                <Send size={16} /> Швидке замовлення в Telegram (@BELLA_CREME_ua)
+              </a>
+            </div>
           </div>
+
           <div style={{ width: '130px', height: '130px', borderRadius: '50%', overflow: 'hidden', border: '4px solid #fff', boxShadow: '0 10px 20px rgba(0,0,0,0.1)' }}>
             <img src="/logo.png" alt="BELLA CRÈME Emblem" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
           </div>
@@ -250,14 +264,28 @@ export default function Catalog({ onAddToCart, searchQuery }) {
             ))}
           </div>
 
-          {/* Quick Info Box */}
+          {/* Quick Info & Telegram Order Box */}
           <div style={{ marginTop: '24px', padding: '16px', background: '#fdf8f6', borderRadius: 'var(--radius-sm)', border: '1px solid #fce7f3' }}>
-            <h5 style={{ fontSize: '13px', fontWeight: 700, color: 'var(--bg-navy)', marginBottom: '6px' }}>💡 Інформація до замовлення:</h5>
-            <ul style={{ fontSize: '11.5px', color: 'var(--text-muted)', listStyle: 'disc', paddingLeft: '16px', lineHeight: 1.5 }}>
-              <li>Розрахунок великих тортів: 150-200г на людину.</li>
-              <li>Бенто містить свічку, ложку, напис до 5 слів.</li>
-              <li>Додатковий декор оплачується окремо.</li>
-            </ul>
+            <h5 style={{ fontSize: '13px', fontWeight: 700, color: 'var(--bg-navy)', marginBottom: '6px' }}>💬 Заказ у Telegram:</h5>
+            <p style={{ fontSize: '11.5px', color: 'var(--text-muted)', marginBottom: '10px', lineHeight: 1.4 }}>
+              Приймаємо індивідуальні ескізи та декор у нашому Telegram-каналі:
+            </p>
+            <a
+              href="https://t.me/BELLA_CREME_ua"
+              target="_blank"
+              rel="noreferrer"
+              style={{
+                fontSize: '12px',
+                fontWeight: 700,
+                color: 'var(--accent-cyan)',
+                textDecoration: 'none',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '4px'
+              }}
+            >
+              <Send size={13} /> t.me/BELLA_CREME_ua
+            </a>
           </div>
         </aside>
 

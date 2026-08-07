@@ -11,7 +11,6 @@ export default function CartModal({ isOpen, onClose, cartItems, onRemoveItem, on
 
   const handlePhoneChange = (e) => {
     let val = e.target.value;
-    // Keep +380 prefix
     if (!val.startsWith('+380')) {
       val = '+380 ' + val.replace(/^\+?3?8?0?\s?/, '');
     }
@@ -42,12 +41,29 @@ export default function CartModal({ isOpen, onClose, cartItems, onRemoveItem, on
             <h3 style={{ fontSize: '26px', fontWeight: 800, marginBottom: '8px', color: 'var(--bg-navy)' }}>
               Замовлення успішно оформлено!
             </h3>
-            <p style={{ color: 'var(--text-muted)', marginBottom: '24px', fontSize: '14px', lineHeight: 1.6 }}>
-              Менеджер кондитерської <strong>BELLA CRÈME</strong> зв'яжеться з вами протягом 10 хвилин за номером <strong>{form.phone || 'вказуваним телефоном'}</strong> у Telegram для уточнення всіх деталей та декору.
+            <p style={{ color: 'var(--text-muted)', marginBottom: '20px', fontSize: '14px', lineHeight: 1.6 }}>
+              Дякуємо! Наш менеджер <strong>BELLA CRÈME</strong> зв'яжеться з вами протягом 10 хвилин за номером <strong>{form.phone}</strong> або ви можете особисто написати нам у Telegram для швидкого підтвердження декору:
             </p>
-            <button className="btn-primary" onClick={handleCloseAll} style={{ width: '100%' }}>
-              Чудово!
-            </button>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '16px' }}>
+              <a
+                href="https://t.me/BELLA_CREME_ua"
+                target="_blank"
+                rel="noreferrer"
+                className="btn-primary"
+                style={{ background: '#0284c7', textDecoration: 'none', width: '100%' }}
+              >
+                <Send size={18} /> Перейти в Telegram (@BELLA_CREME_ua)
+              </a>
+
+              <button
+                className="btn-primary"
+                onClick={handleCloseAll}
+                style={{ width: '100%', background: 'var(--bg-navy-light)' }}
+              >
+                Чудово, повернутися на сайт
+              </button>
+            </div>
           </div>
         ) : (
           <>
@@ -96,7 +112,7 @@ export default function CartModal({ isOpen, onClose, cartItems, onRemoveItem, on
                   <span style={{ color: 'var(--accent-gold)' }}>{totalPrice.toLocaleString()} ₴</span>
                 </div>
 
-                {/* Ukrainian Order Form Inputs */}
+                {/* Form Inputs */}
                 <form onSubmit={handleSubmitOrder} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                   <div>
                     <label style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-muted)', marginBottom: '4px', display: 'block' }}>
@@ -154,7 +170,7 @@ export default function CartModal({ isOpen, onClose, cartItems, onRemoveItem, on
                   </div>
 
                   <button id="submit-order-btn" type="submit" className="btn-primary" style={{ marginTop: '12px', width: '100%', height: '46px' }}>
-                    <Send size={18} /> Підтвердити та Замовити
+                    <Send size={18} /> Підтвердити та Замовити в Telegram
                   </button>
                 </form>
               </>
