@@ -9,16 +9,19 @@ import Footer from './components/Footer';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('catalog');
+  const [searchQuery, setSearchQuery] = useState('');
   const [cartItems, setCartItems] = useState([
     {
       id: 1,
-      name: 'Бенто-торт "Ніжне сонце"',
-      price: 650,
-      weight: '500 г'
+      name: 'Ванильний чизкейк з малиновим кулі',
+      price: 700,
+      weight: '1000 г'
     }
   ]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isStorageGuideOpen, setIsStorageGuideOpen] = useState(false);
+
+  const cartTotal = cartItems.reduce((acc, item) => acc + item.price, 0);
 
   const handleAddToCart = (item) => {
     setCartItems(prev => [...prev, item]);
@@ -39,17 +42,18 @@ export default function App() {
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         cartCount={cartItems.length}
+        cartTotal={cartTotal}
         onOpenCart={() => setIsCartOpen(true)}
         onOpenStorageGuide={() => setIsStorageGuideOpen(true)}
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
       />
 
       <main style={{ flex: 1 }}>
         {activeTab === 'catalog' && (
           <Catalog
             onAddToCart={handleAddToCart}
-            onGoToBuilder={() => setActiveTab('builder')}
-            onGoToBrand={() => setActiveTab('brand')}
-            onOpenStorageGuide={() => setIsStorageGuideOpen(true)}
+            searchQuery={searchQuery}
           />
         )}
 

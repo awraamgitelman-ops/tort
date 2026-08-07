@@ -1,41 +1,101 @@
 import React from 'react';
-import { Send, ShieldCheck, Heart } from 'lucide-react';
+import { Phone, Mail, Send, ShieldCheck, CreditCard } from 'lucide-react';
 
 export default function Footer({ onOpenStorageGuide }) {
   return (
-    <footer className="footer">
-      <div className="container">
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', marginBottom: '12px' }}>
-          <span style={{ fontSize: '24px' }}>🧁</span>
-          <strong style={{ color: 'var(--text-main)', fontSize: '20px', letterSpacing: '0.02em' }}>BELLA CRÈME</strong>
+    <footer style={{ background: '#ffffff', borderTop: '1px solid var(--border-light)' }}>
+      <div className="container" style={{ paddingTop: '40px' }}>
+        {/* Support & Join Boxes */}
+        <div className="footer-support-boxes">
+          <div className="support-box">
+            <div className="support-icon">
+              <Phone size={24} />
+            </div>
+            <div>
+              <div style={{ fontSize: '13px', color: 'var(--text-muted)' }}>Підтримка & Замовлення</div>
+              <div style={{ fontSize: '20px', fontWeight: 800, color: 'var(--bg-navy)' }}>
+                +38(096)162-95-92
+              </div>
+              <div style={{ fontSize: '13px', color: 'var(--accent-cyan)' }}>
+                Direct Telegram: @BELLA_CREME_ua
+              </div>
+            </div>
+          </div>
+
+          <div className="support-box">
+            <div className="support-icon" style={{ background: 'var(--accent-gold)' }}>
+              <Mail size={24} style={{ color: '#fff' }} />
+            </div>
+            <div>
+              <div style={{ fontSize: '13px', color: 'var(--text-muted)' }}>Приєднуйтесь до нас</div>
+              <div style={{ fontSize: '13px', color: 'var(--text-dark)', fontWeight: 600, margin: '4px 0 10px' }}>
+                Підписуйтесь на наші сторінки, щоб бути в курсі новин та знижок
+              </div>
+              <div style={{ display: 'flex', gap: '8px' }}>
+                <a href="https://t.me/BELLA_CREME_ua" target="_blank" rel="noreferrer" className="btn-primary" style={{ padding: '6px 16px', fontSize: '12px' }}>
+                  <Send size={12} /> Telegram @BELLA_CREME_ua
+                </a>
+              </div>
+            </div>
+          </div>
         </div>
-        
-        <p style={{ maxWidth: '540px', margin: '0 auto 16px', fontSize: '14px', color: 'var(--text-muted)' }}>
-          Смачні десерти на замовлення • Авторські торти • Капкейки • Випічка. Створено з любов'ю для ваших особливих свят 🤍
-        </p>
 
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '20px', marginBottom: '20px', flexWrap: 'wrap' }}>
-          <a
-            href="https://t.me/BELLA_CREME_ua"
-            target="_blank"
-            rel="noreferrer"
-            style={{ color: 'var(--accent-cyan)', textDecoration: 'none', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '6px' }}
-          >
-            <Send size={16} /> Telegram: @BELLA_CREME_ua
-          </a>
+        {/* Four Footer Columns */}
+        <div className="footer-cols">
+          <div>
+            <h4 className="footer-col-title">Замовлення & Контакти</h4>
+            <p style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: '8px' }}>
+              Кондитерська BELLA CRÈME
+            </p>
+            <p style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: '8px' }}>
+              Прийом замовлень у Direct & Telegram 7 днів на тиждень
+            </p>
+            <p style={{ fontSize: '13px', fontWeight: 700, color: 'var(--bg-navy)' }}>
+              09:00 — 20:00
+            </p>
+          </div>
 
-          <button
-            onClick={onOpenStorageGuide}
-            style={{ background: 'transparent', border: 'none', color: 'var(--accent-gold)', cursor: 'pointer', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '6px' }}
-          >
-            <ShieldCheck size={16} /> Правила зберігання
-          </button>
+          <div>
+            <h4 className="footer-col-title">Продукція</h4>
+            <ul className="footer-links">
+              <li><a href="#cakes">Авторські Торти</a></li>
+              <li><a href="#cheesecake">Ванильні & Фруктові Чизкейки</a></li>
+              <li><a href="#jars">Десерти в баночках</a></li>
+              <li><a href="#exclusive">Вишукані Сладості</a></li>
+              <li><a href="#cupcakes">Капкейки & Випічка</a></li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="footer-col-title">Інформація</h4>
+            <ul className="footer-links">
+              <li>
+                <button
+                  onClick={onOpenStorageGuide}
+                  style={{ background: 'none', border: 'none', color: 'var(--accent-gold)', cursor: 'pointer', fontSize: '13px', fontWeight: 700, padding: 0 }}
+                >
+                  Правила зберігання тортика 🍰
+                </button>
+              </li>
+              <li><a href="#builder">3D Конструктор Тортів</a></li>
+              <li><a href="#dembrandt">Dembrandt Studio</a></li>
+              <li><a href="#delivery">Доставка та оплата</a></li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="footer-col-title">Ми приймаємо до оплати</h4>
+            <div style={{ display: 'flex', gap: '12px', alignItems: 'center', marginTop: '12px' }}>
+              <span style={{ fontWeight: 800, fontSize: '16px', color: '#16a34a' }}>LiqPay &raquo;</span>
+              <span style={{ fontWeight: 800, fontSize: '16px', color: '#1d4ed8' }}>VISA</span>
+              <span style={{ fontWeight: 800, fontSize: '16px', color: '#ea580c' }}>MasterCard</span>
+            </div>
+          </div>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '16px', fontSize: '12px', color: 'var(--text-subtle)', flexWrap: 'wrap' }}>
-          <span>Ready for Railway Deployment</span>
-          <span>•</span>
-          <span>© {new Date().getFullYear()} BELLA CRÈME. Всі права захищені.</span>
+        {/* Bottom Copyright Line */}
+        <div style={{ borderTop: '1px solid var(--border-light)', padding: '20px 0', textAlign: 'center', fontSize: '13px', color: 'var(--text-muted)' }}>
+          Всі права захищені © {new Date().getFullYear()} BELLA CRÈME (t.me/BELLA_CREME_ua)
         </div>
       </div>
     </footer>

@@ -1,87 +1,97 @@
 import React from 'react';
-import { Cake, Sparkles, Building2, ShoppingBag, ShieldCheck, Send } from 'lucide-react';
+import { Search, ShoppingBag, Phone, Menu, Sparkles, ShieldCheck, Building2, Send } from 'lucide-react';
 
-export default function Header({ activeTab, setActiveTab, cartCount, onOpenCart, onOpenStorageGuide }) {
+export default function Header({
+  activeTab,
+  setActiveTab,
+  cartCount,
+  cartTotal,
+  onOpenCart,
+  onOpenStorageGuide,
+  searchQuery,
+  setSearchQuery
+}) {
   return (
-    <header className="glass-header">
-      <div className="container header-content">
-        <div className="logo-group" onClick={() => setActiveTab('catalog')}>
-          <div className="logo-badge" style={{ background: 'linear-gradient(135deg, #f43f5e 0%, #fbbf24 100%)' }}>
-            🧁
-          </div>
-          <div>
-            <span className="logo-title" style={{ fontSize: '24px', letterSpacing: '0.02em' }}>
-              BELLA CRÈME
-            </span>
-            <div style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 600, marginTop: '-4px' }}>
-              Смачні десерти на замовлення
+    <header>
+      {/* Top White Bar */}
+      <div className="top-header">
+        <div className="container top-header-content">
+          {/* Logo Block */}
+          <div className="logo-block" onClick={() => setActiveTab('catalog')}>
+            <div className="logo-circle">ele</div>
+            <div>
+              <div className="logo-text-title">BELLA CRÈME</div>
+              <div className="logo-text-subtitle">Вишуканий смак ручної роботи</div>
             </div>
           </div>
+
+          {/* Search Box */}
+          <div className="header-search">
+            <Search className="search-icon" size={18} />
+            <input
+              type="text"
+              className="search-input"
+              placeholder="Пошук десерта..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+
+          {/* Cart Widget */}
+          <div className="cart-widget" onClick={onOpenCart}>
+            <div style={{ position: 'relative' }}>
+              <ShoppingBag size={20} style={{ color: 'var(--bg-navy)' }} />
+            </div>
+            <span className="cart-badge">{cartCount}</span>
+            <span style={{ fontWeight: 700, fontSize: '14px' }}>{cartTotal.toLocaleString()} ₴</span>
+          </div>
         </div>
+      </div>
 
-        <nav className="nav-links">
-          <button
-            id="nav-catalog-btn"
-            className={`nav-btn ${activeTab === 'catalog' ? 'active' : ''}`}
-            onClick={() => setActiveTab('catalog')}
-          >
-            <Cake size={16} />
-            Каталог
-          </button>
+      {/* Main Navy Navigation Bar */}
+      <nav className="main-nav">
+        <div className="container nav-container">
+          <div className="nav-menu">
+            <button
+              className={`nav-item ${activeTab === 'catalog' ? 'active' : ''}`}
+              onClick={() => setActiveTab('catalog')}
+            >
+              <Menu size={16} /> Каталог
+            </button>
 
-          <button
-            id="nav-builder-btn"
-            className={`nav-btn ${activeTab === 'builder' ? 'active' : ''}`}
-            onClick={() => setActiveTab('builder')}
-          >
-            <Sparkles size={16} />
-            3D Конструктор
-          </button>
+            <button
+              className={`nav-item ${activeTab === 'builder' ? 'active' : ''}`}
+              onClick={() => setActiveTab('builder')}
+            >
+              <Sparkles size={16} /> Замовити торт (3D)
+            </button>
 
-          <button
-            id="nav-brand-btn"
-            className={`nav-btn ${activeTab === 'brand' ? 'active' : ''}`}
-            onClick={() => setActiveTab('brand')}
-          >
-            <Building2 size={16} />
-            Dembrandt Studio
-          </button>
+            <button
+              className="nav-item"
+              onClick={onOpenStorageGuide}
+            >
+              <ShieldCheck size={16} /> Правила зберігання
+            </button>
 
-          <button
-            id="nav-guide-btn"
-            className="nav-btn"
-            onClick={onOpenStorageGuide}
-            style={{ color: 'var(--accent-gold)' }}
-          >
-            <ShieldCheck size={16} />
-            Правила зберігання
-          </button>
-        </nav>
+            <button
+              className={`nav-item ${activeTab === 'brand' ? 'active' : ''}`}
+              onClick={() => setActiveTab('brand')}
+            >
+              <Building2 size={16} /> Dembrandt Studio
+            </button>
+          </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <a
             href="https://t.me/BELLA_CREME_ua"
             target="_blank"
             rel="noreferrer"
-            className="nav-btn"
-            style={{
-              background: 'rgba(6, 182, 212, 0.15)',
-              border: '1px solid rgba(6, 182, 212, 0.3)',
-              color: 'var(--accent-cyan)',
-              padding: '10px 16px',
-              textDecoration: 'none'
-            }}
+            className="nav-phone"
           >
-            <Send size={15} /> Direct / Telegram
+            <Send size={15} style={{ color: 'var(--accent-gold)' }} />
+            <span>+38(096)162-95-92 / @BELLA_CREME_ua</span>
           </a>
-
-          <button id="header-cart-btn" className="cart-button" onClick={onOpenCart}>
-            <ShoppingBag size={18} />
-            <span>Кошик</span>
-            {cartCount > 0 && <span className="cart-count">{cartCount}</span>}
-          </button>
         </div>
-      </div>
+      </nav>
     </header>
   );
 }

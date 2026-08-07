@@ -1,205 +1,152 @@
 import React, { useState } from 'react';
-import { ShoppingBag, Star, Sparkles, Filter, Send, ShieldCheck } from 'lucide-react';
+import { ChevronRight, ArrowRight } from 'lucide-react';
+
+const CATEGORIES = [
+  { id: 'all', name: 'Усі десерти', count: 48 },
+  { id: 'cakes', name: 'Авторські Торти', count: 12 },
+  { id: 'cheesecake', name: 'Ванильні & Фруктові Чизкейки', count: 8 },
+  { id: 'jars', name: 'Десерти в баночках', count: 7 },
+  { id: 'exclusive', name: 'Вишукані Сладості', count: 13 },
+  { id: 'sets', name: 'Солодкі сети', count: 6 },
+  { id: 'cupcakes', name: 'Капкейки & Випічка', count: 9 },
+  { id: 'bento', name: 'Бенто-торти', count: 4 }
+];
 
 const PRODUCTS = [
   {
     id: 1,
-    name: 'Бенто-торт "Ніжне сонце"',
-    category: 'bento',
-    categoryName: 'Бенто-торти',
-    price: 650,
-    weight: '500 г',
-    desc: 'Ніжний полуничний крем-чіз, ванільний бісквіт та авторський декор на замовлення.',
-    img: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=800&q=80',
-    rating: 5.0,
-    badge: 'Хіт продажів'
+    name: 'Ванильний чизкейк з малиновим кулі',
+    category: 'cheesecake',
+    weights: '1000 г, 1500 г, 2000 г, 2500 г',
+    price: 700,
+    img: 'https://images.unsplash.com/photo-1533134242443-d4fd215305ad?auto=format&fit=crop&w=800&q=80',
+    desc: 'Класичний оксамитовий чизкейк з подвійною ваніллю та свіжими ягодами.'
   },
   {
     id: 2,
-    name: 'Сет авторських Капкейків (6 шт.)',
-    category: 'cupcakes',
-    categoryName: 'Капкейки',
-    price: 480,
-    weight: '6 шт.',
-    desc: 'Фісташкові та шоколадні капкейки з ніжними шапочками із крем-чізу.',
-    img: 'https://images.unsplash.com/photo-1569864358642-9d1684040f43?auto=format&fit=crop&w=800&q=80',
-    rating: 4.9,
-    badge: 'Популярно'
+    name: 'Горіховий торт "Естерхазі"',
+    category: 'cakes',
+    weights: '1000 г, 2000 г, 3000 г, 4000 г',
+    price: 750,
+    img: 'https://images.unsplash.com/photo-1588195538326-c5b1e9f80a1b?auto=format&fit=crop&w=800&q=80',
+    desc: 'Мигдалево-горіхові коржі з ніжним заварним кремом та пеканом.'
   },
   {
     id: 3,
-    name: 'Шоколадний "Трюфельний Оксамит"',
-    category: 'cakes',
-    categoryName: 'Авторські торти',
-    price: 1200,
-    weight: '1.5 кг',
-    desc: 'Насичений бельгійський dark-шоколад, ганаш з вишневим конфеті.',
-    img: 'https://images.unsplash.com/photo-1606890737304-57a1ca8a5b62?auto=format&fit=crop&w=800&q=80',
-    rating: 5.0,
-    badge: 'Авторський рецепт'
+    name: 'Карамельний чизкейк із меренгою',
+    category: 'cheesecake',
+    weights: '1000 г, 1500 г, 2000 г, 2500 г',
+    price: 720,
+    img: 'https://images.unsplash.com/photo-1565958011703-44f9829ba187?auto=format&fit=crop&w=800&q=80',
+    desc: 'Солона карамель, підпечена обпалена меренга та хрусткий бисквит.'
   },
   {
     id: 4,
-    name: 'Торт "Фісташка - Малина"',
+    name: 'Лимонно-цитрусовий муссовий торт',
     category: 'cakes',
-    categoryName: 'Авторські торти',
-    price: 1350,
-    weight: '1.8 кг',
-    desc: 'Повітряний мус на натуральній фісташковій пасті з малиновим кулі.',
-    img: 'https://images.unsplash.com/photo-1565958011703-44f9829ba187?auto=format&fit=crop&w=800&q=80',
-    rating: 4.9,
-    badge: 'Новинка'
+    weights: '1200 г, 1800 г, 2400 г',
+    price: 680,
+    img: 'https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?auto=format&fit=crop&w=800&q=80',
+    desc: 'Освіжаючий лимонний курду з легким вершковим мусом.'
   },
   {
     id: 5,
-    name: 'Свадебный ярусный "Королівська лілія"',
-    category: 'wedding',
-    categoryName: 'Весільні',
-    price: 3800,
-    weight: '4.5 кг',
-    desc: 'Шедевральний 3-ярусний торт із харчовим золотом та ніжним декором.',
+    name: 'Торт "Ягідний макарон & безе"',
+    category: 'exclusive',
+    weights: '1500 г, 2500 г, 3500 г',
+    price: 890,
     img: 'https://images.unsplash.com/photo-1535141192574-5d4897c13136?auto=format&fit=crop&w=800&q=80',
-    rating: 5.0,
-    badge: 'Преміум'
+    desc: 'Святковий торт з французькими макаронами та лохиною.'
   },
   {
     id: 6,
-    name: 'Набір французької випічки & Макарон',
-    category: 'pastry',
-    categoryName: 'Випічка',
-    price: 520,
-    weight: '12 шт.',
-    desc: 'Свіжа французька випічка та ніжні мигдалеві макарони в асортименті.',
-    img: 'https://images.unsplash.com/photo-1588195538326-c5b1e9f80a1b?auto=format&fit=crop&w=800&q=80',
-    rating: 4.8,
-    badge: 'Свіжа випічка'
+    name: 'Торт із золотими королівськими піками',
+    category: 'cakes',
+    weights: '1500 г, 2000 г, 3000 г',
+    price: 950,
+    img: 'https://images.unsplash.com/photo-1606890737304-57a1ca8a5b62?auto=format&fit=crop&w=800&q=80',
+    desc: 'Авторський дизайн із харчовим золотом 24K та шоколадними піками.'
   }
 ];
 
-export default function Catalog({ onAddToCart, onGoToBuilder, onGoToBrand, onOpenStorageGuide }) {
-  const [filter, setFilter] = useState('all');
+export default function Catalog({ onAddToCart, searchQuery }) {
+  const [selectedCat, setSelectedCat] = useState('all');
 
-  const filteredProducts = filter === 'all' 
-    ? PRODUCTS 
-    : PRODUCTS.filter(p => p.category === filter);
+  const filteredProducts = PRODUCTS.filter(p => {
+    const matchesCat = selectedCat === 'all' || p.category === selectedCat;
+    const matchesSearch = !searchQuery || p.name.toLowerCase().includes(searchQuery.toLowerCase()) || p.desc.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesCat && matchesSearch;
+  });
 
   return (
-    <section className="container">
-      {/* Hero Header */}
-      <div className="hero-section">
-        <div className="hero-pill">
-          <Sparkles size={14} /> BELLA CRÈME • Смачні десерти на замовлення
+    <div>
+      {/* Hero Mint Banner */}
+      <section className="hero-banner">
+        <div className="container hero-banner-content">
+          <div>
+            <h1 className="hero-banner-title">Авторські Торти</h1>
+            <div className="hero-breadcrumb">Головна &gt; Авторські Торти</div>
+          </div>
+          <div style={{ width: '140px', height: '140px', borderRadius: '50%', overflow: 'hidden', border: '4px solid #fff', boxShadow: '0 10px 20px rgba(0,0,0,0.1)' }}>
+            <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=400&q=80" alt="BELLA CRÈME Tiramisu Jar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+          </div>
         </div>
-        <h1 className="hero-title">
-          Солодкі Моменти <span className="hero-highlight">На Замовлення</span>
-        </h1>
-        <p className="hero-subtitle">
-          🎂 Авторські торти та десерти • 🧁 Капкейки • 🥐 Випічка. Створюємо індивідуальні кондитерські вироби із найсвіжіших інгредієнтів.
-        </p>
+      </section>
 
-        <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap' }}>
-          <button className="btn-primary" onClick={onGoToBuilder}>
-            <Sparkles size={18} /> 3D Конструктор Тортика
-          </button>
-          
-          <button
-            className="btn-primary" 
-            style={{ background: 'var(--bg-surface-elevated)', border: '1px solid var(--border-color)', boxShadow: 'none' }}
-            onClick={onOpenStorageGuide}
-          >
-            <ShieldCheck size={18} /> Правила зберігання
-          </button>
+      {/* Main Two Column Page Content */}
+      <div className="container page-layout">
+        {/* Left Sidebar Categories */}
+        <aside className="sidebar-box">
+          <h3 className="sidebar-title">Категорія</h3>
+          <div className="category-list">
+            {CATEGORIES.map(cat => (
+              <div
+                key={cat.id}
+                className={`category-link ${selectedCat === cat.id ? 'active' : ''}`}
+                onClick={() => setSelectedCat(cat.id)}
+              >
+                <span><ChevronRight size={14} style={{ display: 'inline', verticalAlign: 'middle', marginRight: '4px' }} /> {cat.name}</span>
+                <span className="category-count">({cat.count})</span>
+              </div>
+            ))}
+          </div>
+        </aside>
 
-          <a
-            href="https://t.me/BELLA_CREME_ua"
-            target="_blank"
-            rel="noreferrer"
-            className="btn-primary"
-            style={{ background: 'rgba(6, 182, 212, 0.15)', border: '1px solid rgba(6, 182, 212, 0.4)', color: 'var(--accent-cyan)', boxShadow: 'none', textDecoration: 'none' }}
-          >
-            <Send size={18} /> Замовлення в Telegram (@BELLA_CREME_ua)
-          </a>
-        </div>
-      </div>
+        {/* Right Product Grid */}
+        <main>
+          <div className="products-grid">
+            {filteredProducts.map(product => (
+              <div key={product.id} className="product-card">
+                <div className="product-img-box">
+                  <img src={product.img} alt={product.name} className="product-img" />
+                </div>
 
-      {/* Filter Tabs */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px', flexWrap: 'wrap', gap: '16px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <Filter size={18} style={{ color: 'var(--accent-rose)' }} />
-          <span style={{ fontWeight: 600, fontSize: '15px' }}>Категорії:</span>
-        </div>
+                <div className="product-body">
+                  <div style={{ marginBottom: '8px' }}>
+                    <span className="weight-pill">{product.weights}</span>
+                    <span className="product-price">{product.price} грн</span>
+                  </div>
 
-        <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '4px' }}>
-          {[
-            { id: 'all', label: 'Усі десерти' },
-            { id: 'bento', label: 'Бенто-торти' },
-            { id: 'cakes', label: 'Авторські торти' },
-            { id: 'cupcakes', label: 'Капкейки' },
-            { id: 'wedding', label: 'Весільні' },
-            { id: 'pastry', label: 'Випічка' }
-          ].map(tab => (
-            <button
-              key={tab.id}
-              onClick={() => setFilter(tab.id)}
-              style={{
-                padding: '8px 16px',
-                borderRadius: '9999px',
-                border: '1px solid',
-                borderColor: filter === tab.id ? 'var(--accent-rose)' : 'var(--border-color)',
-                background: filter === tab.id ? 'rgba(244, 63, 94, 0.15)' : 'var(--bg-surface)',
-                color: filter === tab.id ? 'var(--accent-rose)' : 'var(--text-muted)',
-                fontWeight: 600,
-                fontSize: '13px',
-                cursor: 'pointer',
-                transition: 'all 0.2s'
-              }}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </div>
-      </div>
+                  <h4 className="product-title">{product.name}</h4>
 
-      {/* Product Grid */}
-      <div className="grid-3">
-        {filteredProducts.map(product => (
-          <div key={product.id} className="cake-card">
-            <div className="cake-img-wrapper">
-              <img src={product.img} alt={product.name} className="cake-img" />
-              <span className="badge-tag">{product.badge}</span>
-            </div>
-            
-            <div className="cake-card-body">
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                <span style={{ fontSize: '12px', color: 'var(--accent-rose)', fontWeight: 600 }}>{product.categoryName}</span>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '13px', color: 'var(--accent-gold)' }}>
-                  <Star size={14} fill="currentColor" />
-                  <span>{product.rating}</span>
+                  <button
+                    className="select-btn"
+                    onClick={() => onAddToCart({
+                      id: product.id,
+                      name: product.name,
+                      price: product.price,
+                      weight: product.weights.split(',')[0]
+                    })}
+                  >
+                    <span>ВИБРАТИ _ »</span>
+                    <ArrowRight size={14} />
+                  </button>
                 </div>
               </div>
-
-              <h3 className="cake-card-title">{product.name}</h3>
-              <p className="cake-card-desc">{product.desc}</p>
-              
-              <div style={{ fontSize: '13px', color: 'var(--text-subtle)', marginBottom: '16px' }}>
-                Вага / Кількість: <strong style={{ color: 'var(--text-main)' }}>{product.weight}</strong>
-              </div>
-
-              <div className="cake-card-footer">
-                <span className="price-tag">{product.price.toLocaleString()} ₴</span>
-                <button
-                  id={`add-to-cart-${product.id}`}
-                  className="btn-primary"
-                  style={{ padding: '10px 18px', fontSize: '13px' }}
-                  onClick={() => onAddToCart(product)}
-                >
-                  <ShoppingBag size={15} /> Замовити
-                </button>
-              </div>
-            </div>
+            ))}
           </div>
-        ))}
+        </main>
       </div>
-    </section>
+    </div>
   );
 }
