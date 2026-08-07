@@ -16,7 +16,7 @@ export default function StorageGuideModal({ isOpen, onClose }) {
             <ShieldCheck size={14} /> Рекомендації кондитера
           </div>
           <h2 style={{ fontSize: '24px', fontWeight: 800, color: 'var(--text-main)' }}>
-            Правила отримання та зберігання тортика 🍰
+            Правила отримання та зберігання тортика
           </h2>
           <p style={{ fontSize: '13px', color: 'var(--text-muted)', marginTop: '4px' }}>
             Щоб ваш тортик був не лише красивим, а й таким же смачним, дотримуйтесь кількох простих рекомендацій:
@@ -32,7 +32,7 @@ export default function StorageGuideModal({ isOpen, onClose }) {
             border: '1px solid var(--border-color)'
           }}>
             <h4 style={{ fontSize: '16px', fontWeight: 700, color: 'var(--accent-gold)', marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <Car size={18} /> 🎂 Після отримання:
+              <Car size={18} /> Після отримання:
             </h4>
             <ul style={{ listStyleType: 'disc', paddingLeft: '20px', fontSize: '13.5px', color: 'var(--text-muted)', display: 'flex', flexDirection: 'column', gap: '6px' }}>
               <li>перевозьте торт на рівній поверхні (найкраще — на підлозі автомобіля або в багажнику);</li>
@@ -49,7 +49,7 @@ export default function StorageGuideModal({ isOpen, onClose }) {
             border: '1px solid var(--border-color)'
           }}>
             <h4 style={{ fontSize: '16px', fontWeight: 700, color: 'var(--accent-cyan)', marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <ThermometerSnowflake size={18} /> ❄️ Зберігання:
+              <ThermometerSnowflake size={18} /> Зберігання:
             </h4>
             <ul style={{ listStyleType: 'disc', paddingLeft: '20px', fontSize: '13.5px', color: 'var(--text-muted)', display: 'flex', flexDirection: 'column', gap: '6px' }}>
               <li>одразу після отримання поставте торт у холодильник;</li>
@@ -66,7 +66,7 @@ export default function StorageGuideModal({ isOpen, onClose }) {
             border: '1px solid var(--border-color)'
           }}>
             <h4 style={{ fontSize: '16px', fontWeight: 700, color: 'var(--accent-rose)', marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <Sparkles size={18} /> ✨ Перед подачею:
+              <Sparkles size={18} /> Перед подачею:
             </h4>
             <ul style={{ listStyleType: 'disc', paddingLeft: '20px', fontSize: '13.5px', color: 'var(--text-muted)', display: 'flex', flexDirection: 'column', gap: '6px' }}>
               <li>дістаньте торт із холодильника за <strong style={{ color: 'var(--text-main)' }}>30-60 хвилин</strong> до святкового столу — так начинка стане ніжнішою, а смак розкриється повністю;</li>
@@ -90,7 +90,7 @@ export default function StorageGuideModal({ isOpen, onClose }) {
         </div>
 
         <button className="btn-primary" onClick={onClose} style={{ width: '100%', marginTop: '20px' }}>
-          Зрозуміло, дякую! 🤍
+          Зрозуміло, дякую!
         </button>
       </div>
     </div>

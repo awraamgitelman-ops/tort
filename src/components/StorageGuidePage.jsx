@@ -16,12 +16,6 @@ export default function StorageGuidePage({ onGoToCatalog }) {
           boxShadow: '0 15px 35px rgba(180, 140, 50, 0.15), inset 0 0 80px rgba(212, 175, 55, 0.05)',
           position: 'relative'
         }}>
-          {/* Decorative Corner Ornaments */}
-          <div style={{ position: 'absolute', top: '12px', left: '16px', fontSize: '20px', color: '#c59b27' }}>✦</div>
-          <div style={{ position: 'absolute', top: '12px', right: '16px', fontSize: '20px', color: '#c59b27' }}>✦</div>
-          <div style={{ position: 'absolute', bottom: '12px', left: '16px', fontSize: '20px', color: '#c59b27' }}>✦</div>
-          <div style={{ position: 'absolute', bottom: '12px', right: '16px', fontSize: '20px', color: '#c59b27' }}>✦</div>
-
           {/* Header Seal & Title */}
           <div style={{ textAlign: 'center', marginBottom: '36px', borderBottom: '2px double #d4af37', paddingBottom: '28px' }}>
             <div style={{
@@ -34,10 +28,9 @@ export default function StorageGuidePage({ onGoToCatalog }) {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              boxShadow: '0 6px 15px rgba(197, 155, 39, 0.4)',
-              fontSize: '28px'
+              boxShadow: '0 6px 15px rgba(197, 155, 39, 0.4)'
             }}>
-              ✨
+              <ShieldCheck size={36} />
             </div>
 
             <div style={{ fontFamily: "'Georgia', serif", fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.25em', color: '#8b6b1b', fontWeight: 700, marginBottom: '6px' }}>
@@ -62,7 +55,7 @@ export default function StorageGuidePage({ onGoToCatalog }) {
             {/* Rule 1 */}
             <div style={{ background: '#faf6f0', border: '1px solid #e8dec8', borderRadius: '12px', padding: '24px' }}>
               <h3 style={{ fontFamily: "'Georgia', serif", fontSize: '20px', color: '#8b6b1b', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <Car size={22} style={{ color: '#c59b27' }} /> 🎂 Після отримання (Транспортування):
+                <Car size={22} style={{ color: '#c59b27' }} /> Після отримання (Транспортування):
               </h3>
               <ul style={{ fontFamily: "'Georgia', serif", fontSize: '14.5px', color: '#475569', paddingLeft: '24px', lineHeight: 1.7 }}>
                 <li>Перевозьте торт виключно на рівній горизонтальній поверхні (найкраще — на підлозі автомобіля або в багажнику);</li>
@@ -74,7 +67,7 @@ export default function StorageGuidePage({ onGoToCatalog }) {
             {/* Rule 2 */}
             <div style={{ background: '#faf6f0', border: '1px solid #e8dec8', borderRadius: '12px', padding: '24px' }}>
               <h3 style={{ fontFamily: "'Georgia', serif", fontSize: '20px', color: '#0284c7', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <ThermometerSnowflake size={22} style={{ color: '#0284c7' }} /> ❄️ Правильне Зберігання:
+                <ThermometerSnowflake size={22} style={{ color: '#0284c7' }} /> Правильне Зберігання:
               </h3>
               <ul style={{ fontFamily: "'Georgia', serif", fontSize: '14.5px', color: '#475569', paddingLeft: '24px', lineHeight: 1.7 }}>
                 <li>Одразу після отримання обов'язково поставте торт у холодильну камеру;</li>
@@ -86,7 +79,7 @@ export default function StorageGuidePage({ onGoToCatalog }) {
             {/* Rule 3 */}
             <div style={{ background: '#faf6f0', border: '1px solid #e8dec8', borderRadius: '12px', padding: '24px' }}>
               <h3 style={{ fontFamily: "'Georgia', serif", fontSize: '20px', color: '#ec4899', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <Sparkles size={22} style={{ color: '#ec4899' }} /> ✨ Перед Святковою Подачею:
+                <Sparkles size={22} style={{ color: '#ec4899' }} /> Перед Святковою Подачею:
               </h3>
               <ul style={{ fontFamily: "'Georgia', serif", fontSize: '14.5px', color: '#475569', paddingLeft: '24px', lineHeight: 1.7 }}>
                 <li>Дістаньте торт із холодильника за <strong style={{ color: '#0b172a' }}>30-60 хвилин</strong> до святкового столу — так кремова начинка стане максимально ніжною, а букет смаків розкриється повністю;</li>
@@ -112,7 +105,7 @@ export default function StorageGuidePage({ onGoToCatalog }) {
           {/* Footer Vintage Note & Return Button */}
           <div style={{ textAlign: 'center', marginTop: '40px', paddingTop: '28px', borderTop: '1px solid #e8dec8' }}>
             <p style={{ fontFamily: "'Georgia', serif", fontStyle: 'italic', fontSize: '15px', color: '#8b6b1b', marginBottom: '20px' }}>
-              Дякуємо, що довіряєте нам бути частиною ваших особливих свят! 🤍
+              Дякуємо, що довіряєте нам бути частиною ваших особливих свят!
             </p>
 
             <button
