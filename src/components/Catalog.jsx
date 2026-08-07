@@ -185,7 +185,7 @@ export default function Catalog({ onAddToCart, searchQuery }) {
       <section className="hero-banner">
         <div className="container hero-banner-content">
           <div>
-            <h1 className="hero-banner-title">Авторські Торти & Прейскурант</h1>
+            <h1 className="hero-banner-title">Авторські Торти & Каталог</h1>
             <div className="hero-breadcrumb">Головна &gt; Прейскурант та опис десертів BELLA CRÈME</div>
           </div>
 
@@ -214,7 +214,7 @@ export default function Catalog({ onAddToCart, searchQuery }) {
           </div>
         </aside>
 
-        {/* Right Content Column: Editorial Mini-Articles Style */}
+        {/* Right Content Column */}
         <main style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
           {filteredProducts.map(product => (
             <article
