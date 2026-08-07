@@ -1,5 +1,5 @@
 import React from 'react';
-import { Phone, Mail, Send, ShieldCheck, CreditCard } from 'lucide-react';
+import { Phone, Mail, Send, ShieldCheck } from 'lucide-react';
 
 export default function Footer({ onOpenStorageGuide }) {
   return (
@@ -77,8 +77,7 @@ export default function Footer({ onOpenStorageGuide }) {
                   Правила зберігання тортика 🍰
                 </button>
               </li>
-              <li><a href="#builder">3D Конструктор Тортів</a></li>
-              <li><a href="#dembrandt">Dembrandt Studio</a></li>
+              <li><a href="https://t.me/BELLA_CREME_ua" target="_blank" rel="noreferrer">Замовлення в Direct</a></li>
               <li><a href="#delivery">Доставка та оплата</a></li>
             </ul>
           </div>

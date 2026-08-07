@@ -1,5 +1,5 @@
 import React from 'react';
-import { Search, ShoppingBag, Phone, Menu, Sparkles, ShieldCheck, Building2, Send } from 'lucide-react';
+import { Search, ShoppingBag, Menu, ShieldCheck, Send } from 'lucide-react';
 
 export default function Header({
   activeTab,
@@ -60,24 +60,10 @@ export default function Header({
             </button>
 
             <button
-              className={`nav-item ${activeTab === 'builder' ? 'active' : ''}`}
-              onClick={() => setActiveTab('builder')}
-            >
-              <Sparkles size={16} /> Замовити торт (3D)
-            </button>
-
-            <button
               className="nav-item"
               onClick={onOpenStorageGuide}
             >
               <ShieldCheck size={16} /> Правила зберігання
-            </button>
-
-            <button
-              className={`nav-item ${activeTab === 'brand' ? 'active' : ''}`}
-              onClick={() => setActiveTab('brand')}
-            >
-              <Building2 size={16} /> Dembrandt Studio
             </button>
           </div>
 

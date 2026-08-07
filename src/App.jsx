@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import Header from './components/Header';
 import Catalog from './components/Catalog';
-import CakeCustomizer from './components/CakeCustomizer';
-import BrandCakeStudio from './components/BrandCakeStudio';
 import CartModal from './components/CartModal';
 import StorageGuideModal from './components/StorageGuideModal';
 import Footer from './components/Footer';
@@ -50,20 +48,10 @@ export default function App() {
       />
 
       <main style={{ flex: 1 }}>
-        {activeTab === 'catalog' && (
-          <Catalog
-            onAddToCart={handleAddToCart}
-            searchQuery={searchQuery}
-          />
-        )}
-
-        {activeTab === 'builder' && (
-          <CakeCustomizer onAddToCart={handleAddToCart} />
-        )}
-
-        {activeTab === 'brand' && (
-          <BrandCakeStudio onAddToCart={handleAddToCart} />
-        )}
+        <Catalog
+          onAddToCart={handleAddToCart}
+          searchQuery={searchQuery}
+        />
       </main>
 
       <CartModal
