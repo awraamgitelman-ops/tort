@@ -7,7 +7,6 @@ export default function Header({
   cartCount,
   cartTotal,
   onOpenCart,
-  onOpenStorageGuide,
   searchQuery,
   setSearchQuery
 }) {
@@ -16,7 +15,7 @@ export default function Header({
       {/* Top White Bar */}
       <div className="top-header">
         <div className="container top-header-content">
-          {/* Logo Block with Official Uploaded Emblem */}
+          {/* Logo Block */}
           <div className="logo-block" onClick={() => setActiveTab('catalog')}>
             <img
               src="/logo.png"
@@ -71,8 +70,8 @@ export default function Header({
             </button>
 
             <button
-              className="nav-item"
-              onClick={onOpenStorageGuide}
+              className={`nav-item ${activeTab === 'guide' ? 'active' : ''}`}
+              onClick={() => setActiveTab('guide')}
             >
               <ShieldCheck size={16} /> Правила зберігання
             </button>

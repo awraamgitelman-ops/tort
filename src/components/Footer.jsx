@@ -1,7 +1,7 @@
 import React from 'react';
-import { Phone, Mail, Send, ShieldCheck } from 'lucide-react';
+import { Phone, Mail, Send } from 'lucide-react';
 
-export default function Footer({ onOpenStorageGuide }) {
+export default function Footer({ onGoToGuide }) {
   return (
     <footer style={{ background: '#ffffff', borderTop: '1px solid var(--border-light)' }}>
       <div className="container" style={{ paddingTop: '40px' }}>
@@ -78,7 +78,7 @@ export default function Footer({ onOpenStorageGuide }) {
             <ul className="footer-links">
               <li>
                 <button
-                  onClick={onOpenStorageGuide}
+                  onClick={onGoToGuide}
                   style={{ background: 'none', border: 'none', color: 'var(--accent-gold)', cursor: 'pointer', fontSize: '13px', fontWeight: 700, padding: 0 }}
                 >
                   Правила зберігання тортика 🍰

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import Header from './components/Header';
 import Catalog from './components/Catalog';
+import StorageGuidePage from './components/StorageGuidePage';
 import CartModal from './components/CartModal';
-import StorageGuideModal from './components/StorageGuideModal';
 import Footer from './components/Footer';
 
 export default function App() {
@@ -11,13 +11,12 @@ export default function App() {
   const [cartItems, setCartItems] = useState([
     {
       id: 1,
-      name: 'Ванильний чизкейк з малиновим кулі',
-      price: 700,
-      weight: '1000 г'
+      name: 'Бенто-Торт Маленький (500 г)',
+      price: 800,
+      weight: '500 г'
     }
   ]);
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const [isStorageGuideOpen, setIsStorageGuideOpen] = useState(false);
 
   const cartTotal = cartItems.reduce((acc, item) => acc + item.price, 0);
 
@@ -42,16 +41,23 @@ export default function App() {
         cartCount={cartItems.length}
         cartTotal={cartTotal}
         onOpenCart={() => setIsCartOpen(true)}
-        onOpenStorageGuide={() => setIsStorageGuideOpen(true)}
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
       />
 
       <main style={{ flex: 1 }}>
-        <Catalog
-          onAddToCart={handleAddToCart}
-          searchQuery={searchQuery}
-        />
+        {activeTab === 'catalog' && (
+          <Catalog
+            onAddToCart={handleAddToCart}
+            searchQuery={searchQuery}
+          />
+        )}
+
+        {activeTab === 'guide' && (
+          <StorageGuidePage
+            onGoToCatalog={() => setActiveTab('catalog')}
+          />
+        )}
       </main>
 
       <CartModal
@@ -62,12 +68,7 @@ export default function App() {
         onClearCart={handleClearCart}
       />
 
-      <StorageGuideModal
-        isOpen={isStorageGuideOpen}
-        onClose={() => setIsStorageGuideOpen(false)}
-      />
-
-      <Footer onOpenStorageGuide={() => setIsStorageGuideOpen(true)} />
+      <Footer onGoToGuide={() => setActiveTab('guide')} />
     </div>
   );
 }
