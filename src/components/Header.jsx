@@ -1,5 +1,5 @@
-import React from 'react';
-import { ShoppingBag, Menu, ShieldCheck, Send } from 'lucide-react';
+import React, { useState } from 'react';
+import { Search, ShoppingBag, Menu, ShieldCheck, Send } from 'lucide-react';
 
 export default function Header({
   activeTab,
@@ -7,7 +7,17 @@ export default function Header({
   cartCount,
   cartTotal,
   onOpenCart,
+  onPerformSearch,
+  searchQuery,
+  setSearchQuery
 }) {
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      onPerformSearch(searchQuery.trim());
+    }
+  };
+
   return (
     <header>
       {/* Top White Bar */}
@@ -32,6 +42,23 @@ export default function Header({
               <div className="logo-text-subtitle">Торти • Кондитерські вироби власного виробництва</div>
             </div>
           </div>
+
+          {/* Search Box */}
+          <form className="header-search" onSubmit={handleSearchSubmit}>
+            <Search className="search-icon" size={18} style={{ cursor: 'pointer' }} onClick={handleSearchSubmit} />
+            <input
+              type="text"
+              className="search-input"
+              placeholder="Пошук десертів та начинок..."
+              value={searchQuery}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                if (e.target.value.trim().length >= 2) {
+                  onPerformSearch(e.target.value.trim());
+                }
+              }}
+            />
+          </form>
 
           {/* Cart Widget */}
           <div className="cart-widget" onClick={onOpenCart}>
