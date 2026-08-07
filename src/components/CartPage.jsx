@@ -43,7 +43,7 @@ export default function CartPage({ cartItems, onRemoveItem, onClearCart, onGoToC
             <tbody>
               <tr>
                 <td style={{ background: '#0b172a', color: '#ffffff', fontWeight: 'bold', fontSize: '20px', fontFamily: 'Arial, sans-serif' }}>
-                  🛒 КОШИК ЗАМОВЛЕНЬ — БАША ПРИВАТНА ЗАЯВКА (ВЕРСІЯ 2.0)
+                  🛒 КОШИК ЗАМОВЛЕНЬ — ВАША ПРИВАТНА ЗАЯВКА
                 </td>
                 <td style={{ textAlign: 'right', background: '#e4e4e7', fontSize: '13px', fontFamily: 'Courier New, monospace' }}>
                   [ <a href="#back" onClick={(e) => { e.preventDefault(); onGoToCatalog(); }} style={{ color: '#0000ff', textDecoration: 'underline', cursor: 'pointer' }}>&laquo; Повернутися до каталогу</a> ]
