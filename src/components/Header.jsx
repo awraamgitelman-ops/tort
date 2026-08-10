@@ -98,13 +98,13 @@ export default function Header({
           </div>
 
           <a
-            href="https://t.me/BELLA_CREME_ua"
+            href="https://t.me/BELLA_CREME_Meneger"
             target="_blank"
             rel="noreferrer"
             className="nav-phone"
           >
             <Send size={15} style={{ color: 'var(--accent-gold)' }} />
-            <span>+38(068)655-19-19 / @BELLA_CREME_ua</span>
+            <span>+38(068)655-19-19 / @BELLA_CREME_Meneger</span>
           </a>
         </div>
       </nav>

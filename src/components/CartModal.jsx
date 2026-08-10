@@ -47,13 +47,13 @@ export default function CartModal({ isOpen, onClose, cartItems, onRemoveItem, on
 
  <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '16px' }}>
  <a
- href="https://t.me/BELLA_CREME_ua"
+ href="https://t.me/BELLA_CREME_Meneger"
  target="_blank"
  rel="noreferrer"
  className="btn-primary"
  style={{ background: '#0284c7', textDecoration: 'none', width: '100%' }}
  >
- <Send size={18} /> Перейти в Telegram (@BELLA_CREME_ua)
+ <Send size={18} /> Перейти в Telegram (@BELLA_CREME_Meneger)
  </a>
 
  <button

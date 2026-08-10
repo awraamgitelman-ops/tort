@@ -102,7 +102,7 @@ export default function CartPage({ cartItems, onRemoveItem, onClearCart, onGoToC
 
  <div style={{ display: 'flex', justifyContent: 'center', gap: '16px' }}>
  <a
- href="https://t.me/BELLA_CREME_ua"
+ href="https://t.me/BELLA_CREME_Meneger"
  target="_blank"
  rel="noreferrer"
  style={{
@@ -116,7 +116,7 @@ export default function CartPage({ cartItems, onRemoveItem, onClearCart, onGoToC
  border: '2px outset #0284c7'
  }}
  >
- Перейти в Telegram (@BELLA_CREME_ua)
+ Перейти в Telegram (@BELLA_CREME_Meneger)
  </a>
 
  <button

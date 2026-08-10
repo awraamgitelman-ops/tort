@@ -226,7 +226,7 @@ export default function PortfolioPage({ onAddToCart }) {
               Галерея робіт наразі порожня
             </h3>
             <p style={{ fontSize: '14px', color: 'var(--text-muted)', maxWidth: '520px', margin: '0 auto 16px' }}>
-              Пересилайте фотографії або відео-огляди десертів у Telegram-бот <code>@BELLA_CREME_ua</code>!
+              Пересилайте фотографії або відео-огляди десертів у Telegram-бот <code>@BELLA_CREME_Meneger</code>!
             </p>
           </div>
         ) : (

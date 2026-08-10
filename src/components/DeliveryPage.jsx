@@ -106,7 +106,7 @@ export default function DeliveryPage({ onGoToCatalog }) {
             <div style={{ fontSize: '13.5px', color: '#cbd5e1' }}>Напишіть нам у Telegram або зателефонуйте: +38(068)655-19-19</div>
           </div>
           <a
-            href="https://t.me/BELLA_CREME_ua"
+            href="https://t.me/BELLA_CREME_Meneger"
             target="_blank"
             rel="noreferrer"
             className="btn-primary"

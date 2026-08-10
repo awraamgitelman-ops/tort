@@ -50,7 +50,7 @@ export default function TelegramOrderPage({ onGoToCatalog }) {
               <div style={{ fontSize: '12px', fontWeight: 800, color: 'var(--accent-gold)', marginBottom: '4px' }}>КРОК 1</div>
               <h3 style={{ fontSize: '16px', fontWeight: 700, color: 'var(--bg-navy)', marginBottom: '8px' }}>Перейдіть у бот</h3>
               <p style={{ fontSize: '13px', color: '#475569', lineHeight: 1.5 }}>
-                Відкрийте наш офіційний менеджер-бот <strong>@BELLA_CREME_ua</strong> у своєму додатку Telegram.
+                Відкрийте наш офіційний менеджер-бот <strong>@BELLA_CREME_Meneger</strong> у своєму додатку Telegram.
               </p>
             </div>
 
@@ -91,13 +91,13 @@ export default function TelegramOrderPage({ onGoToCatalog }) {
           </div>
 
           <a
-            href="https://t.me/BELLA_CREME_ua"
+            href="https://t.me/BELLA_CREME_Meneger"
             target="_blank"
             rel="noreferrer"
             className="btn-primary"
             style={{ background: 'var(--accent-gold)', color: '#ffffff', borderRadius: 0, padding: '14px 32px', fontSize: '15px', fontWeight: 800 }}
           >
-            <Send size={18} /> Відкрити Telegram @BELLA_CREME_ua
+            <Send size={18} /> Відкрити Telegram @BELLA_CREME_Meneger
           </a>
         </div>
       </div>
