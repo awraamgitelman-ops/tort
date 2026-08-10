@@ -292,8 +292,8 @@ export default function PortfolioCarousel({ onGoToPortfolio }) {
               position: 'absolute',
               top: '20px',
               right: '20px',
-              background: 'rgba(255,255,255,0.2)',
-              color: '#fff',
+              background: 'rgba(255,255,255,0.25)',
+              color: '#ffffff',
               border: 'none',
               width: '44px',
               height: '44px',
@@ -301,11 +301,14 @@ export default function PortfolioCarousel({ onGoToPortfolio }) {
               display: 'flex',
               alignItems: 'center',
               justify: 'center',
+              padding: 0,
+              margin: 0,
+              lineHeight: 0,
               cursor: 'pointer',
               zIndex: 1000000
             }}
           >
-            <X size={26} />
+            <X size={26} style={{ display: 'block', margin: 'auto' }} />
           </button>
 
           <div
