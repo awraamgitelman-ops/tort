@@ -346,6 +346,9 @@ export default function Catalog({ onAddToCart, onGoToPortfolio }) {
 
         {/* Right Content Column */}
         <main style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
+          {/* Reviews Carousel */}
+          <ReviewsCarousel />
+
           {/* Interactive Carousel of Recent Works from Telegram */}
           <PortfolioCarousel onGoToPortfolio={onGoToPortfolio} />
 
@@ -458,9 +461,6 @@ export default function Catalog({ onAddToCart, onGoToPortfolio }) {
               </div>
             </article>
           ))}
-
-          {/* Paraphrased Ukrainian Reviews Carousel */}
-          <ReviewsCarousel />
         </main>
       </div>
     </div>

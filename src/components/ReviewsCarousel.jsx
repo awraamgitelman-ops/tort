@@ -50,7 +50,7 @@ export default function ReviewsCarousel() {
   const current = REVIEWS[currentIndex];
 
   return (
-    <section style={{ margin: '48px 0 24px', background: '#ffffff', border: '1px solid var(--border-light)', padding: '36px 32px', boxShadow: 'var(--shadow-sm)' }}>
+    <section style={{ margin: '0 0 12px', background: '#ffffff', border: '1px solid var(--border-light)', padding: '32px 28px', boxShadow: 'var(--shadow-sm)' }}>
       {/* Cursive Title Header */}
       <div style={{ textAlign: 'center', marginBottom: '28px' }}>
         <h2 style={{ fontFamily: "'Georgia', cursive, serif", fontSize: '38px', fontStyle: 'italic', color: 'var(--bg-navy)', margin: 0, fontWeight: 700 }}>
