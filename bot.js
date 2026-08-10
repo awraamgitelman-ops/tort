@@ -105,13 +105,112 @@ async function uploadToCatbox(fileUrl, filename) {
  }
 }
 
+let botInstance = null;
+const adminChatsJsonPath = path.join(dataDir, 'admin_chats.json');
+
+function getAdminChats() {
+  try {
+    if (fs.existsSync(adminChatsJsonPath)) {
+      const raw = fs.readFileSync(adminChatsJsonPath, 'utf8');
+      if (raw) return JSON.parse(raw);
+    }
+  } catch (e) {}
+  return [];
+}
+
+function registerAdminChat(chatId) {
+  if (!chatId) return;
+  const chats = getAdminChats();
+  const stringId = String(chatId);
+  if (!chats.includes(stringId)) {
+    chats.push(stringId);
+    try {
+      fs.writeFileSync(adminChatsJsonPath, JSON.stringify(chats, null, 2), 'utf8');
+      console.log(`Registered new Telegram Admin Chat ID: ${stringId}`);
+    } catch (e) {}
+  }
+}
+
+export async function sendOrderNotificationToTelegram(orderData) {
+  if (!botInstance) {
+    console.warn('Bot instance not initialized yet');
+    return false;
+  }
+
+  const { name, phone, address, date, comments, cartItems, totalAmount } = orderData;
+
+  const cleanName = stripEmojis(name) || 'Не вказано';
+  const cleanPhone = phone || 'Не вказано';
+  const cleanAddress = stripEmojis(address) || 'Самовивіз / не вказано';
+  const cleanDate = date || 'Якомога швидше';
+  const cleanComments = stripEmojis(comments) || 'Немає';
+
+  let itemsText = '';
+  if (Array.isArray(cartItems) && cartItems.length > 0) {
+    itemsText = cartItems.map((item, i) => {
+      const priceStr = item.price ? ` — ${item.price} грн` : '';
+      const weightStr = item.weight ? ` (${item.weight})` : '';
+      return `${i + 1}. *${stripEmojis(item.name)}*${weightStr}${priceStr}`;
+    }).join('\n');
+  } else {
+    itemsText = 'Позиції не вказано';
+  }
+
+  const messageText = `🛒 *НОВЕ ЗАМОВЛЕННЯ З САЙТУ BELLA CRÈME!*
+
+👤 *Замовник:* ${cleanName}
+📞 *Телефон:* \`${cleanPhone}\`
+📍 *Адреса / Пункт:* ${cleanAddress}
+📅 *Бажана дата готовності:* ${cleanDate}
+📝 *Примітки / Текст на тортикові:*
+_${cleanComments}_
+
+📦 *Склад замовлення:*
+${itemsText}
+
+💰 *РАЗОМ ДО СПЛАТИ:* *${totalAmount || 0} грн*
+⏰ *Час оформлення:* ${new Date().toLocaleString('uk-UA', { timeZone: 'Europe/Kyiv' })}`;
+
+  const adminChats = getAdminChats();
+  if (process.env.ADMIN_CHAT_ID && !adminChats.includes(String(process.env.ADMIN_CHAT_ID))) {
+    adminChats.push(String(process.env.ADMIN_CHAT_ID));
+  }
+
+  if (adminChats.length === 0) {
+    console.warn('No registered admin chats to send order notification to.');
+    return false;
+  }
+
+  let sentCount = 0;
+  for (const chatId of adminChats) {
+    try {
+      await botInstance.sendMessage(chatId, messageText, { parse_mode: 'Markdown' });
+      sentCount++;
+    } catch (err) {
+      console.warn(`Failed to send order notification to chat ${chatId}:`, err.message);
+    }
+  }
+
+  return sentCount > 0;
+}
+
 export function initBot() {
- console.log(' Starting BELLA CRÈME Post Manager Bot (Catbox Free CDN & Media Support)...');
+  console.log(' Starting BELLA CRÈME Post Manager Bot (Catbox Free CDN & Media Support)...');
 
- const bot = new TelegramBot(BOT_TOKEN, { polling: true });
+  const bot = new TelegramBot(BOT_TOKEN, { polling: true });
+  botInstance = bot;
 
- const sendManageList = (chatId) => {
- const data = getPortfolioData();
+  bot.on('my_chat_member', (msg) => {
+    if (msg?.chat?.id) registerAdminChat(msg.chat.id);
+  });
+
+  bot.on('channel_post', (msg) => {
+    if (msg?.chat?.id) registerAdminChat(msg.chat.id);
+  });
+
+  const sendManageList = (chatId) => {
+    registerAdminChat(chatId);
+    const data = getPortfolioData();
  if (data.length === 0) {
  return bot.sendMessage(chatId, ' Список спарсених робіт наразі порожній. Перешліть фото або відео для додавання.');
  }
@@ -153,8 +252,9 @@ export function initBot() {
  }
  });
 
- bot.on('message', async (msg) => {
- const text = msg.text || '';
+  bot.on('message', async (msg) => {
+    if (msg?.chat?.id) registerAdminChat(msg.chat.id);
+    const text = msg.text || '';
 
  if (text === '/start') {
  return bot.sendMessage(

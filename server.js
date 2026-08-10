@@ -150,6 +150,19 @@ app.post('/api/portfolio/sync', (req, res) => {
  }
 });
 
+// API Endpoint to process website orders and send Telegram bot notification to admin chat
+app.post('/api/orders', async (req, res) => {
+  try {
+    const orderData = req.body || {};
+    const { sendOrderNotificationToTelegram } = await import('./bot.js');
+    const notified = await sendOrderNotificationToTelegram(orderData);
+    res.json({ success: true, notified });
+  } catch (err) {
+    console.error('Error handling order submission:', err);
+    res.status(500).json({ error: 'Failed to process order notification' });
+  }
+});
+
 // API Endpoint to extract design tokens from a target website URL using dembrandt
 app.post('/api/extract-brand', async (req, res) => {
  const { url } = req.body;

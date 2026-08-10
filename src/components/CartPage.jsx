@@ -15,10 +15,39 @@ export default function CartPage({ cartItems, onRemoveItem, onClearCart, onGoToC
  setForm({ ...form, phone: val });
  };
 
- const handleSubmitOrder = (e) => {
- e.preventDefault();
- setSubmitted(true);
- };
+ const [sending, setSending] = useState(false);
+
+ const handleSubmitOrder = async (e) => {
+    e.preventDefault();
+    setSending(true);
+
+    try {
+      const payload = {
+        name: form.name,
+        phone: form.phone,
+        address: form.address,
+        date: form.date,
+        comments: form.comment,
+        cartItems: cartItems.map(item => ({
+          name: item.name,
+          price: item.price,
+          weight: item.weight || item.weights || ''
+        })),
+        totalAmount: totalPrice
+      };
+
+      await fetch('/api/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+    } catch (err) {
+      console.warn('Failed to send order notification:', err);
+    } finally {
+      setSending(false);
+      setSubmitted(true);
+    }
+  };
 
  const handleFinish = () => {
  setSubmitted(false);
@@ -325,6 +354,7 @@ export default function CartPage({ cartItems, onRemoveItem, onClearCart, onGoToC
 
  <button
  type="submit"
+ disabled={sending}
  style={{
  background: '#0b172a',
  color: '#ffffff',
@@ -332,11 +362,12 @@ export default function CartPage({ cartItems, onRemoveItem, onClearCart, onGoToC
  fontSize: '15px',
  fontFamily: 'Arial, sans-serif',
  fontWeight: 'bold',
- cursor: 'pointer',
- border: '3px outset #1e293b'
+ cursor: sending ? 'wait' : 'pointer',
+ border: '3px outset #1e293b',
+ opacity: sending ? 0.7 : 1
  }}
  >
- Підтвердити та відправити бланк &raquo;
+ {sending ? 'Надсилання замовлення...' : 'Підтвердити та відправити бланк »'}
  </button>
  </div>
  </form>
