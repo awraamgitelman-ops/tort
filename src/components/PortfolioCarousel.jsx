@@ -1,43 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, ArrowRight, Video as VideoIcon, Calendar, Maximize2, X } from 'lucide-react';
 
-export default function PortfolioCarousel({ onGoToPortfolio }) {
-  const [works, setWorks] = useState(() => {
-    try {
-      const cached = localStorage.getItem('cached_portfolio_works');
-      if (cached) {
-        const parsed = JSON.parse(cached);
-        return parsed.filter(item => {
-          const t = (item.title || '').toLowerCase();
-          const d = (item.description || '').toLowerCase();
-          return !t.includes('скеля') && !d.includes('скеля') && !t.includes('стильні чоловічі торти') && !d.includes('стильні чоловічі торти');
-        });
-      }
-      return [];
-    } catch (e) {
-      return [];
-    }
-  });
+const stripEmojis = (str) => {
+  if (!str) return '';
+  const emojiRegex = /[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}\u{1F1E6}-\u{1F1FF}\u{FE00}-\u{FE0F}\u{200D}\u{1F900}-\u{1F9FF}\u{1FA00}-\u{1FAFF}\u{1F004}-\u{1F0CF}]/gu;
+  return str.replace(emojiRegex, '').replace(/  +/g, ' ').trim();
+};
 
+export default function PortfolioCarousel({ onGoToPortfolio }) {
+  const [works, setWorks] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [fullscreenMedia, setFullscreenMedia] = useState(null);
 
   useEffect(() => {
     const fetchWorks = async () => {
       try {
-        const cachedRaw = localStorage.getItem('cached_portfolio_works');
-        let cachedWorks = [];
-        if (cachedRaw) {
-          try {
-            const parsed = JSON.parse(cachedRaw);
-            cachedWorks = parsed.filter(item => {
-              const t = (item.title || '').toLowerCase();
-              const d = (item.description || '').toLowerCase();
-              return !t.includes('скеля') && !d.includes('скеля') && !t.includes('стильні чоловічі торти') && !d.includes('стильні чоловічі торти');
-            });
-          } catch (e) {}
-        }
-
         const res = await fetch('/api/portfolio');
         if (res.ok) {
           const data = await res.json();
@@ -46,26 +23,16 @@ export default function PortfolioCarousel({ onGoToPortfolio }) {
             const d = (item.description || '').toLowerCase();
             return !t.includes('скеля') && !d.includes('скеля') && !t.includes('стильні чоловічі торти') && !d.includes('стильні чоловічі торти');
           }) : [];
-
           if (filtered.length > 0) {
-            const sorted = [...filtered].sort((a, b) => (Number(b.originalTimestamp || b.id) - Number(a.originalTimestamp || a.id)));
+            const sorted = [...filtered].sort((a, b) => (Number(b.originalTimestamp || b.id) || 0) - (Number(a.originalTimestamp || a.id) || 0));
             setWorks(sorted);
-            localStorage.setItem('cached_portfolio_works', JSON.stringify(sorted));
-          } else if (cachedWorks.length > 0) {
-            setWorks(cachedWorks);
-            fetch('/api/portfolio/sync', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ works: cachedWorks })
-            }).catch(() => {});
           }
         }
-      } catch (e) {}
+      } catch (err) { console.warn(err); }
     };
     fetchWorks();
   }, []);
 
-  // Auto slide every 5 seconds
   useEffect(() => {
     if (works.length <= 1 || fullscreenMedia) return;
     const timer = setInterval(() => {
@@ -74,177 +41,25 @@ export default function PortfolioCarousel({ onGoToPortfolio }) {
     return () => clearInterval(timer);
   }, [works.length, fullscreenMedia]);
 
-  const prevSlide = (e) => {
-    if (e) e.stopPropagation();
-    setCurrentIndex(prev => (prev - 1 + works.length) % works.length);
-  };
+  if (works.length === 0) return null;
 
-  const nextSlide = (e) => {
-    if (e) e.stopPropagation();
-    setCurrentIndex(prev => (prev + 1) % works.length);
-  };
+  const currentWork = works[currentIndex] || works[0];
+  const mediaList = currentWork.mediaList && currentWork.mediaList.length > 0
+    ? currentWork.mediaList
+    : (currentWork.images && currentWork.images.length > 0 ? currentWork.images.map(url => ({ type: 'image', url })) : [{ type: 'image', url: currentWork.image }]);
 
-  if (works.length === 0) {
-    return (
-      <section style={{ marginBottom: '32px', background: '#ffffff', border: '1px solid var(--border-light)', borderRadius: 'var(--radius-md)', padding: '24px 28px', boxShadow: 'var(--shadow-sm)' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
-          <div>
-            <h2 style={{ fontSize: '22px', fontWeight: 700, color: 'var(--bg-navy)', margin: 0 }}>
-              Галерея Останніх Робіт
-            </h2>
-          </div>
-          <button
-            className="btn-primary"
-            onClick={onGoToPortfolio}
-            style={{ fontSize: '13px', padding: '9px 18px', display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}
-          >
-            Переглянути галерею робіт <ArrowRight size={15} />
-          </button>
-        </div>
-      </section>
-    );
-  }
-
-  const currentWork = works[currentIndex];
-  const mediaItem = (currentWork.mediaList && currentWork.mediaList[0]) || { url: currentWork.image, type: 'image' };
+  const mediaItem = mediaList[0] || {};
   const isVideo = mediaItem.type === 'video' || (typeof mediaItem.url === 'string' && (mediaItem.url.endsWith('.mp4') || mediaItem.url.includes('video')));
+
+  const titleText = stripEmojis(currentWork.title);
+  const descText = stripEmojis(currentWork.description);
 
   return (
     <>
-      <section style={{ marginBottom: '32px', background: '#ffffff', border: '1px solid var(--border-light)', borderRadius: 'var(--radius-md)', padding: '24px', boxShadow: 'var(--shadow-sm)', overflow: 'hidden' }}>
-        {/* Header Bar */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px', marginBottom: '20px', paddingBottom: '14px', borderBottom: '1px solid #f1f5f9' }}>
-          <div>
-            <h2 style={{ fontSize: '22px', fontWeight: 700, color: 'var(--bg-navy)', margin: 0 }}>
-              Галерея Останніх Робіт
-            </h2>
-          </div>
-
-          <button
-            onClick={onGoToPortfolio}
-            style={{
-              fontSize: '13px',
-              fontWeight: 700,
-              padding: '9px 18px',
-              borderRadius: '20px',
-              border: '1.5px solid #cbd5e1',
-              background: '#ffffff',
-              color: 'var(--bg-navy)',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '8px',
-              cursor: 'pointer',
-              boxShadow: '0 2px 4px rgba(0,0,0,0.04)',
-              transition: 'all 0.2s'
-            }}
-          >
-            Дивитися всі мої роботи <ArrowRight size={15} />
-          </button>
-        </div>
-
-        {/* Carousel Container (Light Clean White Theme) */}
-        <div style={{
-          position: 'relative',
-          borderRadius: '16px',
-          overflow: 'hidden',
-          background: '#ffffff',
-          border: '1px solid #e2e8f0',
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-          minHeight: '270px',
-          boxShadow: '0 4px 12px rgba(0,0,0,0.03)'
-        }}>
-          {/* Media Preview Box (Clickable for full screen) */}
-          <div
-            onClick={() => setFullscreenMedia(mediaItem.url)}
-            style={{
-              height: '270px',
-              position: 'relative',
-              overflow: 'hidden',
-              background: '#f1f5f9',
-              cursor: 'pointer'
-            }}
-            title="Натисніть, щоб відкрити на весь екран"
-          >
-            {isVideo ? (
-              <video
-                src={mediaItem.url}
-                playsInline
-                preload="metadata"
-                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-              />
-            ) : (
-              <img
-                src={mediaItem.url}
-                alt={currentWork.title}
-                style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.3s' }}
-              />
-            )}
-
-            {currentWork.date && (
-              <span style={{ position: 'absolute', top: '12px', right: '12px', background: 'rgba(255,255,255,0.92)', color: '#0b172a', fontSize: '11px', fontWeight: 700, padding: '4px 10px', borderRadius: '10px', boxShadow: '0 2px 6px rgba(0,0,0,0.1)', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                <Calendar size={12} /> {currentWork.date}
-              </span>
-            )}
-
-            {isVideo && (
-              <span style={{ position: 'absolute', top: '12px', left: '12px', background: 'var(--accent-gold)', color: '#0b172a', fontSize: '11px', fontWeight: 800, padding: '4px 10px', borderRadius: '10px', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                <VideoIcon size={12} /> Відео
-              </span>
-            )}
-
-            {/* Click to Expand Hint Badge */}
-            <span style={{ position: 'absolute', bottom: '12px', right: '12px', background: 'rgba(11,23,42,0.75)', color: '#ffffff', fontSize: '10px', fontWeight: 700, padding: '3px 8px', borderRadius: '8px', display: 'flex', alignItems: 'center', gap: '4px' }}>
-              <Maximize2 size={11} /> На весь екран
-            </span>
-          </div>
-
-          {/* Work Description Box (Light Theme) */}
-          <div style={{ padding: '24px 28px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', background: '#ffffff' }}>
+      <section style={{ margin: '40px 0', background: 'var(--bg-main)' }}>
+        <div className="container">
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
             <div>
-              <span style={{ fontSize: '11px', color: 'var(--accent-gold)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-                Робота {currentIndex + 1} з {works.length}
-              </span>
-              <h3 style={{ fontFamily: "'Georgia', serif", fontSize: '19px', fontWeight: 700, margin: '6px 0 10px', lineHeight: 1.35, color: '#0b172a' }}>
-                {currentWork.title}
-              </h3>
-              <p style={{ fontSize: '13.5px', color: '#475569', lineHeight: 1.55, display: '-webkit-box', WebkitLineClamp: 4, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-                {currentWork.description}
-              </p>
-            </div>
-
-            <div style={{ marginTop: '20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: '14px', borderTop: '1px solid #f1f5f9' }}>
-              <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
-                {works.slice(0, 8).map((_, idx) => (
-                  <span
-                    key={idx}
-                    onClick={() => setCurrentIndex(idx)}
-                    style={{
-                      width: idx === currentIndex ? '22px' : '8px',
-                      height: '8px',
-                      borderRadius: '4px',
-                      background: idx === currentIndex ? 'var(--accent-gold)' : '#cbd5e1',
-                      cursor: 'pointer',
-                      transition: 'all 0.3s'
-                    }}
-                  />
-                ))}
-              </div>
-
-              <button
-                onClick={onGoToPortfolio}
-                style={{ background: 'transparent', border: 'none', color: 'var(--accent-gold)', fontSize: '13px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}
-              >
-                Переглянути в галереї &raquo;
-              </button>
-            </div>
-          </div>
-
-          {/* Left / Right Carousel Controls */}
-          {works.length > 1 && (
-            <>
-              <button
-                onClick={prevSlide}
                 style={{
                   position: 'absolute',
                   left: '12px',

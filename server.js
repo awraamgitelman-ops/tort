@@ -22,6 +22,12 @@ const portfolioJsonPath = path.join(dataDir, 'portfolio.json');
 // Serve uploaded portfolio images from public/portfolio
 app.use('/portfolio', express.static(path.join(__dirname, 'public', 'portfolio')));
 
+function stripEmojis(str) {
+  if (!str) return '';
+  const emojiRegex = /[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}\u{1F1E6}-\u{1F1FF}\u{FE00}-\u{FE0F}\u{200D}\u{1F900}-\u{1F9FF}\u{1FA00}-\u{1FAFF}\u{1F004}-\u{1F0CF}]/gu;
+  return str.replace(emojiRegex, '').replace(/  +/g, ' ').trim();
+}
+
 // API Endpoint to get all parsed portfolio works for the website
 app.get('/api/portfolio', (req, res) => {
  try {
@@ -38,7 +44,12 @@ app.get('/api/portfolio', (req, res) => {
  raw = fs.readFileSync(backupJsonPath, 'utf8');
  }
  const data = JSON.parse(raw);
- res.json(data);
+ const cleanedData = Array.isArray(data) ? data.map(item => ({
+      ...item,
+      title: stripEmojis(item.title),
+      description: stripEmojis(item.description)
+    })) : [];
+    res.json(cleanedData);
  } catch (err) {
  res.status(500).json({ error: 'Failed to read portfolio data' });
  }

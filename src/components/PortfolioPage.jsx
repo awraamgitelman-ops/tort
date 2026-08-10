@@ -4,6 +4,12 @@ import {
   PlayCircle, Video as VideoIcon, Maximize2, X, LayoutGrid, LayoutList, Info, ShoppingBag
 } from 'lucide-react';
 
+const stripEmojis = (str) => {
+  if (!str) return '';
+  const emojiRegex = /[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}\u{1F1E6}-\u{1F1FF}\u{FE00}-\u{FE0F}\u{200D}\u{1F900}-\u{1F9FF}\u{1FA00}-\u{1FAFF}\u{1F004}-\u{1F0CF}]/gu;
+  return str.replace(emojiRegex, '').replace(/  +/g, ' ').trim();
+};
+
 /* MODE 1: FULL DETAILED CARD */
 function WorkCardFull({ work, onAddToCart, onOpenFullscreen, onOpenDetail }) {
   const mediaItems = work.mediaList && work.mediaList.length > 0 
@@ -25,12 +31,15 @@ function WorkCardFull({ work, onAddToCart, onOpenFullscreen, onOpenDetail }) {
   const currentMedia = mediaItems[activeMediaIndex] || mediaItems[0];
   const isCurrentVideo = currentMedia?.type === 'video' || (typeof currentMedia?.url === 'string' && (currentMedia.url.endsWith('.mp4') || currentMedia.url.includes('video')));
 
+  const titleText = stripEmojis(work.title);
+  const descText = stripEmojis(work.description);
+
   return (
     <article
       style={{
         background: '#ffffff',
         border: '1px solid var(--border-light)',
-        borderRadius: 'var(--radius-md)',
+        borderRadius: 0,
         overflow: 'hidden',
         boxShadow: 'var(--shadow-sm)',
         display: 'flex',
@@ -40,7 +49,7 @@ function WorkCardFull({ work, onAddToCart, onOpenFullscreen, onOpenDetail }) {
     >
       <div
         onClick={() => onOpenFullscreen(currentMedia.url)}
-        style={{ width: '100%', height: '280px', overflow: 'hidden', position: 'relative', background: '#0b172a', cursor: 'pointer' }}
+        style={{ width: '100%', height: '280px', overflow: 'hidden', position: 'relative', background: '#0b172a', cursor: 'pointer', borderRadius: 0 }}
         title="Натисніть, щоб відкрити на весь екран"
       >
         {isCurrentVideo ? (
@@ -54,7 +63,7 @@ function WorkCardFull({ work, onAddToCart, onOpenFullscreen, onOpenDetail }) {
         ) : (
           <img
             src={currentMedia.url}
-            alt={work.title}
+            alt={titleText}
             style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'all 0.3s' }}
           />
         )}
@@ -62,7 +71,7 @@ function WorkCardFull({ work, onAddToCart, onOpenFullscreen, onOpenDetail }) {
         {mediaItems.length > 1 && (
           <span style={{
             position: 'absolute', top: '12px', left: '12px', background: 'rgba(11,23,42,0.85)',
-            color: '#fff', padding: '4px 10px', borderRadius: '12px', fontSize: '11px', fontWeight: 700,
+            color: '#fff', padding: '4px 10px', borderRadius: 0, fontSize: '11px', fontWeight: 700,
             display: 'flex', alignItems: 'center', gap: '4px', zIndex: 2
           }}>
             {isCurrentVideo ? <VideoIcon size={12} /> : <ImageIcon size={12} />}
@@ -73,7 +82,7 @@ function WorkCardFull({ work, onAddToCart, onOpenFullscreen, onOpenDetail }) {
         {work.date && (
           <span style={{
             position: 'absolute', top: '12px', right: '12px', background: 'rgba(11,23,42,0.85)',
-            color: '#fff', padding: '4px 10px', borderRadius: '12px', fontSize: '11px', fontWeight: 700,
+            color: '#fff', padding: '4px 10px', borderRadius: 0, fontSize: '11px', fontWeight: 700,
             display: 'flex', alignItems: 'center', gap: '4px', zIndex: 2
           }}>
             <Calendar size={12} /> {work.date}
@@ -82,7 +91,7 @@ function WorkCardFull({ work, onAddToCart, onOpenFullscreen, onOpenDetail }) {
 
         <span style={{
           position: 'absolute', bottom: '12px', right: '12px', background: 'rgba(11,23,42,0.8)',
-          color: '#ffffff', padding: '4px 10px', borderRadius: '10px', fontSize: '10.5px', fontWeight: 700,
+          color: '#ffffff', padding: '4px 10px', borderRadius: 0, fontSize: '10.5px', fontWeight: 700,
           display: 'flex', alignItems: 'center', gap: '4px', zIndex: 2
         }}>
           <Maximize2 size={11} /> На весь екран
@@ -102,16 +111,16 @@ function WorkCardFull({ work, onAddToCart, onOpenFullscreen, onOpenDetail }) {
 
       <div style={{ padding: '20px', display: 'flex', flexDirection: 'column', flex: 1 }}>
         <h3 style={{ fontFamily: "'Georgia', serif", fontSize: '18px', color: 'var(--bg-navy)', fontWeight: 700, marginBottom: '8px', lineHeight: 1.3 }}>
-          {work.title}
+          {titleText}
         </h3>
         <p style={{ fontSize: '13px', color: 'var(--text-muted)', lineHeight: 1.5, marginBottom: '20px', flex: 1, whiteSpace: 'pre-line' }}>
-          {work.description}
+          {descText}
         </p>
         <div style={{ borderTop: '1px dashed var(--border-light)', paddingTop: '14px', marginTop: 'auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '10px' }}>
-          <button onClick={() => onOpenDetail(work)} style={{ background: '#f1f5f9', color: '#0b172a', border: '1px solid #cbd5e1', borderRadius: 'var(--radius-sm)', padding: '8px 14px', fontSize: '12.5px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <button onClick={() => onOpenDetail(work)} style={{ background: '#f1f5f9', color: '#0b172a', border: '1px solid #cbd5e1', borderRadius: 0, padding: '8px 14px', fontSize: '12.5px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}>
             <Info size={14} /> Докладніше
           </button>
-          <button className="btn-primary" onClick={() => onAddToCart({ id: `portfolio-${work.id}`, name: work.title, price: 1100, unit: 'грн/кг', img: work.image, desc: work.description })} style={{ fontSize: '12.5px', padding: '8px 16px' }}>
+          <button className="btn-primary" onClick={() => onAddToCart({ id: `portfolio-${work.id}`, name: titleText, price: 1100, unit: 'грн/кг', img: work.image, desc: descText })} style={{ fontSize: '12.5px', padding: '8px 16px', borderRadius: 0 }}>
             Замовити схожий десерт
           </button>
         </div>
@@ -133,7 +142,7 @@ function WorkCardCompact({ work, onOpenDetail }) {
       onClick={() => onOpenDetail(work)}
       style={{
         background: '#0b172a',
-        borderRadius: 'var(--radius-md)',
+        borderRadius: 0,
         overflow: 'hidden',
         boxShadow: '0 4px 14px rgba(0,0,0,0.08)',
         height: '280px',
@@ -144,19 +153,19 @@ function WorkCardCompact({ work, onOpenDetail }) {
       className="portfolio-photo-card"
     >
       {isVideo ? (
-        <video src={mainMedia.url} muted playsInline preload="metadata" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+        <video src={mainMedia.url} muted playsInline preload="metadata" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 0 }} />
       ) : (
-        <img src={mainMedia.url || work.image} alt={work.title} style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.3s ease' }} />
+        <img src={mainMedia.url || work.image} alt={stripEmojis(work.title)} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 0, transition: 'transform 0.3s ease' }} />
       )}
 
       {work.date && (
-        <span style={{ position: 'absolute', top: '12px', right: '12px', background: 'rgba(11,23,42,0.85)', color: '#fff', padding: '4px 10px', borderRadius: '12px', fontSize: '11px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px', zIndex: 2 }}>
+        <span style={{ position: 'absolute', top: '12px', right: '12px', background: 'rgba(11,23,42,0.85)', color: '#fff', padding: '4px 10px', borderRadius: 0, fontSize: '11px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px', zIndex: 2 }}>
           <Calendar size={11} /> {work.date}
         </span>
       )}
 
       {mediaItems.length > 1 && (
-        <span style={{ position: 'absolute', top: '12px', left: '12px', background: 'rgba(11,23,42,0.85)', color: '#fff', padding: '4px 10px', borderRadius: '12px', fontSize: '11px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px', zIndex: 2 }}>
+        <span style={{ position: 'absolute', top: '12px', left: '12px', background: 'rgba(11,23,42,0.85)', color: '#fff', padding: '4px 10px', borderRadius: 0, fontSize: '11px', fontWeight 700, display: 'flex', alignItems: 'center', gap: '4px', zIndex: 2 }}>
           <ImageIcon size={11} /> +{mediaItems.length - 1} фото
         </span>
       )}
@@ -180,22 +189,25 @@ function WorkDetailModal({ work, onClose, onAddToCart, onOpenFullscreen }) {
   const currentMedia = mediaItems[activeMediaIndex] || mediaItems[0];
   const isCurrentVideo = currentMedia?.type === 'video' || (typeof currentMedia?.url === 'string' && (currentMedia.url.endsWith('.mp4') || currentMedia.url.includes('video')));
 
+  const titleText = stripEmojis(work.title);
+  const descText = stripEmojis(work.description);
+
   return (
     <div onClick={onClose} style={{ position: 'fixed', inset: 0, width: '100vw', height: '100vh', zIndex: 999999, background: 'rgba(11, 23, 42, 0.82)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px', boxSizing: 'border-box' }}>
-      <div onClick={(e) => e.stopPropagation()} style={{ background: '#ffffff', borderRadius: '16px', maxWidth: '920px', width: '100%', maxHeight: '90vh', overflowY: 'auto', boxShadow: '0 25px 60px rgba(0,0,0,0.4)', position: 'relative', display: 'flex', flexDirection: 'column' }}>
-        <div style={{ padding: '16px 24px', borderBottom: '1px solid #e2e8f0', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#f8fafc', borderTopLeftRadius: '16px', borderTopRightRadius: '16px' }}>
+      <div onClick={(e) => e.stopPropagation()} style={{ background: '#ffffff', borderRadius: 0, maxWidth: '920px', width: '100%', maxHeight: '90vh', overflowY: 'auto', boxShadow: '0 25px 60px rgba(0,0,0,0.4)', position: 'relative', display: 'flex', flexDirection: 'column' }}>
+        <div style={{ padding: '16px 24px', borderBottom: '1px solid #e2e8f0', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#f8fafc', borderRadius: 0 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <Sparkles size={18} style={{ color: 'var(--accent-gold)' }} />
             <span style={{ fontSize: '14px', fontWeight: 800, color: 'var(--bg-navy)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Деталі десерту</span>
           </div>
-          <button onClick={onClose} style={{ background: '#e2e8f0', color: '#0b172a', border: 'none', width: '32px', height: '32px', borderRadius: '50%', cursor: 'pointer' }}><X size={18} /></button>
+          <button onClick={onClose} style={{ background: '#e2e8f0', color: '#0b172a', border: 'none', width: '32px', height: '32px', borderRadius: 0, cursor: 'pointer' }}><X size={18} /></button>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '24px', padding: '24px' }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-            <div onClick={() => onOpenFullscreen(currentMedia.url)} style={{ width: '100%', height: '340px', background: '#0b172a', borderRadius: '12px', overflow: 'hidden', position: 'relative', cursor: 'pointer' }}>
-              {isCurrentVideo ? <video src={currentMedia.url} controls autoPlay style={{ width: '100%', height: '100%', objectFit: 'contain' }} /> : <img src={currentMedia.url} alt={work.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />}
-              {work.date && <span style={{ position: 'absolute', top: '12px', right: '12px', background: 'rgba(11,23,42,0.85)', color: '#fff', padding: '4px 10px', borderRadius: '12px', fontSize: '11px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px' }}><Calendar size={12} /> {work.date}</span>}
-              <span style={{ position: 'absolute', bottom: '12px', right: '12px', background: 'rgba(11,23,42,0.8)', color: '#fff', padding: '4px 10px', borderRadius: '10px', fontSize: '10.5px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px' }}><Maximize2 size={11} /> На весь екран</span>
+            <div onClick={() => onOpenFullscreen(currentMedia.url)} style={{ width: '100%', height: '340px', background: '#0b172a', borderRadius: 0, overflow: 'hidden', position: 'relative', cursor: 'pointer' }}>
+              {isCurrentVideo ? <video src={currentMedia.url} controls autoPlay style={{ width: '100%', height: '100%', objectFit: 'contain' }} /> : <img src={currentMedia.url} alt={titleText} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />}
+              {work.date && <span style={{ position: 'absolute', top: '12px', right: '12px', background: 'rgba(11,23,42,0.85)', color: '#fff', padding: '4px 10px', borderRadius: 0, fontSize: '11px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px' }}><Calendar size={12} /> {work.date}</span>}
+              <span style={{ position: 'absolute', bottom: '12px', right: '12px', background: 'rgba(11,23,42,0.8)', color: '#fff', padding: '4px 10px', borderRadius: 0, fontSize: '10.5px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px' }}><Maximize2 size={11} /> На весь екран</span>
               {mediaItems.length > 1 && (
                 <>
                   <button onClick={(e) => { e.stopPropagation(); prevMedia(); }} style={{ position: 'absolute', left: '8px', top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.92)', color: '#0b172a', border: '1px solid #cbd5e1', borderRadius: '50%', width: '34px', height: '34px', cursor: 'pointer' }}><ChevronLeft size={18} /></button>
@@ -205,9 +217,9 @@ function WorkDetailModal({ work, onClose, onAddToCart, onOpenFullscreen }) {
             </div>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <h2 style={{ fontFamily: "'Georgia', serif", fontSize: '22px', color: 'var(--bg-navy)', fontWeight: 700, marginBottom: '12px' }}>{work.title}</h2>
-            <div style={{ fontSize: '14px', color: '#334155', lineHeight: 1.6, marginBottom: '24px', flex: 1, whiteSpace: 'pre-line', overflowY: 'auto', maxHeight: '300px' }}>{work.description}</div>
-            <button className="btn-primary" onClick={() => { onAddToCart({ id: `portfolio-${work.id}`, name: work.title, price: 1100, unit: 'грн/кг', img: work.image, desc: work.description }); onClose(); }} style={{ width: '100%', padding: '12px', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+            <h2 style={{ fontFamily: "'Georgia', serif", fontSize: '22px', color: 'var(--bg-navy)', fontWeight: 700, marginBottom: '12px' }}>{titleText}</h2>
+            <div style={{ fontSize: '14px', color: '#334155', lineHeight: 1.6, marginBottom: '24px', flex: 1, whiteSpace: 'pre-line', overflowY: 'auto', maxHeight: '300px' }}>{descText}</div>
+            <button className="btn-primary" onClick={() => { onAddToCart({ id: `portfolio-${work.id}`, name: titleText, price: 1100, unit: 'грн/кг', img: work.image, desc: descText }); onClose(); }} style={{ width: '100%', padding: '12px', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', borderRadius: 0 }}>
               <ShoppingBag size={18} /> Замовити схожий десерт
             </button>
           </div>

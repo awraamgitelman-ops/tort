@@ -20,6 +20,12 @@ if (!fs.existsSync(portfolioJsonPath)) {
 const mediaGroups = new Map();
 const backupJsonPath = path.join(dataDir, 'portfolio.backup.json');
 
+function stripEmojis(str) {
+  if (!str) return '';
+  const emojiRegex = /[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}\u{1F1E6}-\u{1F1FF}\u{FE00}-\u{FE0F}\u{200D}\u{1F900}-\u{1F9FF}\u{1FA00}-\u{1FAFF}\u{1F004}-\u{1F0CF}]/gu;
+  return str.replace(emojiRegex, '').replace(/  +/g, ' ').trim();
+}
+
 function getPortfolioData() {
  try {
  let data = [];
@@ -36,14 +42,18 @@ function getPortfolioData() {
  }
  }
 
- // Filter out deleted posts matching blacklisted titles
+ // Filter out deleted posts and clean emojis
  return data.filter(item => {
  const title = (item.title || '').toLowerCase();
  const desc = (item.description || '').toLowerCase();
  const isDeleted = title.includes('скеля') || desc.includes('скеля') || 
  title.includes('стильні чоловічі торти') || desc.includes('стильні чоловічі торти');
  return !isDeleted;
- });
+ }).map(item => ({
+   ...item,
+   title: stripEmojis(item.title),
+   description: stripEmojis(item.description)
+ }));
  } catch (e) {
  console.error('Error reading portfolio data:', e);
  return [];
