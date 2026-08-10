@@ -258,21 +258,65 @@ body {
   margin-bottom: 60px;
 }
 
-/* Left Sidebar Categories */
+/* Left Sidebar Categories & Mobile Accordion */
 .sidebar-box {
   background: var(--bg-white);
   border: 1px solid var(--border-light);
   border-radius: var(--radius-md);
   padding: 24px 20px;
+  align-self: start;
 }
 
-.sidebar-title {
-  font-size: 20px;
+.desktop-sidebar-title {
+  display: block;
+  font-size: 18px;
   font-weight: 800;
   color: var(--bg-navy);
   margin-bottom: 16px;
   padding-bottom: 12px;
   border-bottom: 2px solid var(--accent-gold);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.sidebar-accordion-header {
+  display: none;
+  width: 100%;
+  background: transparent;
+  border: none;
+  padding: 0;
+  text-align: left;
+  cursor: pointer;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sidebar-header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sidebar-title-text {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--bg-navy);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.sidebar-active-cat-label {
+  font-size: 13px;
+  color: var(--accent-gold);
+  font-weight: 700;
+  margin-top: 2px;
+}
+
+.sidebar-accordion-arrow {
+  color: var(--bg-navy);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .category-list {
@@ -531,7 +575,7 @@ body {
   box-shadow: 0 4px 12px rgba(11, 23, 42, 0.2);
 }
 
-/* Universal Sharp Corner Overrides (Matching Carousel Style) */
+/* Universal Sharp Corner Overrides */
 .btn-primary,
 .search-input,
 .cart-widget,
@@ -542,24 +586,145 @@ body {
 .support-box,
 .hero-banner,
 .category-link,
+.catalog-article-card,
 article,
 input {
   border-radius: 0 !important;
 }
 
-/* Mobile Media Queries */
+/* Catalog Article Card Styles */
+.catalog-article-card {
+  background: #ffffff;
+  border: 1px solid var(--border-light);
+  padding: 28px;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.3s;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.catalog-article-grid {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 24px;
+}
+
+/* Mobile Media Queries & Accordion */
 @media (max-width: 860px) {
   .page-layout {
     grid-template-columns: 1fr;
+    gap: 20px;
   }
+
+  .desktop-sidebar-title {
+    display: none;
+  }
+
+  .sidebar-box.mobile-accordion-box {
+    padding: 14px 18px;
+    border: 1.5px solid var(--accent-gold);
+    background: #ffffff;
+    box-shadow: 0 4px 12px rgba(197, 155, 39, 0.12);
+  }
+
+  .sidebar-accordion-header {
+    display: flex;
+  }
+
+  .category-list.accordion-closed {
+    display: none;
+  }
+
+  .category-list.accordion-open {
+    display: flex;
+    flex-direction: column;
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid #e2e8f0;
+    gap: 6px;
+    animation: accordionSlideDown 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  .category-link {
+    padding: 12px 14px;
+    font-size: 14px;
+    background: #f8fafc;
+    border-left: 3px solid transparent;
+  }
+
+  .category-link.active {
+    background: rgba(197, 155, 39, 0.12);
+    border-left: 3px solid var(--accent-gold);
+    color: var(--bg-navy);
+    font-weight: 800;
+  }
+
   .footer-support-boxes {
     grid-template-columns: 1fr;
   }
+
   .top-header-content {
     flex-wrap: wrap;
+    gap: 14px;
   }
+
+  .header-search {
+    order: 3;
+    max-width: 100%;
+    width: 100%;
+  }
+
   .nav-container {
     overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+@media (max-width: 680px) {
+  .hero-banner {
+    padding: 24px 0;
+    margin-bottom: 20px;
+  }
+
+  .hero-banner-content {
+    flex-direction: column-reverse;
+    text-align: center;
+    gap: 16px;
+  }
+
+  .hero-banner-title {
+    font-size: 24px !important;
+  }
+
+  .hero-logo-emblem {
+    width: 90px !important;
+    height: 90px !important;
+    margin: 0 auto;
+  }
+
+  .catalog-article-card {
+    padding: 18px 16px;
+  }
+
+  .catalog-article-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .catalog-article-img-box {
+    height: 200px !important;
+  }
+}
+
+@keyframes accordionSlideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 

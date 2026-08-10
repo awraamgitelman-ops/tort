@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ChevronRight, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { ChevronRight, ChevronDown, ChevronUp, Layers, CheckCircle2 } from 'lucide-react';
 import PortfolioCarousel from './PortfolioCarousel';
 import ReviewsCarousel from './ReviewsCarousel';
 
@@ -304,6 +304,7 @@ const MENU_ITEMS = [
 
 export default function Catalog({ onAddToCart, onGoToPortfolio, selectedCategory }) {
   const [selectedCat, setSelectedCat] = useState(selectedCategory || 'all');
+  const [isMobileAccordionOpen, setIsMobileAccordionOpen] = useState(false);
 
   React.useEffect(() => {
     if (selectedCategory) {
@@ -315,6 +316,8 @@ export default function Catalog({ onAddToCart, onGoToPortfolio, selectedCategory
     ? MENU_ITEMS
     : MENU_ITEMS.filter(p => p.category === selectedCat);
 
+  const activeCategoryObj = CATEGORIES.find(c => c.id === selectedCat) || CATEGORIES[0];
+
   return (
     <div>
       {/* Hero Mint Banner */}
@@ -325,7 +328,7 @@ export default function Catalog({ onAddToCart, onGoToPortfolio, selectedCategory
             <div className="hero-breadcrumb">Головна &gt; Прейскурант та опис десертів BELLA CRÈME</div>
           </div>
 
-          <div style={{ width: '130px', height: '130px', borderRadius: '50%', overflow: 'hidden', border: '4px solid #fff', boxShadow: '0 10px 20px rgba(0,0,0,0.1)' }}>
+          <div className="hero-logo-emblem" style={{ width: '120px', height: '120px', borderRadius: '50%', overflow: 'hidden', border: '4px solid #fff', boxShadow: '0 10px 20px rgba(0,0,0,0.1)', flexShrink: 0 }}>
             <img src="/logo.png" alt="BELLA CRÈME Emblem" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
           </div>
         </div>
@@ -333,17 +336,45 @@ export default function Catalog({ onAddToCart, onGoToPortfolio, selectedCategory
 
       {/* Main Two Column Page Content */}
       <div className="container page-layout">
-        {/* Left Sidebar Categories */}
-        <aside className="sidebar-box">
-          <h3 className="sidebar-title">Розділи Меню</h3>
-          <div className="category-list">
+        {/* Left Sidebar Categories (Desktop Column & Mobile Accordion) */}
+        <aside className="sidebar-box mobile-accordion-box">
+          <h3 className="desktop-sidebar-title">Розділи Меню</h3>
+          
+          {/* Mobile Accordion Header Button */}
+          <button
+            type="button"
+            className="sidebar-accordion-header"
+            onClick={() => setIsMobileAccordionOpen(prev => !prev)}
+            aria-expanded={isMobileAccordionOpen}
+          >
+            <div className="sidebar-header-left">
+              <Layers size={20} style={{ color: 'var(--accent-gold)' }} />
+              <div>
+                <div className="sidebar-title-text">Розділи Меню</div>
+                <div className="sidebar-active-cat-label">
+                  {activeCategoryObj.name} ({activeCategoryObj.count})
+                </div>
+              </div>
+            </div>
+            <div className="sidebar-accordion-arrow">
+              {isMobileAccordionOpen ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+            </div>
+          </button>
+
+          <div className={`category-list ${isMobileAccordionOpen ? 'accordion-open' : 'accordion-closed'}`}>
             {CATEGORIES.map(cat => (
               <div
                 key={cat.id}
                 className={`category-link ${selectedCat === cat.id ? 'active' : ''}`}
-                onClick={() => setSelectedCat(cat.id)}
+                onClick={() => {
+                  setSelectedCat(cat.id);
+                  setIsMobileAccordionOpen(false);
+                }}
               >
-                <span><ChevronRight size={14} style={{ display: 'inline', verticalAlign: 'middle', marginRight: '4px' }} /> {cat.name}</span>
+                <span>
+                  <ChevronRight size={14} style={{ display: 'inline', verticalAlign: 'middle', marginRight: '4px' }} />
+                  {cat.name}
+                </span>
                 <span className="category-count">({cat.count})</span>
               </div>
             ))}
@@ -351,7 +382,7 @@ export default function Catalog({ onAddToCart, onGoToPortfolio, selectedCategory
         </aside>
 
         {/* Right Content Column */}
-        <main style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
+        <main style={{ display: 'flex', flexDirection: 'column', gap: '28px' }}>
           {/* Reviews Carousel */}
           <ReviewsCarousel />
 
@@ -361,17 +392,7 @@ export default function Catalog({ onAddToCart, onGoToPortfolio, selectedCategory
           {filteredProducts.map(product => (
             <article
               key={product.id}
-              style={{
-                background: '#ffffff',
-                border: '1px solid var(--border-light)',
-                borderRadius: 0,
-                padding: '28px',
-                boxShadow: 'var(--shadow-sm)',
-                transition: 'all 0.3s',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '16px'
-              }}
+              className="catalog-article-card"
             >
               {/* Article Header */}
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '12px', borderBottom: '1px solid #f1f5f9', paddingBottom: '14px' }}>
@@ -393,8 +414,8 @@ export default function Catalog({ onAddToCart, onGoToPortfolio, selectedCategory
               </div>
 
               {/* Article Main Body */}
-              <div style={{ display: 'grid', gridTemplateColumns: '220px 1fr', gap: '24px' }}>
-                <div style={{ borderRadius: 0, overflow: 'hidden', height: '170px', position: 'relative' }}>
+              <div className="catalog-article-grid">
+                <div className="catalog-article-img-box" style={{ borderRadius: 0, overflow: 'hidden', height: '170px', position: 'relative' }}>
                   <img
                     src={product.img}
                     alt={product.name}
