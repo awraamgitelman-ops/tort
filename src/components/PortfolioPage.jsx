@@ -194,16 +194,7 @@ function WorkCard({ work, onAddToCart }) {
           {work.description}
         </p>
 
-        <div style={{ borderTop: '1px dashed var(--border-light)', paddingTop: '14px', marginTop: 'auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <a
-            href="https://t.me/BELLA_CREME_ua"
-            target="_blank"
-            rel="noreferrer"
-            style={{ fontSize: '12.5px', fontWeight: 700, color: 'var(--accent-cyan)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '4px' }}
-          >
-            <Send size={13} /> t.me/BELLA_CREME_ua
-          </a>
-
+        <div style={{ borderTop: '1px dashed var(--border-light)', paddingTop: '14px', marginTop: 'auto', display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
           <button
             className="btn-primary"
             onClick={() => onAddToCart({
@@ -212,7 +203,7 @@ function WorkCard({ work, onAddToCart }) {
               price: 1100,
               weight: 'Індивідуальне замовлення'
             })}
-            style={{ padding: '8px 16px', fontSize: '12px' }}
+            style={{ padding: '8px 18px', fontSize: '12px' }}
           >
             Замовити схожий &raquo;
           </button>
@@ -232,7 +223,9 @@ export default function PortfolioPage({ onAddToCart }) {
       const res = await fetch('/api/portfolio');
       if (res.ok) {
         const data = await res.json();
-        setWorks(data);
+        // Sort newest posts first (descending by timestamp / ID)
+        const sorted = [...data].sort((a, b) => (Number(b.id) || 0) - (Number(a.id) || 0));
+        setWorks(sorted);
       }
     } catch (err) {
       console.warn('Failed to load portfolio:', err);

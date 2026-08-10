@@ -228,9 +228,15 @@ export function initBot() {
       const timestamp = Date.now();
       let portfolioData = getPortfolioData();
 
-      const cleanCaption = caption || 'Авторський десерт BELLA CRÈME';
-      const lines = cleanCaption.trim().split('\n');
-      const title = lines[0].substring(0, 80) || 'Авторський десерт';
+      const rawCaption = caption || 'Авторський десерт BELLA CRÈME';
+      const cleanCaption = rawCaption
+        .replace(/https?:\/\/t\.me\/[^\s]+/gi, '')
+        .replace(/t\.me\/[^\s]+/gi, '')
+        .replace(/@BELLA_CREME_ua/gi, '')
+        .trim() || 'Авторський десерт BELLA CRÈME';
+
+      const lines = cleanCaption.trim().split('\n').filter(line => line.trim() !== '');
+      const title = (lines[0] || 'Авторський десерт').substring(0, 80);
 
       const hasVideo = mediaList.some(m => m.type === 'video');
 
