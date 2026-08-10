@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ChevronRight, ArrowRight, CheckCircle2 } from 'lucide-react';
+import PortfolioCarousel from './PortfolioCarousel';
 
 const CATEGORIES = [
   { id: 'all', name: 'Увесь Прейскурант', count: 23 },
@@ -300,7 +301,7 @@ const MENU_ITEMS = [
   }
 ];
 
-export default function Catalog({ onAddToCart }) {
+export default function Catalog({ onAddToCart, onGoToPortfolio }) {
   const [selectedCat, setSelectedCat] = useState('all');
 
   const filteredProducts = selectedCat === 'all'
@@ -344,6 +345,9 @@ export default function Catalog({ onAddToCart }) {
 
         {/* Right Content Column */}
         <main style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
+          {/* Interactive Carousel of Recent Works from Telegram */}
+          <PortfolioCarousel onGoToPortfolio={onGoToPortfolio} />
+
           {filteredProducts.map(product => (
             <article
               key={product.id}

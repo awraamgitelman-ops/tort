@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from './components/Header';
 import Catalog from './components/Catalog';
 import StorageGuidePage from './components/StorageGuidePage';
@@ -375,6 +375,7 @@ export default function App() {
         {activeTab === 'catalog' && (
           <Catalog
             onAddToCart={handleAddToCart}
+            onGoToPortfolio={() => setActiveTab('portfolio')}
           />
         )}
 
