@@ -187,7 +187,7 @@ const MENU_ITEMS = [
     weights: 'Ванільний бісквіт',
     price: 1100,
     unit: 'грн/кг',
-    img: '/images/filling_mangostrawberry_real.jpg',
+    img: '/images/filling_mangostrawberry_real.png',
     badge: 'Соковитий дует',
     articleText: 'Повітряний ванільний бісквіт з молочним просоченням, насиченим полуничним желе та ніжним манговим кремом.',
     ingredients: ['Ванільний бісквіт', 'Молочне просочення', 'Полуничне желе', 'Манговий крем', 'Крем сир на вершках']
