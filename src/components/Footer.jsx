@@ -112,7 +112,7 @@ export default function Footer({ onGoToTab, onGoToCategory }) {
 
         {/* Bottom Copyright Line */}
         <div style={{ borderTop: '1px solid var(--border-light)', padding: '20px 0', textAlign: 'center', fontSize: '13px', color: 'var(--text-muted)' }}>
-          Всі права захищені © {new Date().getFullYear()} BELLA CRÈME (t.me/BELLA_CREME_ua)
+          Всі права захищені © {new Date().getFullYear()} BELLA CRÈME
         </div>
       </div>
     </footer>
