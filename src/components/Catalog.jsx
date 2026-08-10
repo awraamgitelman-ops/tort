@@ -458,8 +458,6 @@ export default function Catalog({ onAddToCart, onGoToPortfolio }) {
                 >
                   <span>Додати в кошик та Замовити &raquo;</span>
                 </button>
-                  <span>Додати в кошик та Замовити &raquo;</span>
-                </button>
               </div>
             </article>
           ))}
