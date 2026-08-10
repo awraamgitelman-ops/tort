@@ -17,7 +17,7 @@ export default function Footer({ onGoToTab, onGoToCategory }) {
                 +38(068)655-19-19
               </div>
               <div style={{ fontSize: '13px', color: 'var(--accent-cyan)' }}>
-                Telegram: @BELLA_CREME_Meneger
+                Telegram: @BELLA_CREME_Manager
               </div>
             </div>
           </div>
