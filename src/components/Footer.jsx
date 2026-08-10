@@ -32,8 +32,8 @@ export default function Footer({ onGoToTab, onGoToCategory }) {
                 Підписуйтесь на наші сторінки, щоб бути в курсі новин та знижок
               </div>
               <div style={{ display: 'flex', gap: '8px' }}>
-                <a href="https://t.me/BELLA_CREME_Meneger" target="_blank" rel="noreferrer" className="btn-primary" style={{ padding: '6px 16px', fontSize: '12px', borderRadius: 0 }}>
-                  <Send size={12} /> Telegram @BELLA_CREME_Meneger
+                <a href="https://t.me/BELLA_CREME_ua" target="_blank" rel="noreferrer" className="btn-primary" style={{ padding: '6px 16px', fontSize: '12px', borderRadius: 0 }}>
+                  <Send size={12} /> Telegram @BELLA_CREME_ua
                 </a>
               </div>
             </div>
