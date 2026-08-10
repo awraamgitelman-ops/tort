@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Sparkles, Send, Calendar, ChevronLeft, ChevronRight, Image as ImageIcon, PlayCircle, Video as VideoIcon } from 'lucide-react';
+import { Sparkles, Send, Calendar, ChevronLeft, ChevronRight, Image as ImageIcon, PlayCircle, Video as VideoIcon, Maximize2, X } from 'lucide-react';
 
-function WorkCard({ work, onAddToCart }) {
+function WorkCard({ work, onAddToCart, onOpenFullscreen }) {
   // Support both mediaList (with types) and images array
   const mediaItems = work.mediaList && work.mediaList.length > 0 
     ? work.mediaList 
@@ -36,7 +36,11 @@ function WorkCard({ work, onAddToCart }) {
       }}
     >
       {/* Media Box with Video Player & Carousel Navigation */}
-      <div style={{ width: '100%', height: '270px', overflow: 'hidden', position: 'relative', background: '#0b172a' }}>
+      <div
+        onClick={() => onOpenFullscreen(currentMedia.url)}
+        style={{ width: '100%', height: '270px', overflow: 'hidden', position: 'relative', background: '#0b172a', cursor: 'pointer' }}
+        title="Натисніть, щоб відкрити на весь екран"
+      >
         {isCurrentVideo ? (
           <video
             src={currentMedia.url}
@@ -96,6 +100,25 @@ function WorkCard({ work, onAddToCart }) {
           </span>
         )}
 
+        {/* Click to Expand Badge */}
+        <span style={{
+          position: 'absolute',
+          bottom: '12px',
+          right: '12px',
+          background: 'rgba(11,23,42,0.8)',
+          color: '#ffffff',
+          padding: '4px 10px',
+          borderRadius: '10px',
+          fontSize: '10.5px',
+          fontWeight: 700,
+          display: 'flex',
+          alignItems: 'center',
+          gap: '4px',
+          zIndex: 2
+        }}>
+          <Maximize2 size={11} /> На весь екран
+        </span>
+
         {/* Carousel Prev/Next Navigation Controls if > 1 media item */}
         {mediaItems.length > 1 && (
           <>
@@ -106,20 +129,23 @@ function WorkCard({ work, onAddToCart }) {
                 left: '8px',
                 top: '50%',
                 transform: 'translateY(-50%)',
-                background: 'rgba(0,0,0,0.6)',
-                color: '#fff',
-                border: 'none',
+                background: 'rgba(255,255,255,0.92)',
+                color: '#0b172a',
+                border: '1px solid #cbd5e1',
                 borderRadius: '50%',
-                width: '32px',
-                height: '32px',
+                width: '34px',
+                height: '34px',
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'center',
+                justify: 'center',
+                padding: 0,
+                lineHeight: 0,
                 cursor: 'pointer',
+                boxShadow: '0 4px 10px rgba(0,0,0,0.12)',
                 zIndex: 3
               }}
             >
-              <ChevronLeft size={18} />
+              <ChevronLeft size={18} style={{ display: 'block', margin: 'auto' }} />
             </button>
 
             <button
@@ -129,20 +155,23 @@ function WorkCard({ work, onAddToCart }) {
                 right: '8px',
                 top: '50%',
                 transform: 'translateY(-50%)',
-                background: 'rgba(0,0,0,0.6)',
-                color: '#fff',
-                border: 'none',
+                background: 'rgba(255,255,255,0.92)',
+                color: '#0b172a',
+                border: '1px solid #cbd5e1',
                 borderRadius: '50%',
-                width: '32px',
-                height: '32px',
+                width: '34px',
+                height: '34px',
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'center',
+                justify: 'center',
+                padding: 0,
+                lineHeight: 0,
                 cursor: 'pointer',
+                boxShadow: '0 4px 10px rgba(0,0,0,0.12)',
                 zIndex: 3
               }}
             >
-              <ChevronRight size={18} />
+              <ChevronRight size={18} style={{ display: 'block', margin: 'auto' }} />
             </button>
           </>
         )}
@@ -154,7 +183,10 @@ function WorkCard({ work, onAddToCart }) {
           {mediaItems.map((item, idx) => (
             <div
               key={idx}
-              onClick={() => setActiveMediaIndex(idx)}
+              onClick={(e) => {
+                e.stopPropagation();
+                setActiveMediaIndex(idx);
+              }}
               style={{
                 width: '46px',
                 height: '46px',
@@ -201,11 +233,13 @@ function WorkCard({ work, onAddToCart }) {
               id: `portfolio-${work.id}`,
               name: work.title,
               price: 1100,
-              weight: 'Індивідуальне замовлення'
+              unit: 'грн/кг',
+              img: work.image,
+              desc: work.description
             })}
-            style={{ padding: '8px 18px', fontSize: '12px' }}
+            style={{ fontSize: '12.5px', padding: '8px 16px' }}
           >
-            Замовити схожий &raquo;
+            Замовити схожий десерт
           </button>
         </div>
       </div>
@@ -223,6 +257,7 @@ export default function PortfolioPage({ onAddToCart }) {
     }
   });
   const [loading, setLoading] = useState(true);
+  const [fullscreenMedia, setFullscreenMedia] = useState(null);
 
   const fetchPortfolio = async () => {
     setLoading(true);
@@ -231,7 +266,6 @@ export default function PortfolioPage({ onAddToCart }) {
       if (res.ok) {
         const data = await res.json();
         if (Array.isArray(data) && data.length > 0) {
-          // Sort newest posts first strictly by original Telegram publication date
           const sorted = [...data].sort((a, b) => {
             const timeA = Number(a.originalTimestamp || a.id) || 0;
             const timeB = Number(b.originalTimestamp || b.id) || 0;
@@ -240,7 +274,6 @@ export default function PortfolioPage({ onAddToCart }) {
           localStorage.setItem('cached_portfolio_works', JSON.stringify(sorted));
           setWorks(sorted);
         } else {
-          // Fallback to cache if server returns empty
           const cached = localStorage.getItem('cached_portfolio_works');
           if (cached) {
             setWorks(JSON.parse(cached));
@@ -297,11 +330,89 @@ export default function PortfolioPage({ onAddToCart }) {
         ) : (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', gap: '28px' }}>
             {works.map((work) => (
-              <WorkCard key={work.id} work={work} onAddToCart={onAddToCart} />
+              <WorkCard
+                key={work.id}
+                work={work}
+                onAddToCart={onAddToCart}
+                onOpenFullscreen={(mediaUrl) => setFullscreenMedia(mediaUrl)}
+              />
             ))}
           </div>
         )}
       </div>
+
+      {/* Centered Fullscreen Lightbox Modal */}
+      {fullscreenMedia && (
+        <div
+          onClick={() => setFullscreenMedia(null)}
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            width: '100vw',
+            height: '100vh',
+            zIndex: 999999,
+            background: 'rgba(11, 23, 42, 0.94)',
+            backdropFilter: 'blur(10px)',
+            display: 'flex',
+            alignItems: 'center',
+            justify: 'center',
+            padding: '20px',
+            boxSizing: 'border-box'
+          }}
+        >
+          <button
+            onClick={() => setFullscreenMedia(null)}
+            style={{
+              position: 'absolute',
+              top: '20px',
+              right: '20px',
+              background: 'rgba(255,255,255,0.2)',
+              color: '#fff',
+              border: 'none',
+              width: '44px',
+              height: '44px',
+              borderRadius: '50%',
+              display: 'flex',
+              alignItems: 'center',
+              justify: 'center',
+              cursor: 'pointer',
+              zIndex: 1000000
+            }}
+          >
+            <X size={26} />
+          </button>
+
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justify: 'center',
+              maxWidth: '92vw',
+              maxHeight: '90vh',
+              margin: 'auto'
+            }}
+          >
+            {fullscreenMedia.endsWith('.mp4') || fullscreenMedia.includes('video') ? (
+              <video
+                src={fullscreenMedia}
+                controls
+                autoPlay
+                style={{ maxWidth: '92vw', maxHeight: '85vh', borderRadius: '12px', boxShadow: '0 25px 60px rgba(0,0,0,0.6)', objectFit: 'contain' }}
+              />
+            ) : (
+              <img
+                src={fullscreenMedia}
+                alt="Full screen work preview"
+                style={{ maxWidth: '92vw', maxHeight: '85vh', objectFit: 'contain', borderRadius: '12px', boxShadow: '0 25px 60px rgba(0,0,0,0.6)' }}
+              />
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

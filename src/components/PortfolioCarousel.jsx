@@ -216,7 +216,7 @@ export default function PortfolioCarousel({ onGoToPortfolio }) {
                   left: '12px',
                   top: '50%',
                   transform: 'translateY(-50%)',
-                  background: 'rgba(255, 255, 255, 0.95)',
+                  background: 'rgba(255, 255, 255, 0.96)',
                   color: '#0b172a',
                   border: '1px solid #cbd5e1',
                   width: '38px',
@@ -225,12 +225,14 @@ export default function PortfolioCarousel({ onGoToPortfolio }) {
                   display: 'flex',
                   alignItems: 'center',
                   justify: 'center',
+                  padding: 0,
+                  lineHeight: 0,
                   cursor: 'pointer',
                   boxShadow: '0 4px 10px rgba(0,0,0,0.12)',
                   zIndex: 4
                 }}
               >
-                <ChevronLeft size={20} />
+                <ChevronLeft size={20} style={{ display: 'block', margin: 'auto' }} />
               </button>
               <button
                 onClick={nextSlide}
@@ -239,7 +241,7 @@ export default function PortfolioCarousel({ onGoToPortfolio }) {
                   right: '12px',
                   top: '50%',
                   transform: 'translateY(-50%)',
-                  background: 'rgba(255, 255, 255, 0.95)',
+                  background: 'rgba(255, 255, 255, 0.96)',
                   color: '#0b172a',
                   border: '1px solid #cbd5e1',
                   width: '38px',
@@ -248,32 +250,40 @@ export default function PortfolioCarousel({ onGoToPortfolio }) {
                   display: 'flex',
                   alignItems: 'center',
                   justify: 'center',
+                  padding: 0,
+                  lineHeight: 0,
                   cursor: 'pointer',
                   boxShadow: '0 4px 10px rgba(0,0,0,0.12)',
                   zIndex: 4
                 }}
               >
-                <ChevronRight size={20} />
+                <ChevronRight size={20} style={{ display: 'block', margin: 'auto' }} />
               </button>
             </>
           )}
         </div>
       </section>
 
-      {/* Fullscreen Lightbox Modal */}
+      {/* Fullscreen Lightbox Modal (Centered) */}
       {fullscreenMedia && (
         <div
           onClick={() => setFullscreenMedia(null)}
           style={{
             position: 'fixed',
-            inset: 0,
-            zIndex: 99999,
-            background: 'rgba(11, 23, 42, 0.92)',
-            backdropFilter: 'blur(8px)',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            width: '100vw',
+            height: '100vh',
+            zIndex: 999999,
+            background: 'rgba(11, 23, 42, 0.93)',
+            backdropFilter: 'blur(10px)',
             display: 'flex',
             alignItems: 'center',
             justify: 'center',
-            padding: '20px'
+            padding: '20px',
+            boxSizing: 'border-box'
           }}
         >
           <button
@@ -292,7 +302,7 @@ export default function PortfolioCarousel({ onGoToPortfolio }) {
               alignItems: 'center',
               justify: 'center',
               cursor: 'pointer',
-              zIndex: 100000
+              zIndex: 1000000
             }}
           >
             <X size={26} />
@@ -301,12 +311,12 @@ export default function PortfolioCarousel({ onGoToPortfolio }) {
           <div
             onClick={(e) => e.stopPropagation()}
             style={{
-              position: 'relative',
-              maxWidth: '90vw',
+              display: 'flex',
+              alignItems: 'center',
+              justify: 'center',
+              maxWidth: '92vw',
               maxHeight: '90vh',
-              borderRadius: '12px',
-              overflow: 'hidden',
-              boxShadow: '0 20px 50px rgba(0,0,0,0.5)'
+              margin: 'auto'
             }}
           >
             {fullscreenMedia.endsWith('.mp4') || fullscreenMedia.includes('video') ? (
@@ -314,13 +324,13 @@ export default function PortfolioCarousel({ onGoToPortfolio }) {
                 src={fullscreenMedia}
                 controls
                 autoPlay
-                style={{ maxWidth: '90vw', maxHeight: '85vh', borderRadius: '12px' }}
+                style={{ maxWidth: '92vw', maxHeight: '85vh', borderRadius: '12px', boxShadow: '0 25px 60px rgba(0,0,0,0.6)', objectFit: 'contain' }}
               />
             ) : (
               <img
                 src={fullscreenMedia}
                 alt="Full screen work preview"
-                style={{ maxWidth: '90vw', maxHeight: '85vh', objectFit: 'contain', borderRadius: '12px' }}
+                style={{ maxWidth: '92vw', maxHeight: '85vh', objectFit: 'contain', borderRadius: '12px', boxShadow: '0 25px 60px rgba(0,0,0,0.6)' }}
               />
             )}
           </div>
