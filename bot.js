@@ -191,13 +191,13 @@ export function initBot() {
           }
 
           if (group.timer) clearTimeout(group.timer);
-          group.timer = setTimeout(async () => {
-            await savePortfolioEntry(group.mediaList, group.caption, group.chatId, group.date, group.timestamp);
+          group.timer = setTimeout(() => {
+            enqueuePortfolioEntry(group.mediaList, group.caption, group.chatId, group.date, group.timestamp);
             mediaGroups.delete(groupId);
           }, 1200);
 
         } else {
-          await savePortfolioEntry([{ type: 'image', url: directFileUrl }], caption, msg.chat.id, actualPostDate, rawTimestamp * 1000);
+          enqueuePortfolioEntry([{ type: 'image', url: directFileUrl }], caption, msg.chat.id, actualPostDate, rawTimestamp * 1000);
         }
       } catch (err) {
         console.error('Photo processing error:', err);
@@ -233,13 +233,13 @@ export function initBot() {
           }
 
           if (group.timer) clearTimeout(group.timer);
-          group.timer = setTimeout(async () => {
-            await savePortfolioEntry(group.mediaList, group.caption, group.chatId, group.date, group.timestamp);
+          group.timer = setTimeout(() => {
+            enqueuePortfolioEntry(group.mediaList, group.caption, group.chatId, group.date, group.timestamp);
             mediaGroups.delete(groupId);
           }, 1200);
 
         } else {
-          await savePortfolioEntry([{ type: 'video', url: directVideoUrl }], caption, msg.chat.id, actualPostDate, rawTimestamp * 1000);
+          enqueuePortfolioEntry([{ type: 'video', url: directVideoUrl }], caption, msg.chat.id, actualPostDate, rawTimestamp * 1000);
         }
       } catch (err) {
         console.error('Video processing error:', err);
@@ -248,10 +248,35 @@ export function initBot() {
     }
   });
 
+  // Sequential Queue to prevent race conditions during bulk message forwarding (e.g. 100+ posts)
+  const queue = [];
+  let isProcessingQueue = false;
+
+  const enqueuePortfolioEntry = (mediaList, caption, chatId, actualDate, originalTimestamp) => {
+    queue.push({ mediaList, caption, chatId, actualDate, originalTimestamp });
+    processQueue();
+  };
+
+  const processQueue = async () => {
+    if (isProcessingQueue || queue.length === 0) return;
+    isProcessingQueue = true;
+
+    const item = queue.shift();
+    try {
+      await savePortfolioEntry(item.mediaList, item.caption, item.chatId, item.actualDate, item.originalTimestamp);
+    } catch (err) {
+      console.error('Queue task error:', err);
+    } finally {
+      isProcessingQueue = false;
+      setTimeout(processQueue, 250);
+    }
+  };
+
   const savePortfolioEntry = async (mediaList, caption, chatId, actualDate, originalTimestamp) => {
     try {
-      const timestamp = Date.now();
+      // Re-read fresh portfolio data right before writing to avoid race conditions
       let portfolioData = getPortfolioData();
+      const timestamp = Date.now();
 
       const rawCaption = caption || 'Авторський десерт BELLA CRÈME';
       const cleanCaption = rawCaption
@@ -264,9 +289,6 @@ export function initBot() {
       const title = (lines[0] || 'Авторський десерт').substring(0, 80);
 
       const hasVideo = mediaList.some(m => m.type === 'video');
-
-      // Upload files to Catbox for permanent free CDN hosting
-      bot.sendMessage(chatId, `⏳ *Збереження медіафайлів у безкоштовне сховище...*`, { parse_mode: 'Markdown' });
 
       const uploadedMediaList = await Promise.all(
         mediaList.map(async (m, idx) => {
@@ -297,12 +319,12 @@ export function initBot() {
 
       bot.sendMessage(
         chatId,
-        `✅ *${hasVideo ? 'ВІДЕО/АЛЬБОМ' : 'ПОСТ'} УСПІШНО ЗБЕРЕЖЕНО НА САЙТ!*\n\n🎬 *Медіафайлів:* ${uploadedMediaList.length} (відео: ${hasVideo ? 'так' : 'ні'})\n📝 *Заголовок:* ${title}\n📅 *Дата публікації:* ${actualDate}\n☁️ *Хранение:* 100% Безкоштовне CDN сховище (Catbox)\n\n🌐 *Розділ "Мої роботи" оновлено!*`,
+        `✅ *${hasVideo ? 'ВІДЕО' : 'ПОСТ'} УСПІШНО ЗБЕРЕЖЕНО!* (Всього на сайті: ${portfolioData.length})\n\n📝 *${title}*`,
         { parse_mode: 'Markdown' }
-      );
+      ).catch(() => {});
     } catch (err) {
       console.error('Portfolio save error:', err);
-      bot.sendMessage(chatId, `❌ Помилка збереження: ${err.message}`);
+      bot.sendMessage(chatId, `❌ Помилка збереження: ${err.message}`).catch(() => {});
     }
   };
 
