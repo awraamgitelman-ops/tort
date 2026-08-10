@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {
-  Sparkles, Send, Calendar, ChevronLeft, ChevronRight, Image as ImageIcon,
-  PlayCircle, Video as VideoIcon, Maximize2, X, LayoutGrid, LayoutList, Info, ShoppingBag
+  Sparkles, Calendar, ChevronLeft, ChevronRight, Image as ImageIcon,
+  PlayCircle, Video as VideoIcon, Maximize2, X, ShoppingBag
 } from 'lucide-react';
 
 const stripEmojis = (str) => {
@@ -10,126 +10,7 @@ const stripEmojis = (str) => {
   return str.replace(emojiRegex, '').replace(/  +/g, ' ').trim();
 };
 
-/* MODE 1: FULL DETAILED CARD */
-function WorkCardFull({ work, onAddToCart, onOpenFullscreen, onOpenDetail }) {
-  const mediaItems = work.mediaList && work.mediaList.length > 0 
-    ? work.mediaList 
-    : (work.images && work.images.length > 0 ? work.images.map(url => ({ type: 'image', url })) : [{ type: 'image', url: work.image }]);
-
-  const [activeMediaIndex, setActiveMediaIndex] = useState(0);
-
-  const nextMedia = (e) => {
-    e.stopPropagation();
-    setActiveMediaIndex((prev) => (prev + 1) % mediaItems.length);
-  };
-
-  const prevMedia = (e) => {
-    e.stopPropagation();
-    setActiveMediaIndex((prev) => (prev - 1 + mediaItems.length) % mediaItems.length);
-  };
-
-  const currentMedia = mediaItems[activeMediaIndex] || mediaItems[0];
-  const isCurrentVideo = currentMedia?.type === 'video' || (typeof currentMedia?.url === 'string' && (currentMedia.url.endsWith('.mp4') || currentMedia.url.includes('video')));
-
-  const titleText = stripEmojis(work.title);
-  const descText = stripEmojis(work.description);
-
-  return (
-    <article
-      style={{
-        background: '#ffffff',
-        border: '1px solid var(--border-light)',
-        borderRadius: 0,
-        overflow: 'hidden',
-        boxShadow: 'var(--shadow-sm)',
-        display: 'flex',
-        flexDirection: 'column',
-        transition: 'all 0.3s'
-      }}
-    >
-      <div
-        onClick={() => onOpenFullscreen(currentMedia.url)}
-        style={{ width: '100%', height: '280px', overflow: 'hidden', position: 'relative', background: '#0b172a', cursor: 'pointer', borderRadius: 0 }}
-        title="Натисніть, щоб відкрити на весь екран"
-      >
-        {isCurrentVideo ? (
-          <video
-            src={currentMedia.url}
-            controls
-            playsInline
-            preload="metadata"
-            style={{ width: '100%', height: '100%', objectFit: 'contain', background: '#000' }}
-          />
-        ) : (
-          <img
-            src={currentMedia.url}
-            alt={titleText}
-            style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'all 0.3s' }}
-          />
-        )}
-
-        {mediaItems.length > 1 && (
-          <span style={{
-            position: 'absolute', top: '12px', left: '12px', background: 'rgba(11,23,42,0.85)',
-            color: '#fff', padding: '4px 10px', borderRadius: 0, fontSize: '11px', fontWeight: 700,
-            display: 'flex', alignItems: 'center', gap: '4px', zIndex: 2
-          }}>
-            {isCurrentVideo ? <VideoIcon size={12} /> : <ImageIcon size={12} />}
-            {activeMediaIndex + 1} / {mediaItems.length} {isCurrentVideo ? 'відео' : 'медіа'}
-          </span>
-        )}
-
-        {work.date && (
-          <span style={{
-            position: 'absolute', top: '12px', right: '12px', background: 'rgba(11,23,42,0.85)',
-            color: '#fff', padding: '4px 10px', borderRadius: 0, fontSize: '11px', fontWeight: 700,
-            display: 'flex', alignItems: 'center', gap: '4px', zIndex: 2
-          }}>
-            <Calendar size={12} /> {work.date}
-          </span>
-        )}
-
-        <span style={{
-          position: 'absolute', bottom: '12px', right: '12px', background: 'rgba(11,23,42,0.8)',
-          color: '#ffffff', padding: '4px 10px', borderRadius: 0, fontSize: '10.5px', fontWeight: 700,
-          display: 'flex', alignItems: 'center', gap: '4px', zIndex: 2
-        }}>
-          <Maximize2 size={11} /> На весь екран
-        </span>
-
-        {mediaItems.length > 1 && (
-          <>
-            <button onClick={prevMedia} style={{ position: 'absolute', left: '8px', top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.92)', color: '#0b172a', border: '1px solid #cbd5e1', borderRadius: '50%', width: '34px', height: '34px', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 0, lineHeight: 0, cursor: 'pointer', boxShadow: '0 4px 10px rgba(0,0,0,0.12)', zIndex: 3 }}>
-              <ChevronLeft size={18} />
-            </button>
-            <button onClick={nextMedia} style={{ position: 'absolute', right: '8px', top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.92)', color: '#0b172a', border: '1px solid #cbd5e1', borderRadius: '50%', width: '34px', height: '34px', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 0, lineHeight: 0, cursor: 'pointer', boxShadow: '0 4px 10px rgba(0,0,0,0.12)', zIndex: 3 }}>
-              <ChevronRight size={18} />
-            </button>
-          </>
-        )}
-      </div>
-
-      <div style={{ padding: '20px', display: 'flex', flexDirection: 'column', flex: 1 }}>
-        <h3 style={{ fontFamily: "'Georgia', serif", fontSize: '18px', color: 'var(--bg-navy)', fontWeight: 700, marginBottom: '8px', lineHeight: 1.3 }}>
-          {titleText}
-        </h3>
-        <p style={{ fontSize: '13px', color: 'var(--text-muted)', lineHeight: 1.5, marginBottom: '20px', flex: 1, whiteSpace: 'pre-line' }}>
-          {descText}
-        </p>
-        <div style={{ borderTop: '1px dashed var(--border-light)', paddingTop: '14px', marginTop: 'auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '10px' }}>
-          <button onClick={() => onOpenDetail(work)} style={{ background: '#f1f5f9', color: '#0b172a', border: '1px solid #cbd5e1', borderRadius: 0, padding: '8px 14px', fontSize: '12.5px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <Info size={14} /> Докладніше
-          </button>
-          <button className="btn-primary" onClick={() => onAddToCart({ id: `portfolio-${work.id}`, name: titleText, price: 1100, unit: 'грн/кг', img: work.image, desc: descText })} style={{ fontSize: '12.5px', padding: '8px 16px', borderRadius: 0 }}>
-            Замовити схожий десерт
-          </button>
-        </div>
-      </div>
-    </article>
-  );
-}
-
-/* MODE 2: COMPACT PHOTO RECTANGLE (Pure photo rectangle card) */
+/* PURE PHOTO RECTANGLE CARD */
 function WorkCardCompact({ work, onOpenDetail }) {
   const mediaItems = work.mediaList && work.mediaList.length > 0
     ? work.mediaList 
@@ -252,12 +133,6 @@ export default function PortfolioPage({ onAddToCart }) {
   const [loading, setLoading] = useState(true);
   const [fullscreenMedia, setFullscreenMedia] = useState(null);
   const [selectedWorkModal, setSelectedWorkModal] = useState(null);
-  const [viewMode, setViewMode] = useState(() => localStorage.getItem('portfolio_card_view_mode') || 'compact');
-
-  const handleSetViewMode = (mode) => {
-    setViewMode(mode);
-    localStorage.setItem('portfolio_card_view_mode', mode);
-  };
 
   useEffect(() => {
     const fetchPortfolio = async () => {
@@ -315,42 +190,133 @@ export default function PortfolioPage({ onAddToCart }) {
   return (
     <div style={{ minHeight: '80vh', padding: '36px 0 80px', background: 'var(--bg-main)' }}>
       <div className="container">
-        <div style={{ background: '#ffffff', borderRadius: 'var(--radius-md)', padding: '24px 32px', marginBottom: '28px', border: '1px solid var(--border-light)', display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '16px' }}>
-          <div>
-            <span style={{ fontSize: '12px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--accent-gold)' }}>Офіційна портфоліо-галерея</span>
-            <h1 style={{ fontSize: '32px', fontFamily: "'Georgia', serif", color: 'var(--bg-navy)', fontWeight: 700, margin: '4px 0 0' }}>Мої Роботи & Авторські Десерти</h1>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', background: '#f1f5f9', padding: '4px', borderRadius: '12px', border: '1px solid #cbd5e1' }}>
-            <button onClick={() => handleSetViewMode('compact')} style={{ background: viewMode === 'compact' ? '#0b172a' : 'transparent', color: viewMode === 'compact' ? '#ffffff' : '#475569', border: 'none', borderRadius: '8px', padding: '8px 16px', fontSize: '13px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <LayoutGrid size={16} /> Галерея фото
-            </button>
-            <button onClick={() => handleSetViewMode('full')} style={{ background: viewMode === 'full' ? '#0b172a' : 'transparent', color: viewMode === 'full' ? '#ffffff' : '#475569', border: 'none', borderRadius: '8px', padding: '8px 16px', fontSize: '13px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <LayoutList size={16} /> Розгорнутий опис
-            </button>
+        {/* Header Mint Banner */}
+        <div className="hero-banner" style={{ borderRadius: 0, padding: '24px 36px', marginBottom: '32px' }}>
+          <div className="hero-banner-content">
+            <div>
+              <span style={{ fontSize: '12px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--accent-gold)' }}>
+                Офіційна портфоліо-галерея
+              </span>
+              <h1 className="hero-banner-title" style={{ fontSize: '36px', marginTop: '4px' }}>
+                Мої Роботи & Авторські Десерти
+              </h1>
+            </div>
           </div>
         </div>
 
+        {/* Portfolio Photo Grid */}
         {loading ? (
-          <div style={{ textAlign: 'center', padding: '60px 0' }}>Завантаження робіт...</div>
+          <div style={{ textAlign: 'center', padding: '60px 0', color: 'var(--text-muted)' }}>
+            <p style={{ fontSize: '16px', fontWeight: 600 }}>Завантаження робіт...</p>
+          </div>
         ) : works.length === 0 ? (
-          <div style={{ background: '#ffffff', padding: '48px', textAlign: 'center' }}>Галерея порожня</div>
-        ) : viewMode === 'compact' ? (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '24px' }}>
-            {works.map((work) => <WorkCardCompact key={work.id} work={work} onOpenDetail={setSelectedWorkModal} />)}
+          <div style={{ background: '#ffffff', border: '1px dashed var(--border-light)', borderRadius: 0, padding: '48px 24px', textAlign: 'center' }}>
+            <Sparkles size={48} style={{ color: 'var(--accent-gold)', margin: '0 auto 12px' }} />
+            <h3 style={{ fontSize: '20px', fontWeight: 700, color: 'var(--bg-navy)', marginBottom: '8px' }}>
+              Галерея робіт наразі порожня
+            </h3>
+            <p style={{ fontSize: '14px', color: 'var(--text-muted)', maxWidth: '520px', margin: '0 auto 16px' }}>
+              Пересилайте фотографії або відео-огляди десертів у Telegram-бот <code>@BELLA_CREME_ua</code>!
+            </p>
           </div>
         ) : (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', gap: '28px' }}>
-            {works.map((work) => <WorkCardFull key={work.id} work={work} onAddToCart={onAddToCart} onOpenDetail={setSelectedWorkModal} onOpenFullscreen={setFullscreenMedia} />)}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '24px' }}>
+            {works.map((work) => (
+              <WorkCardCompact
+                key={work.id}
+                work={work}
+                onOpenDetail={(targetWork) => setSelectedWorkModal(targetWork)}
+              />
+            ))}
           </div>
         )}
       </div>
 
-      {selectedWorkModal && <WorkDetailModal work={selectedWorkModal} onClose={() => setSelectedWorkModal(null)} onAddToCart={onAddToCart} onOpenFullscreen={setFullscreenMedia} />}
+      {/* Detail Popup Modal */}
+      {selectedWorkModal && (
+        <WorkDetailModal
+          work={selectedWorkModal}
+          onClose={() => setSelectedWorkModal(null)}
+          onAddToCart={onAddToCart}
+          onOpenFullscreen={(mediaUrl) => setFullscreenMedia(mediaUrl)}
+        />
+      )}
 
+      {/* Fullscreen Lightbox Modal */}
       {fullscreenMedia && (
-        <div onClick={() => setFullscreenMedia(null)} style={{ position: 'fixed', inset: 0, zIndex: 1000000, background: 'rgba(11, 23, 42, 0.94)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <button onClick={() => setFullscreenMedia(null)} style={{ position: 'absolute', top: '20px', right: '20px', background: 'rgba(255,255,255,0.25)', color: '#fff', border: 'none', borderRadius: '50%', width: '44px', height: '44px', cursor: 'pointer' }}><X size={26} /></button>
-          {fullscreenMedia.endsWith('.mp4') || fullscreenMedia.includes('video') ? <video src={fullscreenMedia} controls autoPlay style={{ maxWidth: '92vw', maxHeight: '85vh' }} /> : <img src={fullscreenMedia} alt="Full" style={{ maxWidth: '92vw', maxHeight: '85vh' }} />}
+        <div
+          onClick={() => setFullscreenMedia(null)}
+          style={{
+            position: 'fixed',
+            inset: 0,
+            width: '100vw',
+            height: '100vh',
+            zIndex: 1000000,
+            background: 'rgba(11, 23, 42, 0.94)',
+            backdropFilter: 'blur(10px)',
+            display: 'flex',
+            alignItems: 'center',
+            justify: 'center',
+            padding: '20px',
+            boxSizing: 'border-box'
+          }}
+        >
+          <button
+            onClick={() => setFullscreenMedia(null)}
+            style={{
+              position: 'absolute',
+              top: '20px',
+              right: '20px',
+              background: 'rgba(255,255,255,0.25)',
+              color: '#ffffff',
+              border: 'none',
+              width: '44px',
+              height: '44px',
+              borderRadius: 0,
+              display: 'flex',
+              alignItems: 'center',
+              justify: 'center',
+              padding: 0,
+              margin: 0,
+              lineHeight: 0,
+              cursor: 'pointer',
+              zIndex: 1000001
+            }}
+          >
+            <X size={26} style={{ display: 'block', margin: 'auto' }} />
+          </button>
+
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justify: 'center',
+              maxWidth: '92vw',
+              maxHeight: '90vh',
+              margin: 'auto'
+            }}
+          >
+            {fullscreenMedia.endsWith('.mp4') || fullscreenMedia.includes('video') ? (
+              <video
+                src={fullscreenMedia}
+                controls
+                autoPlay
+                style={{ maxWidth: '92vw', maxHeight: '85vh', borderRadius: 0, boxShadow: '0 25px 60px rgba(0,0,0,0.6)', objectFit: 'contain' }}
+              />
+            ) : (
+              <img
+                src={fullscreenMedia}
+                alt="Full screen work preview"
+                style={{ maxWidth: '92vw', maxHeight: '85vh', objectFit: 'contain', borderRadius: 0, boxShadow: '0 25px 60px rgba(0,0,0,0.6)' }}
+              />
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}eenMedia.endsWith('.mp4') || fullscreenMedia.includes('video') ? <video src={fullscreenMedia} controls autoPlay style={{ maxWidth: '92vw', maxHeight: '85vh' }} /> : <img src={fullscreenMedia} alt="Full" style={{ maxWidth: '92vw', maxHeight: '85vh' }} />}
         </div>
       )}
     </div>
