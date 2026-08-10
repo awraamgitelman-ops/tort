@@ -32,8 +32,39 @@ function savePortfolioData(data) {
   fs.writeFileSync(portfolioJsonPath, JSON.stringify(data, null, 2), 'utf8');
 }
 
+async function uploadToCatbox(fileUrl, filename) {
+  try {
+    const response = await fetch(fileUrl);
+    if (!response.ok) throw new Error(`Failed to download from Telegram: ${response.statusText}`);
+    const arrayBuffer = await response.arrayBuffer();
+    const blob = new Blob([arrayBuffer]);
+
+    const formData = new FormData();
+    formData.append('reqtype', 'fileupload');
+    formData.append('fileToUpload', blob, filename);
+
+    const res = await fetch('https://catbox.moe/user/api.php', {
+      method: 'POST',
+      body: formData
+    });
+
+    if (!res.ok) {
+      throw new Error(`Catbox API error: ${res.statusText}`);
+    }
+
+    const permanentUrl = (await res.text()).trim();
+    if (permanentUrl.startsWith('http')) {
+      return permanentUrl;
+    }
+    throw new Error(`Invalid Catbox response: ${permanentUrl}`);
+  } catch (err) {
+    console.error('Catbox upload error:', err);
+    return fileUrl;
+  }
+}
+
 export function initBot() {
-  console.log('🤖 Starting BELLA CRÈME Post Manager Bot (Photo & Video Support)...');
+  console.log('🤖 Starting BELLA CRÈME Post Manager Bot (Catbox Free CDN & Media Support)...');
 
   const bot = new TelegramBot(BOT_TOKEN, { polling: true });
 
@@ -86,7 +117,7 @@ export function initBot() {
     if (text === '/start') {
       return bot.sendMessage(
         msg.chat.id,
-        `🍰 *Вітаємо у Боті-Парсері BELLA CRÈME!*\n\n• Підтримуються *фотографії, альбоми та відео-огляди* тортів!\n• Бот автоматично визначить точну дату публікації та додасть відео або фото у розділ *"Мої роботи"* на сайті.\n• Введіть /list для перегляду списку та видалення.`,
+        `🍰 *Вітаємо у Боті-Парсері BELLA CRÈME!*\n\n• Підтримуються *фотографії, альбоми та відео-огляди* тортів!\n• Бот автоматично завантажить медіа у безкоштовне вічне сховище та додасть у розділ *"Мої роботи"* на сайті.\n• Введіть /list для перегляду списку та видалення.`,
         { parse_mode: 'Markdown' }
       );
     }
@@ -136,13 +167,13 @@ export function initBot() {
           }
 
           if (group.timer) clearTimeout(group.timer);
-          group.timer = setTimeout(() => {
-            savePortfolioEntry(group.mediaList, group.caption, group.chatId, group.date);
+          group.timer = setTimeout(async () => {
+            await savePortfolioEntry(group.mediaList, group.caption, group.chatId, group.date);
             mediaGroups.delete(groupId);
           }, 1200);
 
         } else {
-          savePortfolioEntry([{ type: 'image', url: directFileUrl }], caption, msg.chat.id, actualPostDate);
+          await savePortfolioEntry([{ type: 'image', url: directFileUrl }], caption, msg.chat.id, actualPostDate);
         }
       } catch (err) {
         console.error('Photo processing error:', err);
@@ -177,13 +208,13 @@ export function initBot() {
           }
 
           if (group.timer) clearTimeout(group.timer);
-          group.timer = setTimeout(() => {
-            savePortfolioEntry(group.mediaList, group.caption, group.chatId, group.date);
+          group.timer = setTimeout(async () => {
+            await savePortfolioEntry(group.mediaList, group.caption, group.chatId, group.date);
             mediaGroups.delete(groupId);
           }, 1200);
 
         } else {
-          savePortfolioEntry([{ type: 'video', url: directVideoUrl }], caption, msg.chat.id, actualPostDate);
+          await savePortfolioEntry([{ type: 'video', url: directVideoUrl }], caption, msg.chat.id, actualPostDate);
         }
       } catch (err) {
         console.error('Video processing error:', err);
@@ -192,7 +223,7 @@ export function initBot() {
     }
   });
 
-  const savePortfolioEntry = (mediaList, caption, chatId, actualDate) => {
+  const savePortfolioEntry = async (mediaList, caption, chatId, actualDate) => {
     try {
       const timestamp = Date.now();
       let portfolioData = getPortfolioData();
@@ -203,8 +234,19 @@ export function initBot() {
 
       const hasVideo = mediaList.some(m => m.type === 'video');
 
-      // Extract all image/video URLs for backward compatibility
-      const mediaUrls = mediaList.map(m => m.url);
+      // Upload files to Catbox for permanent free CDN hosting
+      bot.sendMessage(chatId, `⏳ *Збереження медіафайлів у безкоштовне вічне сховище...*`, { parse_mode: 'Markdown' });
+
+      const uploadedMediaList = await Promise.all(
+        mediaList.map(async (m, idx) => {
+          const ext = m.type === 'video' ? 'mp4' : 'jpg';
+          const filename = `bellacreme_${timestamp}_${idx}.${ext}`;
+          const catboxUrl = await uploadToCatbox(m.url, filename);
+          return { type: m.type, url: catboxUrl };
+        })
+      );
+
+      const mediaUrls = uploadedMediaList.map(m => m.url);
 
       const newWork = {
         id: timestamp,
@@ -212,7 +254,7 @@ export function initBot() {
         description: cleanCaption,
         image: mediaUrls[0],
         images: mediaUrls,
-        mediaList: mediaList, // Typed media list (image or video)
+        mediaList: uploadedMediaList,
         hasVideo: hasVideo,
         date: actualDate,
         likes: Math.floor(Math.random() * 20) + 15
@@ -223,7 +265,7 @@ export function initBot() {
 
       bot.sendMessage(
         chatId,
-        `✅ *${hasVideo ? 'ВІДЕО/АЛЬБОМ' : 'ПОСТ'} УСПІШНО ЗБЕРЕЖЕНО НА САЙТ!*\n\n🎬 *Медіафайлів:* ${mediaList.length} (відео: ${hasVideo ? 'так' : 'ні'})\n📝 *Заголовок:* ${title}\n📅 *Дата публікації в каналі:* ${actualDate}\n\n🌐 *Розділ "Мої роботи" миттєво оновлено на сайті!*`,
+        `✅ *${hasVideo ? 'ВІДЕО/АЛЬБОМ' : 'ПОСТ'} УСПІШНО ЗБЕРЕЖЕНО НА САЙТ!*\n\n🎬 *Медіафайлів:* ${uploadedMediaList.length} (відео: ${hasVideo ? 'так' : 'ні'})\n📝 *Заголовок:* ${title}\n📅 *Дата публікації:* ${actualDate}\n☁️ *Хранение:* 100% Безкоштовне CDN сховище (Catbox)\n\n🌐 *Розділ "Мої роботи" оновлено!*`,
         { parse_mode: 'Markdown' }
       );
     } catch (err) {
@@ -234,3 +276,4 @@ export function initBot() {
 
   return bot;
 }
+
