@@ -104,7 +104,7 @@ export default function Header({
             className="nav-phone"
           >
             <Send size={15} style={{ color: 'var(--accent-gold)' }} />
-            <span>+38(096)162-95-92 / @BELLA_CREME_ua</span>
+            <span>+38(068)655-19-19 / @BELLA_CREME_ua</span>
           </a>
         </div>
       </nav>

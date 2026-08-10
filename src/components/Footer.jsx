@@ -14,7 +14,7 @@ export default function Footer({ onGoToGuide }) {
             <div>
               <div style={{ fontSize: '13px', color: 'var(--text-muted)' }}>Підтримка & Замовлення</div>
               <div style={{ fontSize: '20px', fontWeight: 800, color: 'var(--bg-navy)' }}>
-                +38(096)162-95-92
+                +38(068)655-19-19
               </div>
               <div style={{ fontSize: '13px', color: 'var(--accent-cyan)' }}>
                 Telegram: @BELLA_CREME_ua
