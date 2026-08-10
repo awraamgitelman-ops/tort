@@ -316,9 +316,4 @@ export default function PortfolioPage({ onAddToCart }) {
       )}
     </div>
   );
-}eenMedia.endsWith('.mp4') || fullscreenMedia.includes('video') ? <video src={fullscreenMedia} controls autoPlay style={{ maxWidth: '92vw', maxHeight: '85vh' }} /> : <img src={fullscreenMedia} alt="Full" style={{ maxWidth: '92vw', maxHeight: '85vh' }} />}
-        </div>
-      )}
-    </div>
-  );
 }
