@@ -213,7 +213,7 @@ const MENU_ITEMS = [
     weights: 'Ванільний бісквіт',
     price: 1100,
     unit: 'грн/кг',
-    img: '/images/filling_raspberrycaramel_real.jpg',
+    img: '/images/filling_raspberrycaramel_real.png',
     badge: 'Хрусткий кріспі',
     articleText: 'Ванільний бісквіт з малиновим конфи, домашньою солоною карамеллю з хрусткими кульками кріспі та вершковим кремом.',
     ingredients: ['Ванільний бісквіт', 'Молочне просочення', 'Малинове конфи', 'Солона карамель з кульками кріспі', 'Крем сир на вершках']
