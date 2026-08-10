@@ -86,14 +86,14 @@ export default function Header({
               className={`nav-item ${activeTab === 'portfolio' ? 'active' : ''}`}
               onClick={() => setActiveTab('portfolio')}
             >
-              <Sparkles size={16} /> Мої роботи
+              Мої роботи
             </button>
 
             <button
               className={`nav-item ${activeTab === 'guide' ? 'active' : ''}`}
               onClick={() => setActiveTab('guide')}
             >
-              <ShieldCheck size={16} /> Правила зберігання
+              Правила зберігання
             </button>
           </div>
 
