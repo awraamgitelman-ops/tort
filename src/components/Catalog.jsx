@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ChevronRight, ArrowRight, CheckCircle2 } from 'lucide-react';
 import PortfolioCarousel from './PortfolioCarousel';
+import ReviewsCarousel from './ReviewsCarousel';
 
 const CATEGORIES = [
   { id: 'all', name: 'Увесь Прейскурант', count: 23 },
@@ -457,6 +458,9 @@ export default function Catalog({ onAddToCart, onGoToPortfolio }) {
               </div>
             </article>
           ))}
+
+          {/* Paraphrased Ukrainian Reviews Carousel */}
+          <ReviewsCarousel />
         </main>
       </div>
     </div>
