@@ -52,11 +52,8 @@ export default function PortfolioCarousel({ onGoToPortfolio }) {
       <section style={{ marginBottom: '32px', background: '#ffffff', border: '1px solid var(--border-light)', borderRadius: 'var(--radius-md)', padding: '24px 28px', boxShadow: 'var(--shadow-sm)' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
           <div>
-            <span style={{ fontSize: '11px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--accent-gold)', display: 'flex', alignItems: 'center', gap: '4px' }}>
-              <Sparkles size={13} /> Авторські десерти & Відео-огляди
-            </span>
-            <h2 style={{ fontSize: '22px', fontWeight: 700, color: 'var(--bg-navy)', margin: '4px 0 0' }}>
-              Мої Роботи у Telegram
+            <h2 style={{ fontSize: '22px', fontWeight: 700, color: 'var(--bg-navy)', margin: 0 }}>
+              Галерея Останніх Робіт
             </h2>
           </div>
           <button
@@ -80,10 +77,7 @@ export default function PortfolioCarousel({ onGoToPortfolio }) {
       {/* Header Bar */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px', marginBottom: '20px', paddingBottom: '14px', borderBottom: '1px solid #f1f5f9' }}>
         <div>
-          <span style={{ fontSize: '11px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--accent-gold)', display: 'flex', alignItems: 'center', gap: '4px' }}>
-            <Sparkles size={13} /> Авторські десерти & Відео-огляди
-          </span>
-          <h2 style={{ fontSize: '22px', fontWeight: 700, color: 'var(--bg-navy)', margin: '2px 0 0' }}>
+          <h2 style={{ fontSize: '22px', fontWeight: 700, color: 'var(--bg-navy)', margin: 0 }}>
             Галерея Останніх Робіт
           </h2>
         </div>
