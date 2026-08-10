@@ -546,3 +546,12 @@ body {
     overflow-x: auto;
   }
 }
+
+.portfolio-photo-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 30px rgba(11, 23, 42, 0.22) !important;
+}
+
+.portfolio-photo-card:hover img {
+  transform: scale(1.05);
+}

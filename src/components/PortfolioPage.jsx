@@ -120,7 +120,7 @@ function WorkCardFull({ work, onAddToCart, onOpenFullscreen, onOpenDetail }) {
   );
 }
 
-/* MODE 2: COMPACT PHOTO CARD */
+/* MODE 2: COMPACT PHOTO RECTANGLE (Pure photo rectangle card) */
 function WorkCardCompact({ work, onOpenDetail }) {
   const mediaItems = work.mediaList && work.mediaList.length > 0
     ? work.mediaList 
@@ -129,35 +129,43 @@ function WorkCardCompact({ work, onOpenDetail }) {
   const isVideo = mainMedia?.type === 'video' || (typeof mainMedia?.url === 'string' && (mainMedia.url.endsWith('.mp4') || mainMedia.url.includes('video')));
 
   return (
-    <article onClick={() => onOpenDetail(work)} style={{ background: '#ffffff', border: '1px solid var(--border-light)', borderRadius: 'var(--radius-md)', overflow: 'hidden', boxShadow: '0 4px 14px rgba(0,0,0,0.06)', display: 'flex', flexDirection: 'column', cursor: 'pointer', transition: 'transform 0.2s, box-shadow 0.2s' }}>
-      <div style={{ width: '100%', height: '260px', position: 'relative', overflow: 'hidden', background: '#0b172a' }}>
-        {isVideo ? (
-          <video src={mainMedia.url} muted playsInline preload="metadata" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-        ) : (
-          <img src={mainMedia.url || work.image} alt={work.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-        )}
-        {work.date && (
-          <span style={{ position: 'absolute', top: '10px', right: '10px', background: 'rgba(11,23,42,0.85)', color: '#fff', padding: '3px 8px', borderRadius: '10px', fontSize: '11px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px' }}>
-            <Calendar size={11} /> {work.date}
-          </span>
-        )}
-        {mediaItems.length > 1 && (
-          <span style={{ position: 'absolute', top: '10px', left: '10px', background: 'rgba(11,23,42,0.85)', color: '#fff', padding: '3px 8px', borderRadius: '10px', fontSize: '11px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px' }}>
-            <ImageIcon size={11} /> +{mediaItems.length - 1} фото
-          </span>
-        )}
-        {isVideo && (
-          <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.25)' }}>
-            <PlayCircle size={44} style={{ color: '#ffffff', filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.4))' }} />
-          </div>
-        )}
-      </div>
-      <div style={{ padding: '14px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', background: '#ffffff' }}>
-        <h4 style={{ fontSize: '14px', color: 'var(--bg-navy)', fontWeight: 700, margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1 }}>{work.title}</h4>
-        <button onClick={(e) => { e.stopPropagation(); onOpenDetail(work); }} style={{ background: '#0b172a', color: '#ffffff', border: 'none', borderRadius: 'var(--radius-sm)', padding: '6px 14px', fontSize: '12px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '5px' }}>
-          <Info size={13} /> Докладніше
-        </button>
-      </div>
+    <article
+      onClick={() => onOpenDetail(work)}
+      style={{
+        background: '#0b172a',
+        borderRadius: 'var(--radius-md)',
+        overflow: 'hidden',
+        boxShadow: '0 4px 14px rgba(0,0,0,0.08)',
+        height: '280px',
+        position: 'relative',
+        cursor: 'pointer',
+        transition: 'transform 0.25s ease, box-shadow 0.25s ease'
+      }}
+      className="portfolio-photo-card"
+    >
+      {isVideo ? (
+        <video src={mainMedia.url} muted playsInline preload="metadata" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+      ) : (
+        <img src={mainMedia.url || work.image} alt={work.title} style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.3s ease' }} />
+      )}
+
+      {work.date && (
+        <span style={{ position: 'absolute', top: '12px', right: '12px', background: 'rgba(11,23,42,0.85)', color: '#fff', padding: '4px 10px', borderRadius: '12px', fontSize: '11px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px', zIndex: 2 }}>
+          <Calendar size={11} /> {work.date}
+        </span>
+      )}
+
+      {mediaItems.length > 1 && (
+        <span style={{ position: 'absolute', top: '12px', left: '12px', background: 'rgba(11,23,42,0.85)', color: '#fff', padding: '4px 10px', borderRadius: '12px', fontSize: '11px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px', zIndex: 2 }}>
+          <ImageIcon size={11} /> +{mediaItems.length - 1} фото
+        </span>
+      )}
+
+      {isVideo && (
+        <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.2)' }}>
+          <PlayCircle size={48} style={{ color: '#ffffff', filter: 'drop-shadow(0 4px 10px rgba(0,0,0,0.5))' }} />
+        </div>
+      )}
     </article>
   );
 }
