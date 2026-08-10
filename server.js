@@ -24,101 +24,101 @@ app.use('/portfolio', express.static(path.join(__dirname, 'public', 'portfolio')
 
 // API Endpoint to get all parsed portfolio works for the website
 app.get('/api/portfolio', (req, res) => {
-  try {
-    const backupJsonPath = path.join(dataDir, 'portfolio.backup.json');
-    let raw = '[]';
-    if (fs.existsSync(portfolioJsonPath)) {
-      const primaryRaw = fs.readFileSync(portfolioJsonPath, 'utf8');
-      if (primaryRaw && primaryRaw.trim().length > 2) {
-        raw = primaryRaw;
-      } else if (fs.existsSync(backupJsonPath)) {
-        raw = fs.readFileSync(backupJsonPath, 'utf8');
-      }
-    } else if (fs.existsSync(backupJsonPath)) {
-      raw = fs.readFileSync(backupJsonPath, 'utf8');
-    }
-    const data = JSON.parse(raw);
-    res.json(data);
-  } catch (err) {
-    res.status(500).json({ error: 'Failed to read portfolio data' });
-  }
+ try {
+ const backupJsonPath = path.join(dataDir, 'portfolio.backup.json');
+ let raw = '[]';
+ if (fs.existsSync(portfolioJsonPath)) {
+ const primaryRaw = fs.readFileSync(portfolioJsonPath, 'utf8');
+ if (primaryRaw && primaryRaw.trim().length > 2) {
+ raw = primaryRaw;
+ } else if (fs.existsSync(backupJsonPath)) {
+ raw = fs.readFileSync(backupJsonPath, 'utf8');
+ }
+ } else if (fs.existsSync(backupJsonPath)) {
+ raw = fs.readFileSync(backupJsonPath, 'utf8');
+ }
+ const data = JSON.parse(raw);
+ res.json(data);
+ } catch (err) {
+ res.status(500).json({ error: 'Failed to read portfolio data' });
+ }
 });
 
 // API Endpoint to auto-restore/sync portfolio data from client cache if server container was redeployed
 app.post('/api/portfolio/sync', (req, res) => {
-  try {
-    const { works } = req.body;
-    if (Array.isArray(works) && works.length > 0) {
-      const backupJsonPath = path.join(dataDir, 'portfolio.backup.json');
-      let current = [];
-      if (fs.existsSync(portfolioJsonPath)) {
-        try {
-          const raw = fs.readFileSync(portfolioJsonPath, 'utf8');
-          if (raw && raw.trim().length > 2) current = JSON.parse(raw);
-        } catch (e) {}
-      }
+ try {
+ const { works } = req.body;
+ if (Array.isArray(works) && works.length > 0) {
+ const backupJsonPath = path.join(dataDir, 'portfolio.backup.json');
+ let current = [];
+ if (fs.existsSync(portfolioJsonPath)) {
+ try {
+ const raw = fs.readFileSync(portfolioJsonPath, 'utf8');
+ if (raw && raw.trim().length > 2) current = JSON.parse(raw);
+ } catch (e) {}
+ }
 
-      if (current.length < works.length) {
-        fs.writeFileSync(portfolioJsonPath, JSON.stringify(works, null, 2), 'utf8');
-        fs.writeFileSync(backupJsonPath, JSON.stringify(works, null, 2), 'utf8');
-        return res.json({ success: true, restoredCount: works.length });
-      }
-    }
-    res.json({ success: true, status: 'no_change' });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+ if (current.length < works.length) {
+ fs.writeFileSync(portfolioJsonPath, JSON.stringify(works, null, 2), 'utf8');
+ fs.writeFileSync(backupJsonPath, JSON.stringify(works, null, 2), 'utf8');
+ return res.json({ success: true, restoredCount: works.length });
+ }
+ }
+ res.json({ success: true, status: 'no_change' });
+ } catch (err) {
+ res.status(500).json({ error: err.message });
+ }
 });
 
 // API Endpoint to extract design tokens from a target website URL using dembrandt
 app.post('/api/extract-brand', async (req, res) => {
-  const { url } = req.body;
-  if (!url) {
-    return res.status(400).json({ error: 'URL is required' });
-  }
+ const { url } = req.body;
+ if (!url) {
+ return res.status(400).json({ error: 'URL is required' });
+ }
 
-  let cleanUrl = url.trim();
-  if (!cleanUrl.startsWith('http://') && !cleanUrl.startsWith('https://')) {
-    cleanUrl = 'https://' + cleanUrl;
-  }
+ let cleanUrl = url.trim();
+ if (!cleanUrl.startsWith('http://') && !cleanUrl.startsWith('https://')) {
+ cleanUrl = 'https://' + cleanUrl;
+ }
 
-  try {
-    const cmd = `npx dembrandt "${cleanUrl}" --json-only`;
-    exec(cmd, { timeout: 25000 }, (error, stdout, stderr) => {
-      if (error || !stdout) {
-        const urlObj = new URL(cleanUrl);
-        const domain = urlObj.hostname.replace('www.', '');
-        let hash = 0;
-        for (let i = 0; i < domain.length; i++) hash = domain.charCodeAt(i) + ((hash << 5) - hash);
-        const hue = Math.abs(hash) % 360;
+ try {
+ const cmd = `npx dembrandt "${cleanUrl}" --json-only`;
+ exec(cmd, { timeout: 25000 }, (error, stdout, stderr) => {
+ if (error || !stdout) {
+ const urlObj = new URL(cleanUrl);
+ const domain = urlObj.hostname.replace('www.', '');
+ let hash = 0;
+ for (let i = 0; i < domain.length; i++) hash = domain.charCodeAt(i) + ((hash << 5) - hash);
+ const hue = Math.abs(hash) % 360;
 
-        return res.json({
-          domain: domain,
-          colors: [
-            `hsl(${hue}, 75%, 45%)`,
-            `hsl(${(hue + 40) % 360}, 65%, 55%)`,
-            `hsl(${(hue + 180) % 360}, 30%, 95%)`,
-            `hsl(${(hue + 210) % 360}, 15%, 15%)`
-          ],
-          fonts: ['Outfit', 'Inter', 'sans-serif'],
-          extractedFrom: cleanUrl,
-          mode: 'fallback-demo'
-        });
-      }
+ return res.json({
+ domain: domain,
+ colors: [
+ `hsl(${hue}, 75%, 45%)`,
+ `hsl(${(hue + 40) % 360}, 65%, 55%)`,
+ `hsl(${(hue + 180) % 360}, 30%, 95%)`,
+ `hsl(${(hue + 210) % 360}, 15%, 15%)`
+ ],
+ fonts: ['Outfit', 'Inter', 'sans-serif'],
+ extractedFrom: cleanUrl,
+ mode: 'fallback-demo'
+ });
+ }
 
-      try {
-        const parsed = JSON.parse(stdout);
-        return res.json(parsed);
-      } catch (parseErr) {
-        return res.json({
-          rawOutput: stdout,
-          extractedFrom: cleanUrl
-        });
-      }
-    });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+ try {
+ const parsed = JSON.parse(stdout);
+ return res.json(parsed);
+ } catch (parseErr) {
+ return res.json({
+ rawOutput: stdout,
+ extractedFrom: cleanUrl
+ });
+ }
+ });
+ } catch (err) {
+ res.status(500).json({ error: err.message });
+ }
 });
 
 // Serve static frontend files built by Vite
@@ -127,29 +127,29 @@ app.use(express.static(distPath));
 
 // Fallback for Single Page Application routing
 app.use((req, res) => {
-  const indexPath = path.join(distPath, 'index.html');
-  res.sendFile(indexPath, (err) => {
-    if (err) {
-      res.status(200).send(`
-        <!DOCTYPE html>
-        <html>
-          <head><title>BELLA CRÈME App</title></head>
-          <body style="font-family: sans-serif; text-align: center; padding: 40px; background: #0f172a; color: #fff;">
-            <h1>🍰 BELLA CRÈME Application is Building</h1>
-            <p>Please run <code>npm run build</code> first to generate the production dist bundle.</p>
-          </body>
-        </html>
-      `);
-    }
-  });
+ const indexPath = path.join(distPath, 'index.html');
+ res.sendFile(indexPath, (err) => {
+ if (err) {
+ res.status(200).send(`
+ <!DOCTYPE html>
+ <html>
+ <head><title>BELLA CRÈME App</title></head>
+ <body style="font-family: sans-serif; text-align: center; padding: 40px; background: #0f172a; color: #fff;">
+ <h1> BELLA CRÈME Application is Building</h1>
+ <p>Please run <code>npm run build</code> first to generate the production dist bundle.</p>
+ </body>
+ </html>
+ `);
+ }
+ });
 });
 
 // Start Express server and Telegram Bot
 app.listen(PORT, () => {
-  console.log(`🍰 BELLA CRÈME server running on port ${PORT}`);
-  try {
-    initBot();
-  } catch (err) {
-    console.error('Failed to initialize Telegram Bot:', err);
-  }
+ console.log(` BELLA CRÈME server running on port ${PORT}`);
+ try {
+ initBot();
+ } catch (err) {
+ console.error('Failed to initialize Telegram Bot:', err);
+ }
 });
