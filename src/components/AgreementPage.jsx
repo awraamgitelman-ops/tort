@@ -35,9 +35,6 @@ export default function AgreementPage({ onBackToCatalog }) {
         
         {/* Document Header */}
         <div style={{ borderBottom: '2px solid var(--accent-gold)', paddingBottom: '24px', marginBottom: '32px' }}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(212,175,55,0.12)', color: 'var(--accent-gold)', padding: '6px 14px', borderRadius: 0, fontSize: '12px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '12px' }}>
-            <FileText size={15} /> Офіційний документ
-          </div>
           <h1 style={{ fontFamily: "'Georgia', serif", fontSize: '28px', color: 'var(--bg-navy)', fontWeight: 800, margin: '0 0 10px', lineHeight: 1.3 }}>
             Договір публічної оферти та Угода користувача
           </h1>
