@@ -60,7 +60,7 @@ export default function AgreementPage({ onBackToCatalog }) {
               1. Загальні положення
             </h2>
             <p>
-              1.1. Ця публічна оферта (далі — «Оферта», «Договір») є офіційною пропозицією <strong>ТОВ «БОВАСКО»</strong> (Торговельна марка «BELLA CRÈME»), далі по тексту — «Продавець», укласти Договір купівлі-продажу кондитерських виробів та десертів дистанційним способом (через Інтернет-магазин) на умовах, викладених нижче.
+              1.1. Ця публічна оферта (далі — «Оферта», «Договір») є офіційною пропозицією <strong>ТОВ «БУРУНКА»</strong> (Торговельна марка «BELLA CRÈME»), далі по тексту — «Продавець», укласти Договір купівлі-продажу кондитерських виробів та десертів дистанційним способом (через Інтернет-магазин) на умовах, викладених нижче.
             </p>
             <p style={{ marginTop: '8px' }}>
               1.2. Моментом повного і безумовного прийняття Покупцем пропозиції Продавця (акцептом) укласти електронний договір вважається факт оформлення замовлення, підтвердження через Telegram-менеджера або здійснення передоплати / повної оплати замовлення.
@@ -75,7 +75,7 @@ export default function AgreementPage({ onBackToCatalog }) {
             <ul style={{ paddingLeft: '20px', margin: 0, display: 'flex', flexDirection: 'column', gap: '6px' }}>
               <li><strong>«Товар»</strong> — авторські кондитерські вироби (бенто-торти, великі торти від 2 кг, святкові сеты, капкейки, десерти), представлені в каталозі Інтернет-магазину.</li>
               <li><strong>«Інтернет-магазин»</strong> — офіційний веб-сайт BELLA CRÈME, створений для ознайомлення з прейскурантом, описом начинок та оформлення дистанційних замовлень.</li>
-              <li><strong>«Продавець»</strong> — ТОВ «БОВАСКО» (код ЄДРПОУ: 43342987, Україна).</li>
+              <li><strong>«Продавець»</strong> — ТОВ «БУРУНКА» (код ЄДРПОУ: 45145965, Україна).</li>
               <li><strong>«Покупець»</strong> — дієздатна фізична або юридична особа, яка замовляє Товар на умовах цього Договору.</li>
               <li><strong>«Замовлення»</strong> — перелік окремих кондитерських позицій, узгоджена вага, начинка, дата готовності та адреса доставки, оформлені через сайт або Telegram-менеджера.</li>
             </ul>
@@ -176,8 +176,8 @@ export default function AgreementPage({ onBackToCatalog }) {
             <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', padding: '20px', borderRadius: 0, display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '16px' }}>
               <div>
                 <div style={{ fontSize: '12px', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 700 }}>Юридична особа</div>
-                <div style={{ fontSize: '15px', fontWeight: 800, color: 'var(--bg-navy)', marginTop: '2px' }}>ТОВ «БОВАСКО»</div>
-                <div style={{ fontSize: '13px', color: '#475569', marginTop: '2px' }}>Код ЄДРПОУ: <strong>43342987</strong></div>
+                <div style={{ fontSize: '15px', fontWeight: 800, color: 'var(--bg-navy)', marginTop: '2px' }}>ТОВ «БУРУНКА»</div>
+                <div style={{ fontSize: '13px', color: '#475569', marginTop: '2px' }}>Код ЄДРПОУ: <strong>45145965</strong></div>
                 <div style={{ fontSize: '13px', color: '#475569', marginTop: '2px' }}>Місцезнаходження: Україна</div>
               </div>
 

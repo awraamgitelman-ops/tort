@@ -131,7 +131,7 @@ export default function Footer({ onGoToTab, onGoToCategory }) {
             Всі права захищені © {new Date().getFullYear()} BELLA CRÈME
           </div>
           <div style={{ fontSize: '12.5px', color: '#64748b', fontWeight: 600 }}>
-            ТОВ «БОВАСКО»
+            ТОВ «БУРУНКА»
           </div>
         </div>
       </div>
