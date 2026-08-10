@@ -18,18 +18,41 @@ if (!fs.existsSync(portfolioJsonPath)) {
 }
 
 const mediaGroups = new Map();
+const backupJsonPath = path.join(dataDir, 'portfolio.backup.json');
 
 function getPortfolioData() {
   try {
-    const raw = fs.readFileSync(portfolioJsonPath, 'utf8');
-    return JSON.parse(raw);
+    if (fs.existsSync(portfolioJsonPath)) {
+      const raw = fs.readFileSync(portfolioJsonPath, 'utf8');
+      if (raw && raw.trim().length > 2) {
+        return JSON.parse(raw);
+      }
+    }
+    if (fs.existsSync(backupJsonPath)) {
+      const rawBackup = fs.readFileSync(backupJsonPath, 'utf8');
+      if (rawBackup && rawBackup.trim().length > 2) {
+        return JSON.parse(rawBackup);
+      }
+    }
+    return [];
   } catch (e) {
+    console.error('Error reading portfolio data:', e);
     return [];
   }
 }
 
 function savePortfolioData(data) {
-  fs.writeFileSync(portfolioJsonPath, JSON.stringify(data, null, 2), 'utf8');
+  try {
+    if (fs.existsSync(portfolioJsonPath)) {
+      const currentRaw = fs.readFileSync(portfolioJsonPath, 'utf8');
+      if (currentRaw && currentRaw.trim().length > 2) {
+        fs.writeFileSync(backupJsonPath, currentRaw, 'utf8');
+      }
+    }
+    fs.writeFileSync(portfolioJsonPath, JSON.stringify(data, null, 2), 'utf8');
+  } catch (e) {
+    console.error('Error saving portfolio data:', e);
+  }
 }
 
 async function uploadToCatbox(fileUrl, filename) {

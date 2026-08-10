@@ -214,7 +214,14 @@ function WorkCard({ work, onAddToCart }) {
 }
 
 export default function PortfolioPage({ onAddToCart }) {
-  const [works, setWorks] = useState([]);
+  const [works, setWorks] = useState(() => {
+    try {
+      const cached = localStorage.getItem('cached_portfolio_works');
+      return cached ? JSON.parse(cached) : [];
+    } catch (e) {
+      return [];
+    }
+  });
   const [loading, setLoading] = useState(true);
 
   const fetchPortfolio = async () => {
@@ -223,16 +230,29 @@ export default function PortfolioPage({ onAddToCart }) {
       const res = await fetch('/api/portfolio');
       if (res.ok) {
         const data = await res.json();
-        // Sort newest posts first strictly by original Telegram publication date
-        const sorted = [...data].sort((a, b) => {
-          const timeA = Number(a.originalTimestamp || a.id) || 0;
-          const timeB = Number(b.originalTimestamp || b.id) || 0;
-          return timeB - timeA;
-        });
-        setWorks(sorted);
+        if (Array.isArray(data) && data.length > 0) {
+          // Sort newest posts first strictly by original Telegram publication date
+          const sorted = [...data].sort((a, b) => {
+            const timeA = Number(a.originalTimestamp || a.id) || 0;
+            const timeB = Number(b.originalTimestamp || b.id) || 0;
+            return timeB - timeA;
+          });
+          localStorage.setItem('cached_portfolio_works', JSON.stringify(sorted));
+          setWorks(sorted);
+        } else {
+          // Fallback to cache if server returns empty
+          const cached = localStorage.getItem('cached_portfolio_works');
+          if (cached) {
+            setWorks(JSON.parse(cached));
+          }
+        }
       }
     } catch (err) {
       console.warn('Failed to load portfolio:', err);
+      const cached = localStorage.getItem('cached_portfolio_works');
+      if (cached) {
+        try { setWorks(JSON.parse(cached)); } catch(e) {}
+      }
     } finally {
       setLoading(false);
     }

@@ -25,10 +25,18 @@ app.use('/portfolio', express.static(path.join(__dirname, 'public', 'portfolio')
 // API Endpoint to get all parsed portfolio works for the website
 app.get('/api/portfolio', (req, res) => {
   try {
-    if (!fs.existsSync(portfolioJsonPath)) {
-      return res.json([]);
+    const backupJsonPath = path.join(dataDir, 'portfolio.backup.json');
+    let raw = '[]';
+    if (fs.existsSync(portfolioJsonPath)) {
+      const primaryRaw = fs.readFileSync(portfolioJsonPath, 'utf8');
+      if (primaryRaw && primaryRaw.trim().length > 2) {
+        raw = primaryRaw;
+      } else if (fs.existsSync(backupJsonPath)) {
+        raw = fs.readFileSync(backupJsonPath, 'utf8');
+      }
+    } else if (fs.existsSync(backupJsonPath)) {
+      raw = fs.readFileSync(backupJsonPath, 'utf8');
     }
-    const raw = fs.readFileSync(portfolioJsonPath, 'utf8');
     const data = JSON.parse(raw);
     res.json(data);
   } catch (err) {

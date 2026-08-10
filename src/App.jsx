@@ -299,9 +299,44 @@ const MENU_ITEMS = [
 ];
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState('catalog');
+  const getInitialTab = () => {
+    if (typeof window === 'undefined') return 'catalog';
+    const rawHash = window.location.hash.replace('#', '').trim();
+    const cleanTab = rawHash.split('?')[0];
+    const validTabs = ['catalog', 'portfolio', 'guide', 'cart', 'search'];
+    return validTabs.includes(cleanTab) ? cleanTab : 'catalog';
+  };
+
+  const [activeTab, setActiveTabState] = useState(getInitialTab);
   const [searchQuery, setSearchQuery] = useState('');
   const [cartItems, setCartItems] = useState([]);
+
+  const setActiveTab = (tab) => {
+    setActiveTabState(tab);
+    if (typeof window !== 'undefined') {
+      if (window.location.hash.replace('#', '').split('?')[0] !== tab) {
+        window.location.hash = tab;
+      }
+    }
+  };
+
+  React.useEffect(() => {
+    const handleHashChange = () => {
+      const rawHash = window.location.hash.replace('#', '').trim();
+      const cleanTab = rawHash.split('?')[0];
+      const validTabs = ['catalog', 'portfolio', 'guide', 'cart', 'search'];
+      if (validTabs.includes(cleanTab)) {
+        setActiveTabState(cleanTab);
+      }
+    };
+
+    if (window.location.hash === '') {
+      window.location.hash = 'catalog';
+    }
+
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
 
   const cartTotal = cartItems.reduce((acc, item) => acc + item.price, 0);
 
