@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import Header from './components/Header';
 import Catalog from './components/Catalog';
 import StorageGuidePage from './components/StorageGuidePage';
@@ -296,100 +296,6 @@ const MENU_ITEMS = [
     articleText: 'Соковиті шматочки персикового конфи у прошарках із повітряного крем-сиру та пухкого ванільного бісквіту.',
     ingredients: ['Ванільний бісквіт', 'Молочне просочення', 'Персикове конфи', 'Крем сир на вершках']
   }
-];�льгійському шоколаді та крем-сиром.',
-    ingredients: ['Шоколадний бісквіт', 'Молочне просочення', 'Вишневе конфи', 'Ганаш на темному шоколаді', 'Крем сир на вершках']
-  },
-  {
-    id: 'filling-raspberry-caramel',
-    name: 'Начинка: Малина - Карамель',
-    category: 'fillings',
-    categoryName: 'Опис Начинок',
-    weights: 'Ванільний бісквіт',
-    price: 1100,
-    unit: 'грн/кг',
-    img: '/images/cake_filling.jpg',
-    badge: 'Хрусткий кріспі',
-    articleText: 'Ванільний бісквіт з малиновим конфи, домашньою солоною карамеллю з хрусткими кульками кріспі та вершковим кремом.',
-    ingredients: ['Ванільний бісквіт', 'Молочне просочення', 'Малинове конфи', 'Солона карамель з кульками кріспі', 'Крем сир на вершках']
-  },
-  {
-    id: 'filling-chocolate-banana',
-    name: 'Начинка: Шоколад - Банан',
-    category: 'fillings',
-    categoryName: 'Опис Начинок',
-    weights: 'Шоколадний бісквіт',
-    price: 1100,
-    unit: 'грн/кг',
-    img: '/images/cake_filling.jpg',
-    badge: 'Карамельний банан',
-    articleText: 'Шоколадний бісквіт з ароматними шматочками банана в карамелі, ганашем на молочному шоколаді з кульками кріспі та крем-сиром.',
-    ingredients: ['Шоколадний бісквіт', 'Молочне просочення', 'Банан в карамелі', 'Ганаш на молочному шоколаді з кульками кріспі', 'Крем сир на вершках']
-  },
-  {
-    id: 'filling-mango-passion',
-    name: 'Начинка: Манго - Маракуйя',
-    category: 'fillings',
-    categoryName: 'Опис Начинок',
-    weights: 'Ванільний бісквіт',
-    price: 1100,
-    unit: 'грн/кг',
-    img: '/images/cake_filling.jpg',
-    badge: 'Тропічний мус',
-    articleText: 'Багатий тропічний букет: ганаш манго-маракуйя, соковите желе манго-маракуйя та легкий мус манго-маракуйя на ванільному бісквіті.',
-    ingredients: ['Ванільний бісквіт', 'Молочне просочення', 'Ганаш манго-маракуйя', 'Желе манго-маракуйя', 'Мус манго-маракуйя', 'Крем сир на вершках']
-  },
-  {
-    id: 'filling-poppy-berry',
-    name: 'Начинка: Маково - Ягідний',
-    category: 'fillings',
-    categoryName: 'Опис Начинок',
-    weights: 'Маковий бісквіт',
-    price: 1100,
-    unit: 'грн/кг',
-    img: '/images/cake_filling.jpg',
-    badge: 'Хрустке безе',
-    articleText: 'Пишний маковий бісквіт з освіжаючим лимонним просоченням, яскравим ягідним конфи та хрустким прошарком безе.',
-    ingredients: ['Маковий бісквіт', 'Лимонне просочення', 'Ягідне конфи', 'Хрусткий шар безе', 'Крем сир на вершках']
-  },
-  {
-    id: 'filling-vanilla-strawberry',
-    name: 'Начинка: Ваніль - Полуниця',
-    category: 'fillings',
-    categoryName: 'Опис Начинок',
-    weights: 'Ванільний бісквіт',
-    price: 1100,
-    unit: 'грн/кг',
-    img: '/images/cake_filling.jpg',
-    badge: 'Класика',
-    articleText: 'Легкий та ніжний смак. Поєднання ароматної ванілі з натуральним полуничним конфи та крем-сиром на вершках.',
-    ingredients: ['Ванільний бісквіт', 'Молочне просочення', 'Полуничне конфи', 'Крем сир на вершках']
-  },
-  {
-    id: 'filling-snikers',
-    name: 'Начинка: Снікерс',
-    category: 'fillings',
-    categoryName: 'Опис Начинок',
-    weights: 'Шоколадний бісквіт',
-    price: 1100,
-    unit: 'грн/кг',
-    img: '/images/cake_filling.jpg',
-    badge: 'Бестселер',
-    articleText: 'Насичений шоколадний бісквіт, молочне просочення, домашНЯ солона карамель з обсмаженим арахісом, ганаш на молочному шоколаді та крем-сир.',
-    ingredients: ['Шоколадний бісквіт', 'Молочне просочення', 'Солона карамель з арахісом', 'Ганаш на молочному шоколаді', 'Крем сир на вершках']
-  },
-  {
-    id: 'filling-vanilla-peach',
-    name: 'Начинка: Ваніль - Персик',
-    category: 'fillings',
-    categoryName: 'Опис Начинок',
-    weights: 'Ванільний бісквіт',
-    price: 1100,
-    unit: 'грн/кг',
-    img: '/images/cake_filling.jpg',
-    badge: 'Ніжний смак',
-    articleText: 'Соковиті шматочки персикового конфи у прошарках із повітряного крем-сиру та пухкого ванільного бісквіту.',
-    ingredients: ['Ванільний бісквіт', 'Молочне просочення', 'Персикове конфи', 'Крем сир на вершках']
-  }
 ];
 
 export default function App() {
@@ -414,7 +320,7 @@ export default function App() {
     }
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     const handleHashChange = () => {
       const rawHash = window.location.hash.replace('#', '').trim();
       const cleanTab = rawHash.split('?')[0];
