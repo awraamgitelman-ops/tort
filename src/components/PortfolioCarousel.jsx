@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Sparkles, ChevronLeft, ChevronRight, ArrowRight, Video as VideoIcon, Image as ImageIcon, Calendar } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ArrowRight, Video as VideoIcon, Calendar, Maximize2, X } from 'lucide-react';
 
 export default function PortfolioCarousel({ onGoToPortfolio }) {
   const [works, setWorks] = useState(() => {
@@ -12,6 +12,7 @@ export default function PortfolioCarousel({ onGoToPortfolio }) {
   });
 
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [fullscreenMedia, setFullscreenMedia] = useState(null);
 
   useEffect(() => {
     const fetchWorks = async () => {
@@ -30,20 +31,22 @@ export default function PortfolioCarousel({ onGoToPortfolio }) {
     fetchWorks();
   }, []);
 
-  // Auto slide every 4.5s
+  // Auto slide every 5 seconds
   useEffect(() => {
-    if (works.length <= 1) return;
+    if (works.length <= 1 || fullscreenMedia) return;
     const timer = setInterval(() => {
       setCurrentIndex(prev => (prev + 1) % works.length);
-    }, 4500);
+    }, 5000);
     return () => clearInterval(timer);
-  }, [works.length]);
+  }, [works.length, fullscreenMedia]);
 
-  const prevSlide = () => {
+  const prevSlide = (e) => {
+    if (e) e.stopPropagation();
     setCurrentIndex(prev => (prev - 1 + works.length) % works.length);
   };
 
-  const nextSlide = () => {
+  const nextSlide = (e) => {
+    if (e) e.stopPropagation();
     setCurrentIndex(prev => (prev + 1) % works.length);
   };
 
@@ -73,116 +76,256 @@ export default function PortfolioCarousel({ onGoToPortfolio }) {
   const isVideo = mediaItem.type === 'video' || (typeof mediaItem.url === 'string' && (mediaItem.url.endsWith('.mp4') || mediaItem.url.includes('video')));
 
   return (
-    <section style={{ marginBottom: '32px', background: '#ffffff', border: '1px solid var(--border-light)', borderRadius: 'var(--radius-md)', padding: '24px', boxShadow: 'var(--shadow-sm)', overflow: 'hidden' }}>
-      {/* Header Bar */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px', marginBottom: '20px', paddingBottom: '14px', borderBottom: '1px solid #f1f5f9' }}>
-        <div>
-          <h2 style={{ fontSize: '22px', fontWeight: 700, color: 'var(--bg-navy)', margin: 0 }}>
-            Галерея Останніх Робіт
-          </h2>
-        </div>
-
-        <button
-          className="btn-primary"
-          onClick={onGoToPortfolio}
-          style={{ fontSize: '13px', padding: '9px 18px', display: 'inline-flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}
-        >
-          Дивитися всі мої роботи <ArrowRight size={15} />
-        </button>
-      </div>
-
-      {/* Carousel Main Container */}
-      <div style={{ position: 'relative', borderRadius: '14px', overflow: 'hidden', background: '#0b172a', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', minHeight: '260px' }}>
-        {/* Media Preview Box */}
-        <div style={{ height: '260px', position: 'relative', overflow: 'hidden', background: '#000' }}>
-          {isVideo ? (
-            <video
-              src={mediaItem.url}
-              controls
-              playsInline
-              preload="metadata"
-              style={{ width: '100%', height: '100%', objectFit: 'contain' }}
-            />
-          ) : (
-            <img
-              src={mediaItem.url}
-              alt={currentWork.title}
-              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-            />
-          )}
-
-          {currentWork.date && (
-            <span style={{ position: 'absolute', top: '10px', right: '10px', background: 'rgba(11,23,42,0.85)', color: '#fff', fontSize: '11px', fontWeight: 700, padding: '4px 10px', borderRadius: '10px', display: 'flex', alignItems: 'center', gap: '4px' }}>
-              <Calendar size={12} /> {currentWork.date}
-            </span>
-          )}
-
-          {isVideo && (
-            <span style={{ position: 'absolute', top: '10px', left: '10px', background: 'rgba(197, 155, 39, 0.95)', color: '#0b172a', fontSize: '11px', fontWeight: 800, padding: '4px 10px', borderRadius: '10px', display: 'flex', alignItems: 'center', gap: '4px' }}>
-              <VideoIcon size={12} /> Відео-огляд
-            </span>
-          )}
-        </div>
-
-        {/* Work Description Box */}
-        <div style={{ padding: '24px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', background: '#0b172a', color: '#fff' }}>
+    <>
+      <section style={{ marginBottom: '32px', background: '#ffffff', border: '1px solid var(--border-light)', borderRadius: 'var(--radius-md)', padding: '24px', boxShadow: 'var(--shadow-sm)', overflow: 'hidden' }}>
+        {/* Header Bar */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px', marginBottom: '20px', paddingBottom: '14px', borderBottom: '1px solid #f1f5f9' }}>
           <div>
-            <span style={{ fontSize: '11px', color: 'var(--accent-gold)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-              Робота {currentIndex + 1} з {works.length}
-            </span>
-            <h3 style={{ fontFamily: "'Georgia', serif", fontSize: '20px', fontWeight: 700, margin: '6px 0 10px', lineHeight: 1.3, color: '#ffffff' }}>
-              {currentWork.title}
-            </h3>
-            <p style={{ fontSize: '13.5px', color: '#cbd5e1', lineHeight: 1.55, display: '-webkit-box', WebkitLineClamp: 4, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-              {currentWork.description}
-            </p>
+            <h2 style={{ fontSize: '22px', fontWeight: 700, color: 'var(--bg-navy)', margin: 0 }}>
+              Галерея Останніх Робіт
+            </h2>
           </div>
 
-          <div style={{ marginTop: '20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: '14px', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
-            <div style={{ display: 'flex', gap: '6px' }}>
-              {works.slice(0, 8).map((_, idx) => (
-                <span
-                  key={idx}
-                  onClick={() => setCurrentIndex(idx)}
-                  style={{
-                    width: idx === currentIndex ? '22px' : '8px',
-                    height: '8px',
-                    borderRadius: '4px',
-                    background: idx === currentIndex ? 'var(--accent-gold)' : 'rgba(255,255,255,0.3)',
-                    cursor: 'pointer',
-                    transition: 'all 0.3s'
-                  }}
-                />
-              ))}
+          <button
+            onClick={onGoToPortfolio}
+            style={{
+              fontSize: '13px',
+              fontWeight: 700,
+              padding: '9px 18px',
+              borderRadius: '20px',
+              border: '1.5px solid #cbd5e1',
+              background: '#ffffff',
+              color: 'var(--bg-navy)',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              cursor: 'pointer',
+              boxShadow: '0 2px 4px rgba(0,0,0,0.04)',
+              transition: 'all 0.2s'
+            }}
+          >
+            Дивитися всі мої роботи <ArrowRight size={15} />
+          </button>
+        </div>
+
+        {/* Carousel Container (Light Clean White Theme) */}
+        <div style={{
+          position: 'relative',
+          borderRadius: '16px',
+          overflow: 'hidden',
+          background: '#ffffff',
+          border: '1px solid #e2e8f0',
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+          minHeight: '270px',
+          boxShadow: '0 4px 12px rgba(0,0,0,0.03)'
+        }}>
+          {/* Media Preview Box (Clickable for full screen) */}
+          <div
+            onClick={() => setFullscreenMedia(mediaItem.url)}
+            style={{
+              height: '270px',
+              position: 'relative',
+              overflow: 'hidden',
+              background: '#f1f5f9',
+              cursor: 'pointer'
+            }}
+            title="Натисніть, щоб відкрити на весь екран"
+          >
+            {isVideo ? (
+              <video
+                src={mediaItem.url}
+                playsInline
+                preload="metadata"
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              />
+            ) : (
+              <img
+                src={mediaItem.url}
+                alt={currentWork.title}
+                style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.3s' }}
+              />
+            )}
+
+            {currentWork.date && (
+              <span style={{ position: 'absolute', top: '12px', right: '12px', background: 'rgba(255,255,255,0.92)', color: '#0b172a', fontSize: '11px', fontWeight: 700, padding: '4px 10px', borderRadius: '10px', boxShadow: '0 2px 6px rgba(0,0,0,0.1)', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                <Calendar size={12} /> {currentWork.date}
+              </span>
+            )}
+
+            {isVideo && (
+              <span style={{ position: 'absolute', top: '12px', left: '12px', background: 'var(--accent-gold)', color: '#0b172a', fontSize: '11px', fontWeight: 800, padding: '4px 10px', borderRadius: '10px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                <VideoIcon size={12} /> Відео
+              </span>
+            )}
+
+            {/* Click to Expand Hint Badge */}
+            <span style={{ position: 'absolute', bottom: '12px', right: '12px', background: 'rgba(11,23,42,0.75)', color: '#ffffff', fontSize: '10px', fontWeight: 700, padding: '3px 8px', borderRadius: '8px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+              <Maximize2 size={11} /> На весь екран
+            </span>
+          </div>
+
+          {/* Work Description Box (Light Theme) */}
+          <div style={{ padding: '24px 28px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', background: '#ffffff' }}>
+            <div>
+              <span style={{ fontSize: '11px', color: 'var(--accent-gold)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                Робота {currentIndex + 1} з {works.length}
+              </span>
+              <h3 style={{ fontFamily: "'Georgia', serif", fontSize: '19px', fontWeight: 700, margin: '6px 0 10px', lineHeight: 1.35, color: '#0b172a' }}>
+                {currentWork.title}
+              </h3>
+              <p style={{ fontSize: '13.5px', color: '#475569', lineHeight: 1.55, display: '-webkit-box', WebkitLineClamp: 4, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                {currentWork.description}
+              </p>
             </div>
 
-            <button
-              onClick={onGoToPortfolio}
-              style={{ background: 'transparent', border: 'none', color: 'var(--accent-gold)', fontSize: '13px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}
-            >
-              Переглянути в галереї &raquo;
-            </button>
+            <div style={{ marginTop: '20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: '14px', borderTop: '1px solid #f1f5f9' }}>
+              <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+                {works.slice(0, 8).map((_, idx) => (
+                  <span
+                    key={idx}
+                    onClick={() => setCurrentIndex(idx)}
+                    style={{
+                      width: idx === currentIndex ? '22px' : '8px',
+                      height: '8px',
+                      borderRadius: '4px',
+                      background: idx === currentIndex ? 'var(--accent-gold)' : '#cbd5e1',
+                      cursor: 'pointer',
+                      transition: 'all 0.3s'
+                    }}
+                  />
+                ))}
+              </div>
+
+              <button
+                onClick={onGoToPortfolio}
+                style={{ background: 'transparent', border: 'none', color: 'var(--accent-gold)', fontSize: '13px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}
+              >
+                Переглянути в галереї &raquo;
+              </button>
+            </div>
+          </div>
+
+          {/* Left / Right Carousel Controls */}
+          {works.length > 1 && (
+            <>
+              <button
+                onClick={prevSlide}
+                style={{
+                  position: 'absolute',
+                  left: '12px',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  background: 'rgba(255, 255, 255, 0.95)',
+                  color: '#0b172a',
+                  border: '1px solid #cbd5e1',
+                  width: '38px',
+                  height: '38px',
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justify: 'center',
+                  cursor: 'pointer',
+                  boxShadow: '0 4px 10px rgba(0,0,0,0.12)',
+                  zIndex: 4
+                }}
+              >
+                <ChevronLeft size={20} />
+              </button>
+              <button
+                onClick={nextSlide}
+                style={{
+                  position: 'absolute',
+                  right: '12px',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  background: 'rgba(255, 255, 255, 0.95)',
+                  color: '#0b172a',
+                  border: '1px solid #cbd5e1',
+                  width: '38px',
+                  height: '38px',
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justify: 'center',
+                  cursor: 'pointer',
+                  boxShadow: '0 4px 10px rgba(0,0,0,0.12)',
+                  zIndex: 4
+                }}
+              >
+                <ChevronRight size={20} />
+              </button>
+            </>
+          )}
+        </div>
+      </section>
+
+      {/* Fullscreen Lightbox Modal */}
+      {fullscreenMedia && (
+        <div
+          onClick={() => setFullscreenMedia(null)}
+          style={{
+            position: 'fixed',
+            inset: 0,
+            zIndex: 99999,
+            background: 'rgba(11, 23, 42, 0.92)',
+            backdropFilter: 'blur(8px)',
+            display: 'flex',
+            alignItems: 'center',
+            justify: 'center',
+            padding: '20px'
+          }}
+        >
+          <button
+            onClick={() => setFullscreenMedia(null)}
+            style={{
+              position: 'absolute',
+              top: '20px',
+              right: '20px',
+              background: 'rgba(255,255,255,0.2)',
+              color: '#fff',
+              border: 'none',
+              width: '44px',
+              height: '44px',
+              borderRadius: '50%',
+              display: 'flex',
+              alignItems: 'center',
+              justify: 'center',
+              cursor: 'pointer',
+              zIndex: 100000
+            }}
+          >
+            <X size={26} />
+          </button>
+
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              position: 'relative',
+              maxWidth: '90vw',
+              maxHeight: '90vh',
+              borderRadius: '12px',
+              overflow: 'hidden',
+              boxShadow: '0 20px 50px rgba(0,0,0,0.5)'
+            }}
+          >
+            {fullscreenMedia.endsWith('.mp4') || fullscreenMedia.includes('video') ? (
+              <video
+                src={fullscreenMedia}
+                controls
+                autoPlay
+                style={{ maxWidth: '90vw', maxHeight: '85vh', borderRadius: '12px' }}
+              />
+            ) : (
+              <img
+                src={fullscreenMedia}
+                alt="Full screen work preview"
+                style={{ maxWidth: '90vw', maxHeight: '85vh', objectFit: 'contain', borderRadius: '12px' }}
+              />
+            )}
           </div>
         </div>
-
-        {/* Left / Right Carousel Control Buttons */}
-        {works.length > 1 && (
-          <>
-            <button
-              onClick={prevSlide}
-              style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', background: 'rgba(0,0,0,0.7)', color: '#fff', border: 'none', width: '36px', height: '36px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', zIndex: 4 }}
-            >
-              <ChevronLeft size={20} />
-            </button>
-            <button
-              onClick={nextSlide}
-              style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', background: 'rgba(0,0,0,0.7)', color: '#fff', border: 'none', width: '36px', height: '36px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', zIndex: 4 }}
-            >
-              <ChevronRight size={20} />
-            </button>
-          </>
-        )}
-      </div>
-    </section>
+      )}
+    </>
   );
 }
