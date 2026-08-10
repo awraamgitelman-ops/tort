@@ -390,7 +390,7 @@ export default function Catalog({ onAddToCart }) {
                     }}
                     style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                   />
-                  <span style={{ position: 'absolute', top: '8px', left: '8px', background: 'rgba(11,23,42,0.85)', color: '#fff', fontSize: '10px', fontWeight 700, padding: '3px 8px', borderRadius: '10px' }}>
+                  <span style={{ position: 'absolute', top: '8px', left: '8px', background: 'rgba(11,23,42,0.85)', color: '#fff', fontSize: '10px', fontWeight: 700, padding: '3px 8px', borderRadius: '10px' }}>
                     {product.badge}
                   </span>
                 </div>
