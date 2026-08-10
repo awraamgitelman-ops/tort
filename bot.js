@@ -156,6 +156,7 @@ export function initBot() {
               caption: '',
               chatId: msg.chat.id,
               date: actualPostDate,
+              timestamp: rawTimestamp * 1000,
               timer: null
             });
           }
@@ -168,12 +169,12 @@ export function initBot() {
 
           if (group.timer) clearTimeout(group.timer);
           group.timer = setTimeout(async () => {
-            await savePortfolioEntry(group.mediaList, group.caption, group.chatId, group.date);
+            await savePortfolioEntry(group.mediaList, group.caption, group.chatId, group.date, group.timestamp);
             mediaGroups.delete(groupId);
           }, 1200);
 
         } else {
-          await savePortfolioEntry([{ type: 'image', url: directFileUrl }], caption, msg.chat.id, actualPostDate);
+          await savePortfolioEntry([{ type: 'image', url: directFileUrl }], caption, msg.chat.id, actualPostDate, rawTimestamp * 1000);
         }
       } catch (err) {
         console.error('Photo processing error:', err);
@@ -197,6 +198,7 @@ export function initBot() {
               caption: '',
               chatId: msg.chat.id,
               date: actualPostDate,
+              timestamp: rawTimestamp * 1000,
               timer: null
             });
           }
@@ -209,12 +211,12 @@ export function initBot() {
 
           if (group.timer) clearTimeout(group.timer);
           group.timer = setTimeout(async () => {
-            await savePortfolioEntry(group.mediaList, group.caption, group.chatId, group.date);
+            await savePortfolioEntry(group.mediaList, group.caption, group.chatId, group.date, group.timestamp);
             mediaGroups.delete(groupId);
           }, 1200);
 
         } else {
-          await savePortfolioEntry([{ type: 'video', url: directVideoUrl }], caption, msg.chat.id, actualPostDate);
+          await savePortfolioEntry([{ type: 'video', url: directVideoUrl }], caption, msg.chat.id, actualPostDate, rawTimestamp * 1000);
         }
       } catch (err) {
         console.error('Video processing error:', err);
@@ -223,7 +225,7 @@ export function initBot() {
     }
   });
 
-  const savePortfolioEntry = async (mediaList, caption, chatId, actualDate) => {
+  const savePortfolioEntry = async (mediaList, caption, chatId, actualDate, originalTimestamp) => {
     try {
       const timestamp = Date.now();
       let portfolioData = getPortfolioData();
@@ -241,7 +243,7 @@ export function initBot() {
       const hasVideo = mediaList.some(m => m.type === 'video');
 
       // Upload files to Catbox for permanent free CDN hosting
-      bot.sendMessage(chatId, `⏳ *Збереження медіафайлів у безкоштовне вічне сховище...*`, { parse_mode: 'Markdown' });
+      bot.sendMessage(chatId, `⏳ *Збереження медіафайлів у безкоштовне сховище...*`, { parse_mode: 'Markdown' });
 
       const uploadedMediaList = await Promise.all(
         mediaList.map(async (m, idx) => {
@@ -256,6 +258,7 @@ export function initBot() {
 
       const newWork = {
         id: timestamp,
+        originalTimestamp: originalTimestamp || timestamp,
         title: title,
         description: cleanCaption,
         image: mediaUrls[0],

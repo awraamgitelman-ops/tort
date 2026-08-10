@@ -223,8 +223,12 @@ export default function PortfolioPage({ onAddToCart }) {
       const res = await fetch('/api/portfolio');
       if (res.ok) {
         const data = await res.json();
-        // Sort newest posts first (descending by timestamp / ID)
-        const sorted = [...data].sort((a, b) => (Number(b.id) || 0) - (Number(a.id) || 0));
+        // Sort newest posts first strictly by original Telegram publication date
+        const sorted = [...data].sort((a, b) => {
+          const timeA = Number(a.originalTimestamp || a.id) || 0;
+          const timeB = Number(b.originalTimestamp || b.id) || 0;
+          return timeB - timeA;
+        });
         setWorks(sorted);
       }
     } catch (err) {
