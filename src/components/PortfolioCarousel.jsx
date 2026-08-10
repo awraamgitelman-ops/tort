@@ -25,18 +25,39 @@ export default function PortfolioCarousel({ onGoToPortfolio }) {
   useEffect(() => {
     const fetchWorks = async () => {
       try {
-        const res = await fetch('/api/portfolio');
-        if (res.ok) {
-          const data = await res.json();
-          if (Array.isArray(data)) {
-            const filtered = data.filter(item => {
+        const cachedRaw = localStorage.getItem('cached_portfolio_works');
+        let cachedWorks = [];
+        if (cachedRaw) {
+          try {
+            const parsed = JSON.parse(cachedRaw);
+            cachedWorks = parsed.filter(item => {
               const t = (item.title || '').toLowerCase();
               const d = (item.description || '').toLowerCase();
               return !t.includes('скеля') && !d.includes('скеля') && !t.includes('стильні чоловічі торти') && !d.includes('стильні чоловічі торти');
             });
+          } catch (e) {}
+        }
+
+        const res = await fetch('/api/portfolio');
+        if (res.ok) {
+          const data = await res.json();
+          const filtered = Array.isArray(data) ? data.filter(item => {
+            const t = (item.title || '').toLowerCase();
+            const d = (item.description || '').toLowerCase();
+            return !t.includes('скеля') && !d.includes('скеля') && !t.includes('стильні чоловічі торти') && !d.includes('стильні чоловічі торти');
+          }) : [];
+
+          if (filtered.length > 0) {
             const sorted = [...filtered].sort((a, b) => (Number(b.originalTimestamp || b.id) - Number(a.originalTimestamp || a.id)));
             setWorks(sorted);
             localStorage.setItem('cached_portfolio_works', JSON.stringify(sorted));
+          } else if (cachedWorks.length > 0) {
+            setWorks(cachedWorks);
+            fetch('/api/portfolio/sync', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ works: cachedWorks })
+            }).catch(() => {});
           }
         }
       } catch (e) {}

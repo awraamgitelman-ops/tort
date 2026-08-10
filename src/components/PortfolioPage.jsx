@@ -273,22 +273,49 @@ export default function PortfolioPage({ onAddToCart }) {
   const fetchPortfolio = async () => {
     setLoading(true);
     try {
+      const cachedRaw = localStorage.getItem('cached_portfolio_works');
+      let cachedWorks = [];
+      if (cachedRaw) {
+        try {
+          const parsed = JSON.parse(cachedRaw);
+          cachedWorks = parsed.filter(item => !isTargetPost(item));
+        } catch (e) {}
+      }
+
       const res = await fetch('/api/portfolio');
       if (res.ok) {
         const data = await res.json();
-        if (Array.isArray(data)) {
-          const filtered = data.filter(item => !isTargetPost(item));
-          const sorted = [...filtered].sort((a, b) => {
+        const filteredServer = Array.isArray(data) ? data.filter(item => !isTargetPost(item)) : [];
+
+        if (filteredServer.length > 0) {
+          const sorted = [...filteredServer].sort((a, b) => {
             const timeA = Number(a.originalTimestamp || a.id) || 0;
             const timeB = Number(b.originalTimestamp || b.id) || 0;
             return timeB - timeA;
           });
           localStorage.setItem('cached_portfolio_works', JSON.stringify(sorted));
           setWorks(sorted);
+        } else if (cachedWorks.length > 0) {
+          // Server container restarted/redeployed -> auto-restore from client cache & sync to server!
+          setWorks(cachedWorks);
+          fetch('/api/portfolio/sync', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ works: cachedWorks })
+          }).catch(() => {});
+        } else {
+          setWorks([]);
         }
       }
     } catch (err) {
       console.warn('Failed to load portfolio:', err);
+      const cachedRaw = localStorage.getItem('cached_portfolio_works');
+      if (cachedRaw) {
+        try {
+          const parsed = JSON.parse(cachedRaw);
+          setWorks(parsed.filter(item => !isTargetPost(item)));
+        } catch (e) {}
+      }
     } finally {
       setLoading(false);
     }

@@ -44,6 +44,32 @@ app.get('/api/portfolio', (req, res) => {
   }
 });
 
+// API Endpoint to auto-restore/sync portfolio data from client cache if server container was redeployed
+app.post('/api/portfolio/sync', (req, res) => {
+  try {
+    const { works } = req.body;
+    if (Array.isArray(works) && works.length > 0) {
+      const backupJsonPath = path.join(dataDir, 'portfolio.backup.json');
+      let current = [];
+      if (fs.existsSync(portfolioJsonPath)) {
+        try {
+          const raw = fs.readFileSync(portfolioJsonPath, 'utf8');
+          if (raw && raw.trim().length > 2) current = JSON.parse(raw);
+        } catch (e) {}
+      }
+
+      if (current.length < works.length) {
+        fs.writeFileSync(portfolioJsonPath, JSON.stringify(works, null, 2), 'utf8');
+        fs.writeFileSync(backupJsonPath, JSON.stringify(works, null, 2), 'utf8');
+        return res.json({ success: true, restoredCount: works.length });
+      }
+    }
+    res.json({ success: true, status: 'no_change' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // API Endpoint to extract design tokens from a target website URL using dembrandt
 app.post('/api/extract-brand', async (req, res) => {
   const { url } = req.body;
