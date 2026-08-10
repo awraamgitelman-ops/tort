@@ -251,6 +251,10 @@ export function initBot() {
   // Sequential Queue to prevent race conditions during bulk message forwarding (e.g. 100+ posts)
   const queue = [];
   let isProcessingQueue = false;
+  let statusMessageId = null;
+  let statusChatId = null;
+  let processedInBatch = 0;
+  let editTimer = null;
 
   const enqueuePortfolioEntry = (mediaList, caption, chatId, actualDate, originalTimestamp) => {
     queue.push({ mediaList, caption, chatId, actualDate, originalTimestamp });
@@ -258,17 +262,74 @@ export function initBot() {
   };
 
   const processQueue = async () => {
-    if (isProcessingQueue || queue.length === 0) return;
-    isProcessingQueue = true;
+    if (isProcessingQueue || queue.length === 0) {
+      if (!isProcessingQueue && queue.length === 0 && statusMessageId && statusChatId) {
+        // Final batch completion update
+        const portfolioData = getPortfolioData();
+        try {
+          await bot.editMessageText(
+            `✅ *УСІ ПОСТИ УСПІШНО ЗБЕРЕЖЕНІ НА САЙТ!*\n\n📦 *Додано нових постів:* ${processedInBatch}\n🌐 *Всього в портфоліо на сайті:* ${portfolioData.length}\n☁️ *Хранение:* 100% Безкоштовний CDN сховище (Catbox)\n\n✨ *Розділ "Мої роботи" на сайті миттєво оновлено!*`,
+            {
+              chat_id: statusChatId,
+              message_id: statusMessageId,
+              parse_mode: 'Markdown'
+            }
+          );
+        } catch (e) {}
+        statusMessageId = null;
+        statusChatId = null;
+        processedInBatch = 0;
+      }
+      return;
+    }
 
+    isProcessingQueue = true;
     const item = queue.shift();
+
+    if (!statusChatId) {
+      statusChatId = item.chatId;
+    }
+
+    // Send initial status message if not sent yet
+    if (!statusMessageId && statusChatId) {
+      try {
+        const msg = await bot.sendMessage(
+          statusChatId,
+          `⏳ *Збереження постів у портфоліо на сайт...*\n\n📊 *Обробка:* 1 з ${queue.length + 1}\n☁️ *Завантаження медіафайлів у сховище Catbox...*`,
+          { parse_mode: 'Markdown' }
+        );
+        statusMessageId = msg.message_id;
+      } catch (e) {}
+    }
+
     try {
       await savePortfolioEntry(item.mediaList, item.caption, item.chatId, item.actualDate, item.originalTimestamp);
+      processedInBatch++;
+
+      // Update status message text in-place for batch progress
+      if (statusMessageId && statusChatId && queue.length > 0) {
+        const totalInBatch = processedInBatch + queue.length;
+        if (!editTimer) {
+          editTimer = setTimeout(async () => {
+            editTimer = null;
+            try {
+              await bot.editMessageText(
+                `⏳ *Збереження постів у портфоліо на сайт...*\n\n📊 *Обробка:* ${processedInBatch} з ${totalInBatch}\n☁️ *Завантаження медіафайлів у сховище Catbox...*`,
+                {
+                  chat_id: statusChatId,
+                  message_id: statusMessageId,
+                  parse_mode: 'Markdown'
+                }
+              );
+            } catch (e) {}
+          }, 800);
+        }
+      }
     } catch (err) {
       console.error('Queue task error:', err);
     } finally {
       isProcessingQueue = false;
-      setTimeout(processQueue, 250);
+      setTimeout(processQueue, 200);
     }
   };
 
@@ -316,15 +377,8 @@ export function initBot() {
 
       portfolioData.unshift(newWork);
       savePortfolioData(portfolioData);
-
-      bot.sendMessage(
-        chatId,
-        `✅ *${hasVideo ? 'ВІДЕО' : 'ПОСТ'} УСПІШНО ЗБЕРЕЖЕНО!* (Всього на сайті: ${portfolioData.length})\n\n📝 *${title}*`,
-        { parse_mode: 'Markdown' }
-      ).catch(() => {});
     } catch (err) {
       console.error('Portfolio save error:', err);
-      bot.sendMessage(chatId, `❌ Помилка збереження: ${err.message}`).catch(() => {});
     }
   };
 
