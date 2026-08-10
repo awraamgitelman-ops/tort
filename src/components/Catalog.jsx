@@ -302,8 +302,14 @@ const MENU_ITEMS = [
   }
 ];
 
-export default function Catalog({ onAddToCart, onGoToPortfolio }) {
-  const [selectedCat, setSelectedCat] = useState('all');
+export default function Catalog({ onAddToCart, onGoToPortfolio, selectedCategory }) {
+  const [selectedCat, setSelectedCat] = useState(selectedCategory || 'all');
+
+  React.useEffect(() => {
+    if (selectedCategory) {
+      setSelectedCat(selectedCategory);
+    }
+  }, [selectedCategory]);
 
   const filteredProducts = selectedCat === 'all'
     ? MENU_ITEMS

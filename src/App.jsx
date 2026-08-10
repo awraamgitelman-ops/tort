@@ -5,6 +5,8 @@ import StorageGuidePage from './components/StorageGuidePage';
 import CartPage from './components/CartPage';
 import SearchResultsPage from './components/SearchResultsPage';
 import PortfolioPage from './components/PortfolioPage';
+import DeliveryPage from './components/DeliveryPage';
+import TelegramOrderPage from './components/TelegramOrderPage';
 import Footer from './components/Footer';
 
 const MENU_ITEMS = [
@@ -299,15 +301,21 @@ const MENU_ITEMS = [
 ];
 
 export default function App() {
-  const getInitialTab = () => {
-    if (typeof window === 'undefined') return 'catalog';
+  const getInitialRoute = () => {
+    if (typeof window === 'undefined') return { tab: 'catalog', cat: 'all' };
     const rawHash = window.location.hash.replace('#', '').trim();
     const cleanTab = rawHash.split('?')[0];
-    const validTabs = ['catalog', 'portfolio', 'guide', 'cart', 'search'];
-    return validTabs.includes(cleanTab) ? cleanTab : 'catalog';
+    
+    if (['bento', 'big_cakes', 'cupcakes', 'fillings'].includes(cleanTab)) {
+      return { tab: 'catalog', cat: cleanTab };
+    }
+    const validTabs = ['catalog', 'portfolio', 'guide', 'cart', 'search', 'delivery', 'telegram'];
+    return { tab: validTabs.includes(cleanTab) ? cleanTab : 'catalog', cat: 'all' };
   };
 
-  const [activeTab, setActiveTabState] = useState(getInitialTab);
+  const initialRoute = getInitialRoute();
+  const [activeTab, setActiveTabState] = useState(initialRoute.tab);
+  const [selectedCategory, setSelectedCategory] = useState(initialRoute.cat);
   const [searchQuery, setSearchQuery] = useState('');
   const [cartItems, setCartItems] = useState([]);
 
@@ -320,13 +328,32 @@ export default function App() {
     }
   };
 
+  const handleGoToCategory = (cat) => {
+    setSelectedCategory(cat);
+    setActiveTabState('catalog');
+    if (typeof window !== 'undefined') {
+      window.location.hash = cat;
+    }
+  };
+
+  const handleGoToTab = (tab) => {
+    setSelectedCategory('all');
+    setActiveTab(tab);
+  };
+
   useEffect(() => {
     const handleHashChange = () => {
       const rawHash = window.location.hash.replace('#', '').trim();
       const cleanTab = rawHash.split('?')[0];
-      const validTabs = ['catalog', 'portfolio', 'guide', 'cart', 'search'];
-      if (validTabs.includes(cleanTab)) {
-        setActiveTabState(cleanTab);
+      
+      if (['bento', 'big_cakes', 'cupcakes', 'fillings'].includes(cleanTab)) {
+        setSelectedCategory(cleanTab);
+        setActiveTabState('catalog');
+      } else {
+        const validTabs = ['catalog', 'portfolio', 'guide', 'cart', 'search', 'delivery', 'telegram'];
+        if (validTabs.includes(cleanTab)) {
+          setActiveTabState(cleanTab);
+        }
       }
     };
 
@@ -362,10 +389,10 @@ export default function App() {
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <Header
         activeTab={activeTab}
-        setActiveTab={setActiveTab}
+        setActiveTab={handleGoToTab}
         cartCount={cartItems.length}
         cartTotal={cartTotal}
-        onOpenCart={() => setActiveTab('cart')}
+        onOpenCart={() => handleGoToTab('cart')}
         onPerformSearch={handlePerformSearch}
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
@@ -375,7 +402,8 @@ export default function App() {
         {activeTab === 'catalog' && (
           <Catalog
             onAddToCart={handleAddToCart}
-            onGoToPortfolio={() => setActiveTab('portfolio')}
+            onGoToPortfolio={() => handleGoToTab('portfolio')}
+            selectedCategory={selectedCategory}
           />
         )}
 
@@ -387,7 +415,19 @@ export default function App() {
 
         {activeTab === 'guide' && (
           <StorageGuidePage
-            onGoToCatalog={() => setActiveTab('catalog')}
+            onGoToCatalog={() => handleGoToTab('catalog')}
+          />
+        )}
+
+        {activeTab === 'delivery' && (
+          <DeliveryPage
+            onGoToCatalog={() => handleGoToTab('catalog')}
+          />
+        )}
+
+        {activeTab === 'telegram' && (
+          <TelegramOrderPage
+            onGoToCatalog={() => handleGoToTab('catalog')}
           />
         )}
 
@@ -396,7 +436,7 @@ export default function App() {
             cartItems={cartItems}
             onRemoveItem={handleRemoveFromCart}
             onClearCart={handleClearCart}
-            onGoToCatalog={() => setActiveTab('catalog')}
+            onGoToCatalog={() => handleGoToTab('catalog')}
           />
         )}
 
@@ -405,13 +445,16 @@ export default function App() {
             searchQuery={searchQuery}
             menuItems={MENU_ITEMS}
             onAddToCart={handleAddToCart}
-            onGoToCatalog={() => setActiveTab('catalog')}
-            onGoToGuide={() => setActiveTab('guide')}
+            onGoToCatalog={() => handleGoToTab('catalog')}
+            onGoToGuide={() => handleGoToTab('guide')}
           />
         )}
       </main>
 
-      <Footer onGoToGuide={() => setActiveTab('guide')} />
+      <Footer
+        onGoToTab={handleGoToTab}
+        onGoToCategory={handleGoToCategory}
+      />
     </div>
   );
 }
