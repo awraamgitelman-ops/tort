@@ -130,16 +130,8 @@ export default function Footer({ onGoToTab, onGoToCategory }) {
           <div>
             Всі права захищені © {new Date().getFullYear()} BELLA CRÈME
           </div>
-          <div style={{ fontSize: '12.5px', color: '#64748b', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-            <span>ТОВ «БОВАСКО» • ЄДРПОУ 43342987 • м. Одеса</span>
-            <span style={{ color: '#cbd5e1' }}>•</span>
-            <a
-              href="#agreement"
-              onClick={(e) => { e.preventDefault(); onGoToTab('agreement'); }}
-              style={{ color: 'var(--accent-gold)', textDecoration: 'underline', fontWeight: 600 }}
-            >
-              Публічна оферта
-            </a>
+          <div style={{ fontSize: '12.5px', color: '#64748b', fontWeight: 600 }}>
+            ТОВ «БОВАСКО»
           </div>
         </div>
       </div>
