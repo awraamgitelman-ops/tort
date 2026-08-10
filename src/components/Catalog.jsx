@@ -358,7 +358,7 @@ export default function Catalog({ onAddToCart, onGoToPortfolio }) {
               style={{
                 background: '#ffffff',
                 border: '1px solid var(--border-light)',
-                borderRadius: 'var(--radius-md)',
+                borderRadius: 0,
                 padding: '28px',
                 boxShadow: 'var(--shadow-sm)',
                 transition: 'all 0.3s',
@@ -382,13 +382,13 @@ export default function Catalog({ onAddToCart, onGoToPortfolio }) {
                   <div style={{ fontSize: '22px', fontWeight: 800, color: 'var(--accent-gold)' }}>
                     {product.price} {product.unit || 'грн'}
                   </div>
-                  <span className="weight-pill" style={{ margin: 0 }}>{product.weights}</span>
+                  <span className="weight-pill" style={{ margin: 0, borderRadius: 0 }}>{product.weights}</span>
                 </div>
               </div>
 
               {/* Article Main Body */}
               <div style={{ display: 'grid', gridTemplateColumns: '220px 1fr', gap: '24px' }}>
-                <div style={{ borderRadius: '12px', overflow: 'hidden', height: '170px', position: 'relative' }}>
+                <div style={{ borderRadius: 0, overflow: 'hidden', height: '170px', position: 'relative' }}>
                   <img
                     src={product.img}
                     alt={product.name}
@@ -396,9 +396,9 @@ export default function Catalog({ onAddToCart, onGoToPortfolio }) {
                       e.target.onerror = null;
                       e.target.src = '/images/cake_filling.jpg';
                     }}
-                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                    style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 0 }}
                   />
-                  <span style={{ position: 'absolute', top: '8px', left: '8px', background: 'rgba(11,23,42,0.85)', color: '#fff', fontSize: '10px', fontWeight: 700, padding: '3px 8px', borderRadius: '10px' }}>
+                  <span style={{ position: 'absolute', top: '8px', left: '8px', background: 'rgba(11,23,42,0.85)', color: '#fff', fontSize: '10px', fontWeight: 700, padding: '3px 8px', borderRadius: 0 }}>
                     {product.badge}
                   </span>
                 </div>
@@ -420,7 +420,7 @@ export default function Catalog({ onAddToCart, onGoToPortfolio }) {
                       <div style={{ fontSize: '12px', fontWeight: 700, color: 'var(--bg-navy)', marginBottom: '6px' }}>Доступні смаки:</div>
                       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
                         {product.flavors.map((flv, idx) => (
-                          <span key={idx} style={{ fontSize: '11px', background: '#f8fafc', border: '1px solid #e2e8f0', padding: '3px 8px', borderRadius: '6px', color: '#475569' }}>
+                          <span key={idx} style={{ fontSize: '11px', background: '#f8fafc', border: '1px solid #e2e8f0', padding: '3px 8px', borderRadius: 0, color: '#475569' }}>
                             {flv}
                           </span>
                         ))}
@@ -430,7 +430,7 @@ export default function Catalog({ onAddToCart, onGoToPortfolio }) {
 
                   {/* Ingredients list if available */}
                   {product.ingredients && (
-                    <div style={{ marginTop: '8px', background: '#fdfbf7', padding: '10px 14px', borderRadius: '8px', border: '1px dashed #d4af37' }}>
+                    <div style={{ marginTop: '8px', background: '#fdfbf7', padding: '10px 14px', borderRadius: 0, border: '1px dashed #d4af37' }}>
                       <div style={{ fontSize: '12px', fontWeight: 700, color: '#8b6b1b', marginBottom: '4px' }}>Склад шарів та інгредієнти:</div>
                       <div style={{ fontSize: '12px', color: '#475569', display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
                         {product.ingredients.map((ing, idx) => (
@@ -454,8 +454,10 @@ export default function Catalog({ onAddToCart, onGoToPortfolio }) {
                     price: product.price,
                     weight: product.weights
                   })}
-                  style={{ padding: '10px 24px', fontSize: '13.5px' }}
+                  style={{ padding: '10px 24px', fontSize: '13.5px', borderRadius: 0 }}
                 >
+                  <span>Додати в кошик та Замовити &raquo;</span>
+                </button>
                   <span>Додати в кошик та Замовити &raquo;</span>
                 </button>
               </div>

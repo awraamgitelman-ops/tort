@@ -18,10 +18,10 @@
   --text-muted: #64748b;
   --text-light: #f8fafc;
 
-  --radius-sm: 6px;
-  --radius-md: 12px;
-  --radius-lg: 20px;
-  --radius-full: 9999px;
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-full: 0px;
 
   --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
   --shadow-card: 0 4px 20px rgba(0,0,0,0.06);
@@ -515,7 +515,7 @@ body {
   color: #fff;
   border: none;
   padding: 12px 24px;
-  border-radius: 30px;
+  border-radius: 0 !important;
   font-weight: 700;
   font-size: 14px;
   cursor: pointer;
@@ -529,6 +529,22 @@ body {
 .btn-primary:hover {
   background: #1e293b;
   box-shadow: 0 4px 12px rgba(11, 23, 42, 0.2);
+}
+
+/* Universal Sharp Corner Overrides (Matching Carousel Style) */
+.btn-primary,
+.search-input,
+.cart-widget,
+.weight-pill,
+.product-card,
+.sidebar-box,
+.modal-card,
+.support-box,
+.hero-banner,
+.category-link,
+article,
+input {
+  border-radius: 0 !important;
 }
 
 /* Mobile Media Queries */
