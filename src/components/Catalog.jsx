@@ -355,6 +355,9 @@ export default function Catalog({ onAddToCart, onGoToPortfolio, selectedCategory
           {/* Reviews Carousel */}
           <ReviewsCarousel />
 
+          {/* Interactive Carousel of Recent Works */}
+          <PortfolioCarousel onGoToPortfolio={onGoToPortfolio} />
+
           {filteredProducts.map(product => (
             <article
               key={product.id}

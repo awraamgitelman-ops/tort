@@ -78,10 +78,7 @@ export default function PortfolioCarousel({ onGoToPortfolio }) {
         <div className="container">
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
             <div>
-              <span style={{ fontSize: '11px', color: 'var(--accent-gold)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-                Жива галерея Telegram
-              </span>
-              <h2 style={{ fontFamily: "'Georgia', serif", fontSize: '24px', fontWeight: 700, color: 'var(--bg-navy)', margin: '4px 0 0' }}>
+              <h2 style={{ fontFamily: "'Georgia', serif", fontSize: '24px', fontWeight: 700, color: 'var(--bg-navy)', margin: 0 }}>
                 Останні виконані замовлення
               </h2>
             </div>
