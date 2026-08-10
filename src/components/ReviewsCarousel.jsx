@@ -50,9 +50,9 @@ export default function ReviewsCarousel() {
   const current = REVIEWS[currentIndex];
 
   return (
-    <section style={{ margin: '0 0 12px', background: '#ffffff', border: '1px solid var(--border-light)', padding: '32px 28px', boxShadow: 'var(--shadow-sm)' }}>
+    <section style={{ position: 'relative', margin: '0 0 12px', background: '#ffffff', border: '1px solid var(--border-light)', padding: '32px 28px 24px', boxShadow: 'var(--shadow-sm)' }}>
       {/* Cursive Title Header */}
-      <div style={{ textAlign: 'center', marginBottom: '28px' }}>
+      <div style={{ textAlign: 'center', marginBottom: '24px' }}>
         <h2 style={{ fontFamily: "'Georgia', cursive, serif", fontSize: '38px', fontStyle: 'italic', color: 'var(--bg-navy)', margin: 0, fontWeight: 700 }}>
           Наші відгуки
         </h2>
@@ -62,7 +62,7 @@ export default function ReviewsCarousel() {
       </div>
 
       {/* Review Content Slider Box */}
-      <div style={{ position: 'relative', maxWidth: '780px', margin: '0 auto', textAlign: 'center', padding: '0 48px' }}>
+      <div style={{ maxWidth: '780px', margin: '0 auto', textAlign: 'center', padding: '0 36px' }}>
         <Quote size={32} style={{ color: 'var(--accent-gold)', opacity: 0.3, margin: '0 auto 12px', display: 'block' }} />
 
         <p style={{ fontSize: '16px', color: '#334155', lineHeight: 1.7, marginBottom: '20px', minHeight: '80px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -72,56 +72,64 @@ export default function ReviewsCarousel() {
         <div style={{ fontSize: '14px', fontWeight: 700, color: 'var(--accent-gold)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
           {current.name}
         </div>
-
-        {/* Navigation Arrow Buttons */}
-        <button
-          onClick={prevReview}
-          style={{
-            position: 'absolute',
-            left: 0,
-            top: '50%',
-            transform: 'translateY(-50%)',
-            background: '#ffffff',
-            border: '1px solid #cbd5e1',
-            width: '40px',
-            height: '40px',
-            borderRadius: '50%',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            cursor: 'pointer',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
-            color: '#0b172a'
-          }}
-          title="Попередній відгук"
-        >
-          <ChevronLeft size={20} />
-        </button>
-
-        <button
-          onClick={nextReview}
-          style={{
-            position: 'absolute',
-            right: 0,
-            top: '50%',
-            transform: 'translateY(-50%)',
-            background: '#ffffff',
-            border: '1px solid #cbd5e1',
-            width: '40px',
-            height: '40px',
-            borderRadius: '50%',
-            display: 'flex',
-            alignItems: 'center',
-            justify: 'center',
-            cursor: 'pointer',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
-            color: '#0b172a'
-          }}
-          title="Наступний відгук"
-        >
-          <ChevronRight size={20} />
-        </button>
       </div>
+
+      {/* Navigation Arrow Buttons (Perfectly Centered & Aligned) */}
+      <button
+        onClick={prevReview}
+        style={{
+          position: 'absolute',
+          left: '16px',
+          top: '55%',
+          transform: 'translateY(-50%)',
+          background: '#ffffff',
+          border: '1px solid #cbd5e1',
+          width: '42px',
+          height: '42px',
+          borderRadius: '50%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: 0,
+          margin: 0,
+          lineHeight: 0,
+          cursor: 'pointer',
+          boxShadow: '0 3px 10px rgba(0,0,0,0.08)',
+          color: '#0b172a',
+          zIndex: 5
+        }}
+        title="Попередній відгук"
+      >
+        <ChevronLeft size={22} style={{ display: 'block', margin: 'auto', transform: 'translateX(-1px)' }} />
+      </button>
+
+      <button
+        onClick={nextReview}
+        style={{
+          position: 'absolute',
+          right: '16px',
+          top: '55%',
+          transform: 'translateY(-50%)',
+          background: '#ffffff',
+          border: '1px solid #cbd5e1',
+          width: '42px',
+          height: '42px',
+          borderRadius: '50%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: 0,
+          margin: 0,
+          lineHeight: 0,
+          cursor: 'pointer',
+          boxShadow: '0 3px 10px rgba(0,0,0,0.08)',
+          color: '#0b172a',
+          zIndex: 5
+        }}
+        title="Наступний відгук"
+      >
+        <ChevronRight size={22} style={{ display: 'block', margin: 'auto', transform: 'translateX(1px)' }} />
+      </button>
 
       {/* Slider Pagination Dots */}
       <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', marginTop: '24px' }}>

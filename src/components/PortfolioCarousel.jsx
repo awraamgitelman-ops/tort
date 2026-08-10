@@ -222,13 +222,14 @@ export default function PortfolioCarousel({ onGoToPortfolio }) {
                     alignItems: 'center',
                     justify: 'center',
                     padding: 0,
+                    margin: 0,
                     lineHeight: 0,
                     cursor: 'pointer',
                     boxShadow: '0 4px 10px rgba(0,0,0,0.12)',
                     zIndex: 4
                   }}
                 >
-                  <ChevronLeft size={20} style={{ display: 'block', margin: 'auto' }} />
+                  <ChevronLeft size={20} style={{ display: 'block', margin: 'auto', transform: 'translateX(-1px)' }} />
                 </button>
                 <button
                   onClick={nextSlide}
@@ -247,13 +248,14 @@ export default function PortfolioCarousel({ onGoToPortfolio }) {
                     alignItems: 'center',
                     justify: 'center',
                     padding: 0,
+                    margin: 0,
                     lineHeight: 0,
                     cursor: 'pointer',
                     boxShadow: '0 4px 10px rgba(0,0,0,0.12)',
                     zIndex: 4
                   }}
                 >
-                  <ChevronRight size={20} style={{ display: 'block', margin: 'auto' }} />
+                  <ChevronRight size={20} style={{ display: 'block', margin: 'auto', transform: 'translateX(1px)' }} />
                 </button>
               </>
             )}
