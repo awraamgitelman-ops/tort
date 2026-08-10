@@ -7,6 +7,7 @@ import SearchResultsPage from './components/SearchResultsPage';
 import PortfolioPage from './components/PortfolioPage';
 import DeliveryPage from './components/DeliveryPage';
 import TelegramOrderPage from './components/TelegramOrderPage';
+import AgreementPage from './components/AgreementPage';
 import Footer from './components/Footer';
 
 const MENU_ITEMS = [
@@ -309,7 +310,7 @@ export default function App() {
     if (['bento', 'big_cakes', 'cupcakes', 'fillings'].includes(cleanTab)) {
       return { tab: 'catalog', cat: cleanTab };
     }
-    const validTabs = ['catalog', 'portfolio', 'guide', 'cart', 'search', 'delivery', 'telegram'];
+    const validTabs = ['catalog', 'portfolio', 'guide', 'cart', 'search', 'delivery', 'telegram', 'agreement'];
     return { tab: validTabs.includes(cleanTab) ? cleanTab : 'catalog', cat: 'all' };
   };
 
@@ -350,7 +351,7 @@ export default function App() {
         setSelectedCategory(cleanTab);
         setActiveTabState('catalog');
       } else {
-        const validTabs = ['catalog', 'portfolio', 'guide', 'cart', 'search', 'delivery', 'telegram'];
+        const validTabs = ['catalog', 'portfolio', 'guide', 'cart', 'search', 'delivery', 'telegram', 'agreement'];
         if (validTabs.includes(cleanTab)) {
           setActiveTabState(cleanTab);
         }
@@ -428,6 +429,12 @@ export default function App() {
         {activeTab === 'telegram' && (
           <TelegramOrderPage
             onGoToCatalog={() => handleGoToTab('catalog')}
+          />
+        )}
+
+        {activeTab === 'agreement' && (
+          <AgreementPage
+            onBackToCatalog={() => handleGoToTab('catalog')}
           />
         )}
 
