@@ -55,6 +55,8 @@ export default function CartPage({ cartItems, onRemoveItem, onClearCart, onGoToC
  onGoToCatalog();
  };
 
+  const todayStr = new Date().toISOString().split('T')[0];
+
  return (
  <div style={{ background: '#e5e5e5', minHeight: '85vh', padding: '30px 0 60px', fontFamily: "'Times New Roman', Times, serif" }}>
  <div className="container">
@@ -301,8 +303,16 @@ export default function CartPage({ cartItems, onRemoveItem, onClearCart, onGoToC
  <input
  type="date"
  required
+ min={todayStr}
  value={form.date}
- onChange={e => setForm({ ...form, date: e.target.value })}
+ onChange={e => {
+ const val = e.target.value;
+ if (val && val < todayStr) {
+ setForm({ ...form, date: todayStr });
+ } else {
+ setForm({ ...form, date: val });
+ }
+ }}
  style={{
  width: '100%',
  padding: '8px',

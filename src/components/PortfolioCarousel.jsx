@@ -101,7 +101,7 @@ export default function PortfolioCarousel({ onGoToPortfolio }) {
                 transition: 'all 0.2s'
               }}
             >
-              Дивитися всі мої роботи <ArrowRight size={15} />
+              Дивитися всі наші роботи <ArrowRight size={15} />
             </button>
           </div>
 

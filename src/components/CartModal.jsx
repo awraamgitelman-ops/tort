@@ -163,9 +163,18 @@ export default function CartModal({ isOpen, onClose, cartItems, onRemoveItem, on
  <input
  type="date"
  required
+ min={new Date().toISOString().split('T')[0]}
  className="input-field"
  value={form.date}
- onChange={e => setForm({ ...form, date: e.target.value })}
+ onChange={e => {
+ const todayStr = new Date().toISOString().split('T')[0];
+ const val = e.target.value;
+ if (val && val < todayStr) {
+ setForm({ ...form, date: todayStr });
+ } else {
+ setForm({ ...form, date: val });
+ }
+ }}
  />
  </div>
 

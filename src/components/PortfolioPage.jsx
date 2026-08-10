@@ -208,7 +208,7 @@ export default function PortfolioPage({ onAddToCart }) {
                 Офіційна портфоліо-галерея
               </span>
               <h1 className="hero-banner-title" style={{ fontSize: '36px', marginTop: '4px' }}>
-                Мої Роботи & Авторські Десерти
+                Наші Роботи & Авторські Десерти
               </h1>
             </div>
           </div>

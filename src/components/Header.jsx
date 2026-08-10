@@ -86,7 +86,7 @@ export default function Header({
               className={`nav-item ${activeTab === 'portfolio' ? 'active' : ''}`}
               onClick={() => setActiveTab('portfolio')}
             >
-              Мої роботи
+              Наші роботи
             </button>
 
             <button
