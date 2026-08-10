@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { ChevronLeft, ChevronRight, Quote } from 'lucide-react';
 
 const REVIEWS = [
@@ -31,14 +31,20 @@ const REVIEWS = [
 
 export default function ReviewsCarousel() {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+  const timerRef = useRef(null);
 
   useEffect(() => {
-    if (REVIEWS.length <= 1) return;
-    const timer = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % REVIEWS.length);
-    }, 10000);
-    return () => clearInterval(timer);
-  }, []);
+    if (timerRef.current) clearInterval(timerRef.current);
+    if (!isPaused && REVIEWS.length > 1) {
+      timerRef.current = setInterval(() => {
+        setCurrentIndex((prev) => (prev + 1) % REVIEWS.length);
+      }, 10000);
+    }
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, [isPaused, currentIndex]);
 
   const prevReview = () => {
     if (REVIEWS.length <= 1) return;
@@ -53,7 +59,11 @@ export default function ReviewsCarousel() {
   const current = REVIEWS[currentIndex] || REVIEWS[0];
 
   return (
-    <section style={{ position: 'relative', margin: '0 0 12px', background: '#ffffff', border: '1px solid var(--border-light)', padding: '32px 28px 24px', boxShadow: 'var(--shadow-sm)' }}>
+    <section
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+      style={{ position: 'relative', margin: '0 0 12px', background: '#ffffff', border: '1px solid var(--border-light)', padding: '32px 28px 24px', boxShadow: 'var(--shadow-sm)' }}
+    >
       {/* Cursive Title Header */}
       <div style={{ textAlign: 'center', marginBottom: '24px' }}>
         <h2 style={{ fontFamily: "'Georgia', cursive, serif", fontSize: '38px', fontStyle: 'italic', color: 'var(--bg-navy)', margin: 0, fontWeight: 700 }}>
