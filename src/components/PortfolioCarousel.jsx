@@ -9,7 +9,7 @@ const stripEmojis = (str) => {
 
 const formatMediaUrl = (url) => {
   if (!url || typeof url !== 'string') return url;
-  if (url.includes('catbox.moe') || (url.startsWith('http') && !url.includes('/api/proxy-media'))) {
+  if ((url.startsWith('http://') || url.startsWith('https://')) && !url.includes('/api/proxy-media')) {
     return `/api/proxy-media?url=${encodeURIComponent(url)}`;
   }
   return url;

@@ -30,7 +30,7 @@ function stripEmojis(str) {
 
 function formatMediaUrl(url) {
   if (!url || typeof url !== 'string') return url;
-  if (url.includes('catbox.moe') || (url.startsWith('http') && !url.includes('/api/proxy-media'))) {
+  if ((url.startsWith('http://') || url.startsWith('https://')) && !url.includes('/api/proxy-media')) {
     return `/api/proxy-media?url=${encodeURIComponent(url)}`;
   }
   return url;
@@ -55,26 +55,38 @@ function processItemMedia(item) {
   };
 }
 
-// Media Proxy Endpoint to fix ERR_HTTP2_PROTOCOL_ERROR on catbox.moe assets
+// Media Proxy Endpoint to fix ERR_HTTP2_PROTOCOL_ERROR on catbox.moe assets with fail-safe fallback
 app.get('/api/proxy-media', async (req, res) => {
+  let targetUrl = req.query.url;
   try {
-    const targetUrl = req.query.url;
     if (!targetUrl || typeof targetUrl !== 'string') {
       return res.status(400).send('Missing url parameter');
     }
 
+    // Unwrap nested proxy URLs if accidentally double wrapped
+    while (targetUrl.includes('/api/proxy-media?url=')) {
+      const idx = targetUrl.indexOf('/api/proxy-media?url=');
+      targetUrl = decodeURIComponent(targetUrl.substring(idx + 21));
+    }
+
+    if (!targetUrl.startsWith('http://') && !targetUrl.startsWith('https://')) {
+      return res.redirect(targetUrl);
+    }
+
     const mediaRes = await fetch(targetUrl, {
       headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-        'Accept': '*/*'
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+        'Accept': 'image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8',
+        'Referer': 'https://catbox.moe/'
       }
     });
 
     if (!mediaRes.ok) {
-      return res.status(mediaRes.status).send('Failed to fetch media');
+      // Fallback: redirect directly to original URL if proxy fetch returns non-200
+      return res.redirect(targetUrl);
     }
 
-    const contentType = mediaRes.headers.get('content-type') || 'application/octet-stream';
+    const contentType = mediaRes.headers.get('content-type') || 'image/jpeg';
     res.setHeader('Content-Type', contentType);
     res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
 
@@ -82,7 +94,10 @@ app.get('/api/proxy-media', async (req, res) => {
     res.send(buffer);
   } catch (err) {
     console.error('Error in proxy-media:', err);
-    res.status(500).send('Proxy error');
+    if (targetUrl && (targetUrl.startsWith('http://') || targetUrl.startsWith('https://'))) {
+      return res.redirect(targetUrl);
+    }
+    res.status(400).send('Proxy error');
   }
 });
 
