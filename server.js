@@ -28,6 +28,64 @@ function stripEmojis(str) {
   return str.replace(emojiRegex, '').replace(/  +/g, ' ').trim();
 }
 
+function formatMediaUrl(url) {
+  if (!url || typeof url !== 'string') return url;
+  if (url.includes('catbox.moe') || (url.startsWith('http') && !url.includes('/api/proxy-media'))) {
+    return `/api/proxy-media?url=${encodeURIComponent(url)}`;
+  }
+  return url;
+}
+
+function processItemMedia(item) {
+  if (!item) return item;
+  const image = formatMediaUrl(item.image);
+  const images = Array.isArray(item.images) ? item.images.map(formatMediaUrl) : item.images;
+  const mediaList = Array.isArray(item.mediaList) ? item.mediaList.map(m => ({
+    ...m,
+    url: formatMediaUrl(m.url)
+  })) : item.mediaList;
+
+  return {
+    ...item,
+    image,
+    images,
+    mediaList,
+    title: stripEmojis(item.title),
+    description: stripEmojis(item.description)
+  };
+}
+
+// Media Proxy Endpoint to fix ERR_HTTP2_PROTOCOL_ERROR on catbox.moe assets
+app.get('/api/proxy-media', async (req, res) => {
+  try {
+    const targetUrl = req.query.url;
+    if (!targetUrl || typeof targetUrl !== 'string') {
+      return res.status(400).send('Missing url parameter');
+    }
+
+    const mediaRes = await fetch(targetUrl, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Accept': '*/*'
+      }
+    });
+
+    if (!mediaRes.ok) {
+      return res.status(mediaRes.status).send('Failed to fetch media');
+    }
+
+    const contentType = mediaRes.headers.get('content-type') || 'application/octet-stream';
+    res.setHeader('Content-Type', contentType);
+    res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+
+    const buffer = Buffer.from(await mediaRes.arrayBuffer());
+    res.send(buffer);
+  } catch (err) {
+    console.error('Error in proxy-media:', err);
+    res.status(500).send('Proxy error');
+  }
+});
+
 // API Endpoint to get all parsed portfolio works for the website
 app.get('/api/portfolio', (req, res) => {
  try {
@@ -44,11 +102,7 @@ app.get('/api/portfolio', (req, res) => {
  raw = fs.readFileSync(backupJsonPath, 'utf8');
  }
  const data = JSON.parse(raw);
- const cleanedData = Array.isArray(data) ? data.map(item => ({
-      ...item,
-      title: stripEmojis(item.title),
-      description: stripEmojis(item.description)
-    })) : [];
+ const cleanedData = Array.isArray(data) ? data.map(processItemMedia) : [];
     res.json(cleanedData);
  } catch (err) {
  res.status(500).json({ error: 'Failed to read portfolio data' });

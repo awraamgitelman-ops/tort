@@ -10,11 +10,19 @@ const stripEmojis = (str) => {
   return str.replace(emojiRegex, '').replace(/  +/g, ' ').trim();
 };
 
+const formatMediaUrl = (url) => {
+  if (!url || typeof url !== 'string') return url;
+  if (url.includes('catbox.moe') || (url.startsWith('http') && !url.includes('/api/proxy-media'))) {
+    return `/api/proxy-media?url=${encodeURIComponent(url)}`;
+  }
+  return url;
+};
+
 /* PURE PHOTO RECTANGLE CARD */
 function WorkCardCompact({ work, onOpenDetail }) {
   const mediaItems = work.mediaList && work.mediaList.length > 0
-    ? work.mediaList 
-    : (work.images && work.images.length > 0 ? work.images.map(url => ({ type: 'image', url })) : [{ type: 'image', url: work.image }]);
+    ? work.mediaList.map(m => ({ ...m, url: formatMediaUrl(m.url) }))
+    : (work.images && work.images.length > 0 ? work.images.map(url => ({ type: 'image', url: formatMediaUrl(url) })) : [{ type: 'image', url: formatMediaUrl(work.image) }]);
   const mainMedia = mediaItems[0] || {};
   const isVideo = mainMedia?.type === 'video' || (typeof mainMedia?.url === 'string' && (mainMedia.url.endsWith('.mp4') || mainMedia.url.includes('video')));
 
@@ -63,7 +71,9 @@ function WorkCardCompact({ work, onOpenDetail }) {
 /* WORK DETAIL POPUP MODAL */
 function WorkDetailModal({ work, onClose, onAddToCart, onOpenFullscreen }) {
   if (!work) return null;
-  const mediaItems = work.mediaList && work.mediaList.length > 0 ? work.mediaList : (work.images && work.images.length > 0 ? work.images.map(url => ({ type: 'image', url })) : [{ type: 'image', url: work.image }]);
+  const mediaItems = work.mediaList && work.mediaList.length > 0 
+    ? work.mediaList.map(m => ({ ...m, url: formatMediaUrl(m.url) })) 
+    : (work.images && work.images.length > 0 ? work.images.map(url => ({ type: 'image', url: formatMediaUrl(url) })) : [{ type: 'image', url: formatMediaUrl(work.image) }]);
   const [activeMediaIndex, setActiveMediaIndex] = useState(0);
   const nextMedia = () => setActiveMediaIndex((prev) => (prev + 1) % mediaItems.length);
   const prevMedia = () => setActiveMediaIndex((prev) => (prev - 1 + mediaItems.length) % mediaItems.length);

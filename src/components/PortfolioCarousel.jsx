@@ -7,6 +7,14 @@ const stripEmojis = (str) => {
   return str.replace(emojiRegex, '').replace(/  +/g, ' ').trim();
 };
 
+const formatMediaUrl = (url) => {
+  if (!url || typeof url !== 'string') return url;
+  if (url.includes('catbox.moe') || (url.startsWith('http') && !url.includes('/api/proxy-media'))) {
+    return `/api/proxy-media?url=${encodeURIComponent(url)}`;
+  }
+  return url;
+};
+
 export default function PortfolioCarousel({ onGoToPortfolio }) {
   const [works, setWorks] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -55,8 +63,8 @@ export default function PortfolioCarousel({ onGoToPortfolio }) {
 
   const currentWork = works[currentIndex] || works[0];
   const mediaList = currentWork.mediaList && currentWork.mediaList.length > 0
-    ? currentWork.mediaList
-    : (currentWork.images && currentWork.images.length > 0 ? currentWork.images.map(url => ({ type: 'image', url })) : [{ type: 'image', url: currentWork.image }]);
+    ? currentWork.mediaList.map(m => ({ ...m, url: formatMediaUrl(m.url) }))
+    : (currentWork.images && currentWork.images.length > 0 ? currentWork.images.map(url => ({ type: 'image', url: formatMediaUrl(url) })) : [{ type: 'image', url: formatMediaUrl(currentWork.image) }]);
 
   const mediaItem = mediaList[0] || {};
   const isVideo = mediaItem.type === 'video' || (typeof mediaItem.url === 'string' && (mediaItem.url.endsWith('.mp4') || mediaItem.url.includes('video')));
