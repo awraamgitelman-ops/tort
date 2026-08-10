@@ -165,7 +165,7 @@ function WorkCardCompact({ work, onOpenDetail }) {
       )}
 
       {mediaItems.length > 1 && (
-        <span style={{ position: 'absolute', top: '12px', left: '12px', background: 'rgba(11,23,42,0.85)', color: '#fff', padding: '4px 10px', borderRadius: 0, fontSize: '11px', fontWeight 700, display: 'flex', alignItems: 'center', gap: '4px', zIndex: 2 }}>
+        <span style={{ position: 'absolute', top: '12px', left: '12px', background: 'rgba(11,23,42,0.85)', color: '#fff', padding: '4px 10px', borderRadius: 0, fontSize: '11px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px', zIndex: 2 }}>
           <ImageIcon size={11} /> +{mediaItems.length - 1} фото
         </span>
       )}
