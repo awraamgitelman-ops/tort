@@ -81,7 +81,7 @@ export default function PortfolioCarousel({ onGoToPortfolio }) {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px', marginBottom: '20px', paddingBottom: '14px', borderBottom: '1px solid #f1f5f9' }}>
         <div>
           <span style={{ fontSize: '11px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--accent-gold)', display: 'flex', alignItems: 'center', gap: '4px' }}>
-            <Sparkles size={13} /> Наші свіжі роботи з Telegram
+            <Sparkles size={13} /> Авторські десерти & Відео-огляди
           </span>
           <h2 style={{ fontSize: '22px', fontWeight: 700, color: 'var(--bg-navy)', margin: '2px 0 0' }}>
             Галерея Останніх Робіт
