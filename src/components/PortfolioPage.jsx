@@ -248,10 +248,21 @@ function WorkCard({ work, onAddToCart, onOpenFullscreen }) {
 }
 
 export default function PortfolioPage({ onAddToCart }) {
+  const isTargetPost = (item) => {
+    const title = (item.title || '').toLowerCase();
+    const desc = (item.description || '').toLowerCase();
+    return title.includes('скеля') || desc.includes('скеля') ||
+           title.includes('стильні чоловічі торти') || desc.includes('стильні чоловічі торти');
+  };
+
   const [works, setWorks] = useState(() => {
     try {
       const cached = localStorage.getItem('cached_portfolio_works');
-      return cached ? JSON.parse(cached) : [];
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        return parsed.filter(item => !isTargetPost(item));
+      }
+      return [];
     } catch (e) {
       return [];
     }
@@ -265,27 +276,19 @@ export default function PortfolioPage({ onAddToCart }) {
       const res = await fetch('/api/portfolio');
       if (res.ok) {
         const data = await res.json();
-        if (Array.isArray(data) && data.length > 0) {
-          const sorted = [...data].sort((a, b) => {
+        if (Array.isArray(data)) {
+          const filtered = data.filter(item => !isTargetPost(item));
+          const sorted = [...filtered].sort((a, b) => {
             const timeA = Number(a.originalTimestamp || a.id) || 0;
             const timeB = Number(b.originalTimestamp || b.id) || 0;
             return timeB - timeA;
           });
           localStorage.setItem('cached_portfolio_works', JSON.stringify(sorted));
           setWorks(sorted);
-        } else {
-          const cached = localStorage.getItem('cached_portfolio_works');
-          if (cached) {
-            setWorks(JSON.parse(cached));
-          }
         }
       }
     } catch (err) {
       console.warn('Failed to load portfolio:', err);
-      const cached = localStorage.getItem('cached_portfolio_works');
-      if (cached) {
-        try { setWorks(JSON.parse(cached)); } catch(e) {}
-      }
     } finally {
       setLoading(false);
     }

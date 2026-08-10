@@ -5,7 +5,15 @@ export default function PortfolioCarousel({ onGoToPortfolio }) {
   const [works, setWorks] = useState(() => {
     try {
       const cached = localStorage.getItem('cached_portfolio_works');
-      return cached ? JSON.parse(cached) : [];
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        return parsed.filter(item => {
+          const t = (item.title || '').toLowerCase();
+          const d = (item.description || '').toLowerCase();
+          return !t.includes('скеля') && !d.includes('скеля') && !t.includes('стильні чоловічі торти') && !d.includes('стильні чоловічі торти');
+        });
+      }
+      return [];
     } catch (e) {
       return [];
     }
@@ -20,8 +28,13 @@ export default function PortfolioCarousel({ onGoToPortfolio }) {
         const res = await fetch('/api/portfolio');
         if (res.ok) {
           const data = await res.json();
-          if (Array.isArray(data) && data.length > 0) {
-            const sorted = [...data].sort((a, b) => (Number(b.originalTimestamp || b.id) - Number(a.originalTimestamp || a.id)));
+          if (Array.isArray(data)) {
+            const filtered = data.filter(item => {
+              const t = (item.title || '').toLowerCase();
+              const d = (item.description || '').toLowerCase();
+              return !t.includes('скеля') && !d.includes('скеля') && !t.includes('стильні чоловічі торти') && !d.includes('стильні чоловічі торти');
+            });
+            const sorted = [...filtered].sort((a, b) => (Number(b.originalTimestamp || b.id) - Number(a.originalTimestamp || a.id)));
             setWorks(sorted);
             localStorage.setItem('cached_portfolio_works', JSON.stringify(sorted));
           }

@@ -22,19 +22,28 @@ const backupJsonPath = path.join(dataDir, 'portfolio.backup.json');
 
 function getPortfolioData() {
   try {
+    let data = [];
     if (fs.existsSync(portfolioJsonPath)) {
       const raw = fs.readFileSync(portfolioJsonPath, 'utf8');
       if (raw && raw.trim().length > 2) {
-        return JSON.parse(raw);
+        data = JSON.parse(raw);
       }
     }
-    if (fs.existsSync(backupJsonPath)) {
+    if (data.length === 0 && fs.existsSync(backupJsonPath)) {
       const rawBackup = fs.readFileSync(backupJsonPath, 'utf8');
       if (rawBackup && rawBackup.trim().length > 2) {
-        return JSON.parse(rawBackup);
+        data = JSON.parse(rawBackup);
       }
     }
-    return [];
+
+    // Filter out deleted posts matching blacklisted titles
+    return data.filter(item => {
+      const title = (item.title || '').toLowerCase();
+      const desc = (item.description || '').toLowerCase();
+      const isDeleted = title.includes('скеля') || desc.includes('скеля') || 
+                        title.includes('стильні чоловічі торти') || desc.includes('стильні чоловічі торти');
+      return !isDeleted;
+    });
   } catch (e) {
     console.error('Error reading portfolio data:', e);
     return [];
