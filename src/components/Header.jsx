@@ -120,20 +120,6 @@ export default function Header({
             >
               <BookOpen size={16} /> Правила зберігання
             </button>
-
-            <button
-              className={`nav-item ${activeTab === 'delivery' ? 'active' : ''}`}
-              onClick={() => handleNavClick('delivery')}
-            >
-              <Truck size={16} /> Доставка
-            </button>
-
-            <button
-              className={`nav-item ${activeTab === 'telegram' ? 'active' : ''}`}
-              onClick={() => handleNavClick('telegram')}
-            >
-              <Send size={16} /> Замовлення в Telegram
-            </button>
           </div>
 
           <a
